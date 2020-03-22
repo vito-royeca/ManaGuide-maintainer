@@ -2,7 +2,7 @@ package com.manakit;
 
 public class ManaKit {
     public enum Constants {
-        ServerInfo("2020-03-21 10:25 UTC");
+        ScryfallDate("2020-03-21 10:25 UTC");
 
         private String value;
 
