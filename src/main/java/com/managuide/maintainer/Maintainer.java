@@ -1,14 +1,17 @@
 package com.managuide.maintainer;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Date;
 
 import com.manakit.ManaKit;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.jdeferred2.Deferred;
-import org.jdeferred2.Promise;
-import org.jdeferred2.impl.DeferredObject;
+import org.riversun.promise.Action;
+import org.riversun.promise.Func;
+import org.riversun.promise.Promise;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -51,19 +54,55 @@ public class Maintainer {
     }
 
     void updateDatabase() {
+        String localPrefix       = "build/" + ManaKit.Constants.ScryfallDate.getValue() + "_";
+        String setsLocalPath     = localPrefix + Maintainer.setsFileName;
+        String setsRemotePath    = "https://api.scryfall.com/sets";
+        String keyruneLocalPath  = localPrefix + Maintainer.keyruneFileName;
+        String keyruneRemotePath = "http://andrewgioia.github.io/Keyrune/cheatsheet.html";
+        String cardsLocalPath    = localPrefix + Maintainer.cardsFileName;
+        String cardsRemotePath   = "https://archive.scryfall.com/json/"+ cardsFileName;
+        String rulingsLocalPath  = localPrefix + Maintainer.rulingsFileName;
+        String rulingsRemotePath = "https://archive.scryfall.com/json/" + rulingsFileName;
+
+        Func done = (action, data) -> {
+            endActivity();
+            action.resolve();
+        };
+
         startActivity();
-
-        //Deferred deferred = new DeferredObject();
-        //Promise promise = deferred.promise();
-        SetsMaintainer sm = new SetsMaintainer();
-        sm.fetchSetsData();
-
-        endActivity();
+        Promise.resolve()
+            .then(fetchData(setsLocalPath, setsRemotePath))
+            .then(fetchData(keyruneLocalPath, keyruneRemotePath))
+            .then(fetchData(cardsLocalPath, cardsRemotePath))
+            .then(fetchData(rulingsLocalPath, rulingsRemotePath))
+            .then(new Promise(done))
+            .start();
     }
 
     /**
      * Utility methods
      */
+
+    Func fetchData(String localPath, String remotePath) {
+        return new Func() {
+            @Override
+            public void run(Action action, Object data) throws Exception {
+                File file = new File(localPath);
+                Boolean willFetch = !file.exists();
+
+                if (willFetch) {
+                    try {
+                        URL url = new URL(remotePath);
+                        FileUtils.copyURLToFile(url, file);
+                        action.resolve();
+                    } catch (IOException e) {
+                        action.reject();
+                    }
+                }
+            }
+        };
+    }
+
     void startActivity() {
         dateStart = new Date();
         System.out.println("Starting on... " + dateStart);
