@@ -1,5 +1,3 @@
 # ManaGuide-maintainer
 
-Utility for updating the Mana Guide database.
-
-
+A description of this package.
