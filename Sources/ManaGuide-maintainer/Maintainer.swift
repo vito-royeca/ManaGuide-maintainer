@@ -20,7 +20,7 @@ class Maintainer {
     let bulkDataFileName  = "scryfall-bulkData.json"
     let setsFileName      = "scryfall-sets.json"
     let keyruneFileName   = "keyrune.html"
-    let comprehensiveRulesFileName = "MagicCompRules 20200925"
+    let rulesFileName     = "MagicCompRules.txt"
 //    let setCodesForProcessing:[String]? = nil
     let storeName = "TCGPlayer"
     let cachePath = "/tmp"
@@ -35,6 +35,7 @@ class Maintainer {
     var rulingsRemotePath  = ""
     let setsRemotePath     = "https://api.scryfall.com/sets"
     let keyruneRemotePath  = "https://keyrune.andrewgioia.com/cheatsheet.html"
+    let rulesRemotePath    = "https://media.wizards.com/2021/downloads/MagicCompRules 20210419.txt"
     
     // local file names
     var bulkDataLocalPath  = ""
@@ -42,6 +43,7 @@ class Maintainer {
     var rulingsLocalPath   = ""
     var setsLocalPath      = ""
     var keyruneLocalPath   = ""
+    var rulesLocalPath     = ""
     
     var _bulkArray: [[String: Any]]?
     var bulkArray: [[String: Any]] {
@@ -169,6 +171,11 @@ class Maintainer {
     private func updateDatabase() {
         startActivity()
         
+        bulkDataLocalPath = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(bulkDataFileName)"
+        setsLocalPath     = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(setsFileName)"
+        keyruneLocalPath  = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(keyruneFileName)"
+        rulesLocalPath    = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(rulesFileName)"
+        
         firstly {
             fetchData(from: bulkDataRemotePath, saveTo: bulkDataLocalPath)
         }.then {
@@ -181,6 +188,8 @@ class Maintainer {
             self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath)
         }.then {
             self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath)
+        }.then {
+            self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath)
         }/*.then {
             self.fetchCardImages()
         }.then {
@@ -189,9 +198,9 @@ class Maintainer {
             self.createCardsData()
         }.then {
             self.createRulingsData()
-        }.then {
-            self.createRulesData()
         }*/.then {
+            self.createRulesData()
+        }.then {
             self.createOtherCardsData()
         }.then {
             self.createPricingData()
@@ -204,11 +213,12 @@ class Maintainer {
                 try FileManager.default.removeItem(atPath: self.keyruneLocalPath)
                 try FileManager.default.removeItem(atPath: self.cardsLocalPath)
                 try FileManager.default.removeItem(atPath: self.rulingsLocalPath)
+                try FileManager.default.removeItem(atPath: self.rulesLocalPath)
             } catch {
                 print(error)
                 exit(EXIT_FAILURE)
             }
-            
+
             exit(EXIT_SUCCESS)
         }.catch { error in
             print(error)
@@ -376,10 +386,6 @@ class Maintainer {
             fatalError("Malformed data")
         }
 
-        bulkDataLocalPath = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(bulkDataFileName)"
-        setsLocalPath     = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(setsFileName)"
-        keyruneLocalPath  = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(keyruneFileName)"
-        
         for dict in array {
             for (k,v) in dict {
                 if k == "name" {
@@ -403,7 +409,6 @@ class Maintainer {
     
     // MARK: - Promise methods
     func fetchData(from remotePath: String, saveTo localPath: String) -> Promise<Void> {
-        
         return Promise { seal in
             let willFetch = !FileManager.default.fileExists(atPath: localPath)
                 

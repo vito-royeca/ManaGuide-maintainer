@@ -12,13 +12,7 @@ import PromiseKit
 
 extension Maintainer {
     func rulesData() -> [String] {
-        guard let path = Bundle.main.path(forResource: comprehensiveRulesFileName,
-                                          ofType: "txt",
-                                          inDirectory: "data") else {
-            fatalError("Malformed data")
-        }
-        
-        let data = try! String(contentsOfFile: path, encoding: .ascii)
+        let data = try! String(contentsOfFile: rulesLocalPath, encoding: .ascii)
         let lines = data.components(separatedBy: .newlines)
         
         return lines

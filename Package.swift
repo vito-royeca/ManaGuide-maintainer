@@ -22,7 +22,8 @@ let package = Package(
                            //"PMJSON",
                            "PostgresClientKit",
                            .product(name: "PromiseKit", package: "PromiseKit"),
-                           .product(name: "PMKFoundation", package: "PromiseKit")]),
+                           .product(name: "PMKFoundation", package: "PromiseKit")]
+        ),
         .testTarget(
             name: "ManaGuide-maintainerTests",
             dependencies: ["ManaGuide-maintainer",
@@ -30,6 +31,7 @@ let package = Package(
                            //"PMJSON",
                            "PostgresClientKit",
                            .product(name: "PromiseKit", package: "PromiseKit"),
-                           .product(name: "PMKFoundation", package: "PromiseKit")]),
+                           .product(name: "PMKFoundation", package: "PromiseKit")]
+        ),
     ]
 )
