@@ -100,7 +100,6 @@ extension Maintainer {
 
     func createImageDownloadPromise(dict: [String: Any]) -> Promise<Void> {
         return Promise { seal in
-            let cachePath = "/tmp"
             guard let number = dict["number"] as? String,
                 let language = dict["language"] as? String,
                 let set = dict["set"] as? String,

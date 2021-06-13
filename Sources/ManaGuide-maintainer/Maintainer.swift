@@ -23,13 +23,25 @@ class Maintainer {
     let comprehensiveRulesFileName = "MagicCompRules 20200925"
 //    let setCodesForProcessing:[String]? = nil
     let storeName = "TCGPlayer"
+    let cachePath = "/tmp"
     
     // MARK: - Variables
     var tcgplayerAPIToken = ""
     var dateStart = Date()
-    var cardsRemotePath   = ""
-    var rulingsRemotePath = ""
-    // let setsModel = SetsViewModel()
+    
+    // remote file names
+    let bulkDataRemotePath = "https://api.scryfall.com/bulk-data"
+    var cardsRemotePath    = ""
+    var rulingsRemotePath  = ""
+    let setsRemotePath     = "https://api.scryfall.com/sets"
+    let keyruneRemotePath  = "https://keyrune.andrewgioia.com/cheatsheet.html"
+    
+    // local file names
+    var bulkDataLocalPath  = ""
+    var cardsLocalPath     = ""
+    var rulingsLocalPath   = ""
+    var setsLocalPath      = ""
+    var keyruneLocalPath   = ""
     
     var _bulkArray: [[String: Any]]?
     var bulkArray: [[String: Any]] {
@@ -155,14 +167,6 @@ class Maintainer {
     }
     
     private func updateDatabase() {
-        let cachePath = "/tmp"
-        let bulkDataLocalPath  = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(bulkDataFileName)"
-        let bulkDataRemotePath = "https://api.scryfall.com/bulk-data"
-        let setsLocalPath      = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(setsFileName)"
-        let setsRemotePath     = "https://api.scryfall.com/sets"
-        let keyruneLocalPath   = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(keyruneFileName)"
-        let keyruneRemotePath  = "https://keyrune.andrewgioia.com/cheatsheet.html"
-        
         startActivity()
         
         firstly {
@@ -170,16 +174,16 @@ class Maintainer {
         }.then {
             self.createBulkData()
         }.then {
-            self.fetchData(from: setsRemotePath, saveTo: setsLocalPath)
+            self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath)
         }.then {
-            self.fetchData(from: keyruneRemotePath, saveTo: keyruneLocalPath)
+            self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath)
         }.then {
-            self.fetchData(from: self.cardsRemotePath, saveTo: "\(cachePath)/\(self.cardsRemotePath.components(separatedBy: "/").last ?? "")")
+            self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath)
         }.then {
-            self.fetchData(from: self.rulingsRemotePath, saveTo: "\(cachePath)/\(self.rulingsRemotePath.components(separatedBy: "/").last ?? "")")
+            self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath)
         }/*.then {
             self.fetchCardImages()
-        }*/.then {
+        }.then {
             self.createSetsData()
         }.then {
             self.createCardsData()
@@ -187,14 +191,24 @@ class Maintainer {
             self.createRulingsData()
         }.then {
             self.createRulesData()
-        }.then {
+        }*/.then {
             self.createOtherCardsData()
         }.then {
             self.createPricingData()
         }.then {
             self.createScryfallPromise()
         }.done {
-            self.endActivity()
+            do {
+                try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
+                try FileManager.default.removeItem(atPath: self.setsLocalPath)
+                try FileManager.default.removeItem(atPath: self.keyruneLocalPath)
+                try FileManager.default.removeItem(atPath: self.cardsLocalPath)
+                try FileManager.default.removeItem(atPath: self.rulingsLocalPath)
+            } catch {
+                print(error)
+                exit(EXIT_FAILURE)
+            }
+            
             exit(EXIT_SUCCESS)
         }.catch { error in
             print(error)
@@ -352,7 +366,6 @@ class Maintainer {
     }
     
     func bulkData() -> [[String: Any]] {
-        let cachePath = "/tmp"
         let bulkDataPath  = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(bulkDataFileName)"
         let data = try! Data(contentsOf: URL(fileURLWithPath: bulkDataPath))
         guard let dict = try! JSONSerialization.jsonObject(with: data,
@@ -362,6 +375,10 @@ class Maintainer {
         guard let array = dict["data"] as? [[String: Any]] else {
             fatalError("Malformed data")
         }
+
+        bulkDataLocalPath = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(bulkDataFileName)"
+        setsLocalPath     = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(setsFileName)"
+        keyruneLocalPath  = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(keyruneFileName)"
         
         for dict in array {
             for (k,v) in dict {
@@ -370,8 +387,10 @@ class Maintainer {
                         switch value {
                         case "All Cards":
                             self.cardsRemotePath = dict["download_uri"] as! String
+                            self.cardsLocalPath = "\(cachePath)/\(self.cardsRemotePath.components(separatedBy: "/").last ?? "")"
                         case "Rulings":
                             self.rulingsRemotePath = dict["download_uri"] as! String
+                            self.rulingsLocalPath = "\(cachePath)/\(self.rulingsRemotePath.components(separatedBy: "/").last ?? "")"
                         default:
                             ()
                         }

@@ -119,7 +119,6 @@ extension Maintainer {
     }
     
     func keyruneCodes() -> HTMLDocument {
-        let cachePath = "/tmp"
         let keyrunePath = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(keyruneFileName)"
         let url = URL(fileURLWithPath: keyrunePath)
         

@@ -11,7 +11,6 @@ import PromiseKit
 
 extension Maintainer {
     func rulingsData() -> [[String: Any]] {
-        let cachePath = "/tmp"
         let rulingsPath = "\(cachePath)/\(rulingsRemotePath.components(separatedBy: "/").last ?? "")"
         
         let data = try! Data(contentsOf: URL(fileURLWithPath: rulingsPath))

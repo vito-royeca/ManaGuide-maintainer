@@ -12,7 +12,6 @@ import PromiseKit
 
 extension Maintainer {
     func setsData() -> [[String: Any]] {
-        let cachePath = "/tmp"
         let setsPath = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(setsFileName)"
         
         let data = try! Data(contentsOf: URL(fileURLWithPath: setsPath))

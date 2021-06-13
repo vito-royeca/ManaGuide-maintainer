@@ -1,4 +1,5 @@
 import Foundation
+//import PMJSON
 import PromiseKit
 
 ManaKit.sharedInstance.configure(apiURL: "http://192.168.1.182:1993",
@@ -8,35 +9,72 @@ ManaKit.sharedInstance.configure(apiURL: "http://192.168.1.182:1993",
 
 let maintainer = Maintainer()
 maintainer.checkServerInfo()
-// let t = test()
 
 RunLoop.current.run() 
 
-// class test {
-//     init() {
-//         var promises = [Promise<(data: Data, response: URLResponse)>]()
+//class test {
+//    func cardsData() -> [[String: Any]] {
+//        let cachePath = "/tmp"
+//        let cardsPath = "\(cachePath)/all-cards-20210612211705.json"
+//        JSON.decodeStream
+////        let decoder = JSONDecoder()
+////        decoder.decode(Decodable.Protocol., from: <#T##Data#>)
+//        
+//        let data = try! Data(contentsOf: URL(fileURLWithPath: cardsPath), options: .mappedIfSafe)
+//        guard let array = try! JSONSerialization.jsonObject(with: data,
+//                                                            options: .allowFragments) as? [[String: Any]] else {
+//            fatalError("Malformed data")
+//        }
+//        
+//        return array
+//    }
+//}
 
-//         for i in 1...10 {
-//             promises.append(promiseFactory(param: i))
-//         }
+/*
+let fileReader = StreamingFileReader(path: logFile)
+while let line = fileReader.readLine() {
+    // Do something with the line
+}
 
-//         firstly {
-//             when(fulfilled: promises)
-//         }.done { array in
-//             for d in array {
-//                 print(d.data.count)
-//             }
-//             exit(EXIT_SUCCESS)
-//         }.catch { error in
-//             print(error)
-//             exit(EXIT_FAILURE)
-//         }
-//     }
-
-//     func promiseFactory(param: Int) -> Promise<(data: Data, response: URLResponse)> {
-//         let url = URL(string: "http://192.168.1.182:1993/images/cards/c21/en/\(param)/png.png")!
-//         return URLSession.shared.dataTask(.promise, with: url)
-//     }
-// }
-
-
+class StreamingFileReader {
+    var fileHandle: FileHandle?
+    var buffer: Data
+    let bufferSize: Int = 1024
+    
+    // Using new line as the delimiter
+    let delimiter = "\n".data(using: .utf8)!
+    
+    init(path: String) {
+        fileHandle = FileHandle(forReadingAtPath: path)
+        buffer = Data(capacity: bufferSize)
+    }
+    
+    func readLine() -> String? {
+        var rangeOfDelimiter = buffer.range(of: delimiter)
+        
+        while rangeOfDelimiter == nil {
+            guard let chunk = fileHandle?.readData(ofLength: bufferSize) else { return nil }
+            
+            if chunk.count == 0 {
+                if buffer.count > 0 {
+                    defer { buffer.count = 0 }
+                    
+                    return String(data: buffer, encoding: .utf8)
+                }
+                
+                return nil
+            } else {
+                buffer.append(chunk)
+                rangeOfDelimiter = buffer.range(of: delimiter)
+            }
+        }
+        
+        let rangeOfLine = 0 ..< rangeOfDelimiter!.upperBound
+        let line = String(data: buffer.subdata(in: rangeOfLine), encoding: .utf8)
+        
+        buffer.removeSubrange(rangeOfLine)
+        
+        return line?.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+*/

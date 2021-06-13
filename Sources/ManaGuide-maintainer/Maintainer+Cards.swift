@@ -12,7 +12,6 @@ import PromiseKit
 
 extension Maintainer {
     func cardsData() -> [[String: Any]] {
-        let cachePath = "/tmp"
         let cardsPath = "\(cachePath)/\(cardsRemotePath.components(separatedBy: "/").last ?? "")"
         
         let data = try! Data(contentsOf: URL(fileURLWithPath: cardsPath), options: .mappedIfSafe)
