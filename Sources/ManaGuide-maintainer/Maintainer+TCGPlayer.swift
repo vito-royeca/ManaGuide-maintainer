@@ -7,9 +7,12 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
 import PostgresClientKit
-import PMKFoundation
 import PromiseKit
+import PMKFoundation
 
 extension Maintainer {
     func getTcgPlayerToken() -> Promise<Void> {
@@ -45,29 +48,29 @@ extension Maintainer {
     
     func fetchSets() -> Promise<[Int32]> {
         return Promise { seal in
-            setsModel.predicate = NSPredicate(format: "tcgplayerId > 0")
-
             firstly {
-                setsModel.fetchRemoteData()
+                ManaKit.sharedInstance.createNodePromise(apiPath: "/sets?json=true",
+                                                        httpMethod: "GET",
+                                                        httpBody: nil)
             }.compactMap { (data, result) in
                 try JSONSerialization.jsonObject(with: data) as? [[String: Any]]
-            }.then { data in
-                self.setsModel.saveLocalData(data: data)
-            }.then {
-                self.setsModel.fetchLocalData()
-            }.done {
-                var tcgplayerIds = [Int32]()
+            }.done { data in
+                var tcgPlayerIds = [Int32]()
 
-                try! self.setsModel.getFetchedResultsController(with: self.setsModel.fetchRequest).performFetch()
-                if let sets = self.setsModel.allObjects() as? [MGSet] {
-                    tcgplayerIds = sets.map( { set in
-                        set.tcgplayerId
-                    })
+                for d in data {
+                    for (k,v) in d {
+                        if k == "tcgplayer_id" {
+                            if let tcgPlayerId = v as? Int32 {
+                                if tcgPlayerId > 0 {
+                                    tcgPlayerIds.append(tcgPlayerId)
+                                }    
+                            }
+                        }
+                    }
                 }
 
-                seal.fulfill(tcgplayerIds)
+                seal.fulfill(tcgPlayerIds)
             }.catch { error in
-                self.setsModel.deleteCache()
                 seal.reject(error)
             }
         }

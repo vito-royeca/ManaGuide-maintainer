@@ -15,9 +15,9 @@ extension Maintainer {
         let cachePath = "/tmp"
         let cardsPath = "\(cachePath)/\(cardsRemotePath.components(separatedBy: "/").last ?? "")"
         
-        let data = try! Data(contentsOf: URL(fileURLWithPath: cardsPath))
+        let data = try! Data(contentsOf: URL(fileURLWithPath: cardsPath), options: .mappedIfSafe)
         guard let array = try! JSONSerialization.jsonObject(with: data,
-                                                            options: .mutableContainers) as? [[String: Any]] else {
+                                                            options: .allowFragments) as? [[String: Any]] else {
             fatalError("Malformed data")
         }
         

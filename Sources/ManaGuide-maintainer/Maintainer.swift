@@ -7,9 +7,12 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
 import PostgresClientKit
-import PMKFoundation
 import PromiseKit
+import PMKFoundation
 
 class Maintainer {
     // MARK: - Constants
@@ -174,9 +177,9 @@ class Maintainer {
             self.fetchData(from: self.cardsRemotePath, saveTo: "\(cachePath)/\(self.cardsRemotePath.components(separatedBy: "/").last ?? "")")
         }.then {
             self.fetchData(from: self.rulingsRemotePath, saveTo: "\(cachePath)/\(self.rulingsRemotePath.components(separatedBy: "/").last ?? "")")
-        }.then {
+        }/*.then {
             self.fetchCardImages()
-        }.then {
+        }*/.then {
             self.createSetsData()
         }.then {
             self.createCardsData()
@@ -192,8 +195,10 @@ class Maintainer {
             self.createScryfallPromise()
         }.done {
             self.endActivity()
+            exit(EXIT_SUCCESS)
         }.catch { error in
             print(error)
+            exit(EXIT_FAILURE)
         }
     }
 
@@ -379,9 +384,10 @@ class Maintainer {
     
     // MARK: - Promise methods
     func fetchData(from remotePath: String, saveTo localPath: String) -> Promise<Void> {
+        
         return Promise { seal in
             let willFetch = !FileManager.default.fileExists(atPath: localPath)
-            
+                
             if willFetch {
                 guard let urlString = remotePath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
                     let url = URL(string: urlString) else {
@@ -396,6 +402,7 @@ class Maintainer {
                                                    with: rq,
                                                    to: URL(fileURLWithPath: localPath))
                 }.done { _ in
+                    
                     seal.fulfill(())
                 }.catch { error in
                     seal.reject(error)
