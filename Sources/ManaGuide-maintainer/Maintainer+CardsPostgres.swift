@@ -11,6 +11,25 @@ import PostgresClientKit
 import PromiseKit
 
 extension Maintainer {
+    func processOtherCardsData() -> Promise<Void> {
+        return Promise { seal in
+            
+            let promises = [createOtherLanguagesPromise(),
+                            createOtherPrintingsPromise(),
+                            createVariationsPromise()]
+            
+            print("Start createOtherCardsData:")
+            firstly {
+                when(fulfilled: promises)
+            }.done {
+                print("End createOtherCardsData!")
+                seal.fulfill(())
+            }.catch { error in
+                seal.reject(error)
+            }
+        }
+    }
+    
     func createArtistPromise(artist: String) -> Promise<Void> {
         let names = artist.components(separatedBy: " ")
         var firstName = ""

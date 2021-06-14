@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import TSCBasic
+import TSCUtility
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
@@ -65,32 +67,32 @@ class Maintainer {
         }
     }
     
-    var _cardsArray: [[String: Any]]?
-    var cardsArray: [[String: Any]] {
-        get {
-            if _cardsArray == nil {
-                _cardsArray = [[String: Any]]()
-                
-                for dict in self.cardsData() {
-                    var newDict = [String: Any]()
-                    
-                    for (k,v) in dict {
-                        newDict[k] = v
-                    }
-
-                    if let set = dict["set"] as? String,
-                       let language = dict["lang"] as? String,
-                       let collectorNumber = dict["collector_number"] as? String {
-                        let newId = "\(set)_\(language)_\(collectorNumber.replacingOccurrences(of: "★", with: "star"))"
-                        newDict["new_id"] = newId
-                    }
-                    _cardsArray!.append(newDict)
-                }
-                
-            }
-            return _cardsArray!
-        }
-    }
+//    var _cardsArray: [[String: Any]]?
+//    var cardsArray: [[String: Any]] {
+//        get {
+//            if _cardsArray == nil {
+//                _cardsArray = [[String: Any]]()
+//
+//                for dict in self.cardsData() {
+//                    var newDict = [String: Any]()
+//
+//                    for (k,v) in dict {
+//                        newDict[k] = v
+//                    }
+//
+//                    if let set = dict["set"] as? String,
+//                       let language = dict["lang"] as? String,
+//                       let collectorNumber = dict["collector_number"] as? String {
+//                        let newId = "\(set)_\(language)_\(collectorNumber.replacingOccurrences(of: "★", with: "star"))"
+//                        newDict["new_id"] = newId
+//                    }
+//                    _cardsArray!.append(newDict)
+//                }
+//
+//            }
+//            return _cardsArray!
+//        }
+//    }
     
     var _rulingsArray: [[String: Any]]?
     var rulingsArray: [[String: Any]] {
@@ -193,31 +195,31 @@ class Maintainer {
         }/*.then {
             self.fetchCardImages()
         }.then {
-            self.createSetsData()
+            self.processSetsData()
         }.then {
             self.createCardsData()
         }.then {
-            self.createRulingsData()
+            self.processRulingsData()
+        }.then {
+            self.processRulesData()
+        }.then {
+            self.processOtherCardsData()
         }*/.then {
-            self.createRulesData()
-        }.then {
-            self.createOtherCardsData()
-        }.then {
-            self.createPricingData()
-        }.then {
-            self.createScryfallPromise()
-        }.done {
-            do {
-                try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
-                try FileManager.default.removeItem(atPath: self.setsLocalPath)
-                try FileManager.default.removeItem(atPath: self.keyruneLocalPath)
-                try FileManager.default.removeItem(atPath: self.cardsLocalPath)
-                try FileManager.default.removeItem(atPath: self.rulingsLocalPath)
-                try FileManager.default.removeItem(atPath: self.rulesLocalPath)
-            } catch {
-                print(error)
-                exit(EXIT_FAILURE)
-            }
+            self.processPricingData()
+        }/*.then {
+            self.processScryfallPromise()
+        }*/.done {
+//            do {
+//                try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
+//                try FileManager.default.removeItem(atPath: self.setsLocalPath)
+//                try FileManager.default.removeItem(atPath: self.keyruneLocalPath)
+//                try FileManager.default.removeItem(atPath: self.cardsLocalPath)
+//                try FileManager.default.removeItem(atPath: self.rulingsLocalPath)
+//                try FileManager.default.removeItem(atPath: self.rulesLocalPath)
+//            } catch {
+//                print(error)
+//                exit(EXIT_FAILURE)
+//            }
 
             exit(EXIT_SUCCESS)
         }.catch { error in
@@ -230,148 +232,6 @@ class Maintainer {
         return Promise { seal in
             let _ = bulkArray
             seal.fulfill(())
-        }
-    }
-    
-    private func createSetsData() -> Promise<Void> {
-        return Promise { seal in
-            var promises = [()->Promise<Void>]()
-            
-            promises.append(contentsOf: self.filterSetBlocks(array: setsArray))
-            promises.append(contentsOf: self.filterSetTypes(array: setsArray))
-            promises.append(contentsOf: self.filterSets(array: setsArray))
-            promises.append(contentsOf: self.createKeyrunePromises(array: setsArray))
-
-            let completion = {
-                seal.fulfill(())
-            }
-            self.execInSequence(label: "createSetsData",
-                                promises: promises,
-                                completion: completion)
-        }
-    }
-    
-    private func createCardsData() -> Promise<Void> {
-        return Promise { seal in
-            var promises = [()->Promise<Void>]()
-            
-            // cards
-            promises.append(contentsOf: self.filterArtists(array: cardsArray))
-            promises.append(contentsOf: self.filterRarities(array: cardsArray))
-            promises.append(contentsOf: self.filterLanguages(array: cardsArray))
-            promises.append(contentsOf: self.filterWatermarks(array: cardsArray))
-            promises.append(contentsOf: self.filterLayouts(array: cardsArray))
-            promises.append(contentsOf: self.filterFrames(array: cardsArray))
-            promises.append(contentsOf: self.filterFrameEffects(array: cardsArray))
-            promises.append(contentsOf: self.filterColors(array: cardsArray))
-            promises.append(contentsOf: self.filterFormats(array: cardsArray))
-            promises.append(contentsOf: self.filterLegalities(array: cardsArray))
-            promises.append(contentsOf: self.filterTypes(array: cardsArray))
-            promises.append(contentsOf: self.filterComponents(array: cardsArray))
-            promises.append(contentsOf: self.filterCards(array: cardsArray))
-
-            // parts
-            promises.append({
-                return self.createDeletePartsPromise()
-            })
-            promises.append(contentsOf: self.filterParts(array: cardsArray))
-
-            // faces
-            promises.append({
-                return self.createDeleteFacesPromise()
-            })
-            promises.append(contentsOf: self.filterFaces(array: cardsArray))
-
-            let completion = {
-                seal.fulfill(())
-            }
-            self.execInSequence(label: "createCardsData",
-                                promises: promises,
-                                completion: completion)
-        }
-    }
-    
-    private func createRulingsData() -> Promise<Void> {
-        return Promise { seal in
-            var promises = [()->Promise<Void>]()
-            
-            promises.append({
-                return self.createDeleteRulingsPromise()
-
-            })
-            promises.append(contentsOf: rulingsArray.map { dict in
-                return {
-                    return self.createRulingPromise(dict: dict)
-                }
-            })
-
-            let completion = {
-                seal.fulfill(())
-            }
-            self.execInSequence(label: "createRulingsData",
-                                promises: promises,
-                                completion: completion)
-        }
-    }
-    
-    private func createRulesData() -> Promise<Void> {
-        return Promise { seal in
-            var promises = [()->Promise<Void>]()
-            
-            promises.append({
-                return self.createDeleteRulesPromise()
-
-            })
-            promises.append(contentsOf: self.filterRules(lines: rulesArray))
-
-            let completion = {
-                seal.fulfill(())
-            }
-            self.execInSequence(label: "createRulesData",
-                                promises: promises,
-                                completion: completion)
-        }
-    }
-    
-    private func createOtherCardsData() -> Promise<Void> {
-        return Promise { seal in
-            
-            let promises = [createOtherLanguagesPromise(),
-                            createOtherPrintingsPromise(),
-                            createVariationsPromise()]
-            
-            print("Start createOtherCardsData:")
-            firstly {
-                when(fulfilled: promises)
-            }.done {
-                print("End createOtherCardsData!")
-                seal.fulfill(())
-            }.catch { error in
-                seal.reject(error)
-            }
-        }
-    }
-    
-    private func createPricingData() -> Promise<Void> {
-        return Promise { seal in
-            firstly {
-                self.createStorePromise(name: self.storeName)
-            }.then {
-                self.getTcgPlayerToken()
-            }.then {
-                self.fetchSets()
-            }.then { groupIds in
-                self.fetchTcgPlayerCardPricing(groupIds: groupIds)
-            }.done { promises in
-                let completion = {
-                    seal.fulfill(())
-                }
-                self.execInSequence(label: "createPricingData",
-                                    promises: promises,
-                                    completion: completion)
-            }.catch { error in
-                seal.reject(error)
-            }
         }
     }
     
@@ -469,29 +329,31 @@ class Maintainer {
     }
     
     func execInSequence(label: String, promises: [()->Promise<Void>], completion: @escaping () -> Void) {
-//        guard let _ = promises.first else {
-//            return
-//        }
-        
         var promise = promises.first!()
         let countTotal = promises.count
         var countIndex = 0
 
-        print("Start \(label):")
-        print("Exec... \(countIndex)/\(countTotal) \(Date())")
+        let animation = PercentProgressAnimation(stream: stdoutStream,
+                                                 header: "\(label) started on \(Date())")
+        
         for next in promises {
             promise = promise.then { n -> Promise<Void> in
                 countIndex += 1
 
                 if countIndex % self.printMilestone == 0 {
-                    print("Exec... \(countIndex)/\(countTotal) \(Date())")
+//                    print("Exec... \(countIndex)/\(countTotal) \(Date())")
+                    
+                    animation.update(step: countIndex,
+                                     total: countTotal,
+                                     text: "Exec..")
+                    
                 }
                 return next()
             }
         }
         promise.done {_ in
-            print("Exec... \(countIndex)/\(countTotal) \(Date())")
-            print("Done \(label)!")
+            animation.complete(success: true)
+            print("\(label) done on \(Date())")
             completion()
         }.catch { error in
             print(error)

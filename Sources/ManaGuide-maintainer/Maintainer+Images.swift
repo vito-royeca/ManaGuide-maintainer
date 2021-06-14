@@ -13,72 +13,72 @@ import PromiseKit
 //import SDWebImage
 
 extension Maintainer {
-    func fetchCardImages() -> Promise<Void> {
-        return Promise { seal in
-            let array = self.cardsData()
-            var promises = [()->Promise<Void>]()
-            var filteredData = [[String: Any]]()
-
-            // -- Start Option 1 -- //
-            for dict in array {
-            // -- End Option 1 -- //
-            
-            // -- Start Option 2 -- //
-//            for i in 0 ... array.count-1 {
-//                if i < 50000 {
+//    func fetchCardImages() -> Promise<Void> {
+//        return Promise { seal in
+//            let array = self.cardsData()
+//            var promises = [()->Promise<Void>]()
+//            var filteredData = [[String: Any]]()
+//
+//            // -- Start Option 1 -- //
+//            for dict in array {
+//            // -- End Option 1 -- //
+//            
+//            // -- Start Option 2 -- //
+////            for i in 0 ... array.count-1 {
+////                if i < 50000 {
+////                    continue
+////                }
+////                let dict = array[i]
+//            // -- End Option 2 -- //
+//
+//                
+//                guard let number = dict["collector_number"] as? String,
+//                      let language = dict["lang"] as? String,
+//                      let set = dict["set"] as? String else {
 //                    continue
 //                }
-//                let dict = array[i]
-            // -- End Option 2 -- //
-
-                
-                guard let number = dict["collector_number"] as? String,
-                      let language = dict["lang"] as? String,
-                      let set = dict["set"] as? String else {
-                    continue
-                }
-                
-                if let imageStatus = dict["image_status"] as? String,
-                    let imageUrisDict = dict["image_uris"] as? [String: String] {
-                    let imageUrisDict = createImageUris(number: number.replacingOccurrences(of: "★", with: "star"),
-                                                        set: set,
-                                                        language: language,
-                                                        imageStatus: imageStatus,
-                                                        imageUrisDict: imageUrisDict)
-                    filteredData.append(imageUrisDict)
-                }
-                
-                if let faces = dict["card_faces"] as? [[String: Any]] {
-                    for i in 0...faces.count-1 {
-                        let face = faces[i]
-                        
-                        if let imageStatus = dict["image_status"] as? String,
-                            let imageUrisDict = face["image_uris"] as? [String: String] {
-                            let faceImageUrisDict = createImageUris(number: "\(number.replacingOccurrences(of: "★", with: "star"))_\(i)",
-                                                                    set: set,
-                                                                    language: language,
-                                                                    imageStatus: imageStatus,
-                                                                    imageUrisDict: imageUrisDict)
-                            filteredData.append(faceImageUrisDict)
-                        }
-                    }
-                }
-            }
-            
-            promises.append(contentsOf: filteredData.map { dict in
-                return {
-                    return self.createImageDownloadPromise(dict: dict)
-                }
-            })
-            
-            let completion = {
-                seal.fulfill(())
-            }
-            self.execInSequence(label: "fetchCardImages",
-                                promises: promises,
-                                completion: completion)
-        }
-    }
+//                
+//                if let imageStatus = dict["image_status"] as? String,
+//                    let imageUrisDict = dict["image_uris"] as? [String: String] {
+//                    let imageUrisDict = createImageUris(number: number.replacingOccurrences(of: "★", with: "star"),
+//                                                        set: set,
+//                                                        language: language,
+//                                                        imageStatus: imageStatus,
+//                                                        imageUrisDict: imageUrisDict)
+//                    filteredData.append(imageUrisDict)
+//                }
+//                
+//                if let faces = dict["card_faces"] as? [[String: Any]] {
+//                    for i in 0...faces.count-1 {
+//                        let face = faces[i]
+//                        
+//                        if let imageStatus = dict["image_status"] as? String,
+//                            let imageUrisDict = face["image_uris"] as? [String: String] {
+//                            let faceImageUrisDict = createImageUris(number: "\(number.replacingOccurrences(of: "★", with: "star"))_\(i)",
+//                                                                    set: set,
+//                                                                    language: language,
+//                                                                    imageStatus: imageStatus,
+//                                                                    imageUrisDict: imageUrisDict)
+//                            filteredData.append(faceImageUrisDict)
+//                        }
+//                    }
+//                }
+//            }
+//            
+//            promises.append(contentsOf: filteredData.map { dict in
+//                return {
+//                    return self.createImageDownloadPromise(dict: dict)
+//                }
+//            })
+//            
+//            let completion = {
+//                seal.fulfill(())
+//            }
+//            self.execInSequence(label: "fetchCardImages",
+//                                promises: promises,
+//                                completion: completion)
+//        }
+//    }
     
     func createImageUris(number: String, set: String, language: String, imageStatus: String, imageUrisDict: [String: String]) -> [String: Any] {
         var newDict = [String: Any]()

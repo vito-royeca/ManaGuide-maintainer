@@ -1,5 +1,5 @@
 import Foundation
-//import PMJSON
+import PMJSON
 import PromiseKit
 
 ManaKit.sharedInstance.configure(apiURL: "http://192.168.1.182:1993",
@@ -10,71 +10,66 @@ ManaKit.sharedInstance.configure(apiURL: "http://192.168.1.182:1993",
 let maintainer = Maintainer()
 maintainer.checkServerInfo()
 
-RunLoop.current.run() 
+RunLoop.current.run()
 
-//class test {
-//    func cardsData() -> [[String: Any]] {
-//        let cachePath = "/tmp"
-//        let cardsPath = "\(cachePath)/all-cards-20210612211705.json"
-//        JSON.decodeStream
-////        let decoder = JSONDecoder()
-////        decoder.decode(Decodable.Protocol., from: <#T##Data#>)
+//var index = 0
+//doPromises(line: index)
+//RunLoop.current.run()
+//
+//func doPromises(line: Int) {
+//    firstly {
+//        read(lineNum: line)
+//    }.then { string in
+//        tempPromise(line: string)
+//    }.done { result in
+//        index = index+1
+//        print(line)
 //        
-//        let data = try! Data(contentsOf: URL(fileURLWithPath: cardsPath), options: .mappedIfSafe)
-//        guard let array = try! JSONSerialization.jsonObject(with: data,
-//                                                            options: .allowFragments) as? [[String: Any]] else {
-//            fatalError("Malformed data")
+//        if result {
+//            doPromises(line: index)
 //        }
+//    }.catch { error in
+//        print("error")
+//    }
+//}
+//
+//func read(lineNum: Int) -> Promise<String> {
+//    return Promise { seal in
+//        let fileReader = StreamingFileReader(path: "/tmp/all-cards-20210613091740.json")
+//        var cleanLine = ""
+//        var currentLineNum = 0
 //        
-//        return array
+//        while let line = fileReader.readLine() {
+//            if !line.hasPrefix("{") {
+//                continue
+//            }
+//            
+//            if currentLineNum == lineNum {
+//                cleanLine = String(line)
+//                if cleanLine.hasSuffix("}},") {
+//                    cleanLine.removeLast()
+//                }
+//                break
+//            } else {
+//                currentLineNum += 1
+//            }
+//        }
+//        seal.fulfill(cleanLine)
+//    }
+//}
+//
+//func tempPromise(line: String) -> Promise<Bool> {
+//    return Promise { seal in
+//        if line.isEmpty {
+//            seal.fulfill(false)
+//        } else {
+//            do {
+//                let json = try JSON.decode(line)
+//                seal.fulfill(true)
+//            } catch {
+//                seal.fulfill(false)
+//            }
+//        }
 //    }
 //}
 
-/*
-let fileReader = StreamingFileReader(path: logFile)
-while let line = fileReader.readLine() {
-    // Do something with the line
-}
-
-class StreamingFileReader {
-    var fileHandle: FileHandle?
-    var buffer: Data
-    let bufferSize: Int = 1024
-    
-    // Using new line as the delimiter
-    let delimiter = "\n".data(using: .utf8)!
-    
-    init(path: String) {
-        fileHandle = FileHandle(forReadingAtPath: path)
-        buffer = Data(capacity: bufferSize)
-    }
-    
-    func readLine() -> String? {
-        var rangeOfDelimiter = buffer.range(of: delimiter)
-        
-        while rangeOfDelimiter == nil {
-            guard let chunk = fileHandle?.readData(ofLength: bufferSize) else { return nil }
-            
-            if chunk.count == 0 {
-                if buffer.count > 0 {
-                    defer { buffer.count = 0 }
-                    
-                    return String(data: buffer, encoding: .utf8)
-                }
-                
-                return nil
-            } else {
-                buffer.append(chunk)
-                rangeOfDelimiter = buffer.range(of: delimiter)
-            }
-        }
-        
-        let rangeOfLine = 0 ..< rangeOfDelimiter!.upperBound
-        let line = String(data: buffer.subdata(in: rangeOfLine), encoding: .utf8)
-        
-        buffer.removeSubrange(rangeOfLine)
-        
-        return line?.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-}
-*/

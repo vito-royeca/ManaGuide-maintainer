@@ -15,6 +15,29 @@ import PromiseKit
 import PMKFoundation
 
 extension Maintainer {
+    func processPricingData() -> Promise<Void> {
+        return Promise { seal in
+            firstly {
+                self.createStorePromise(name: self.storeName)
+            }.then {
+                self.getTcgPlayerToken()
+            }.then {
+                self.fetchSets()
+            }.then { groupIds in
+                self.fetchTcgPlayerCardPricing(groupIds: groupIds)
+            }.done { promises in
+                let completion = {
+                    seal.fulfill(())
+                }
+                self.execInSequence(label: "createPricingData",
+                                    promises: promises,
+                                    completion: completion)
+            }.catch { error in
+                seal.reject(error)
+            }
+        }
+    }
+
     func getTcgPlayerToken() -> Promise<Void> {
         return Promise { seal  in
             guard let urlString = "https://api.tcgplayer.com/token".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),

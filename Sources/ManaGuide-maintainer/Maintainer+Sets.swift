@@ -11,6 +11,24 @@ import PostgresClientKit
 import PromiseKit
 
 extension Maintainer {
+    func processSetsData() -> Promise<Void> {
+        return Promise { seal in
+            var promises = [()->Promise<Void>]()
+            
+            promises.append(contentsOf: self.filterSetBlocks(array: setsArray))
+            promises.append(contentsOf: self.filterSetTypes(array: setsArray))
+            promises.append(contentsOf: self.filterSets(array: setsArray))
+            promises.append(contentsOf: self.createKeyrunePromises(array: setsArray))
+
+            let completion = {
+                seal.fulfill(())
+            }
+            self.execInSequence(label: "createSetsData",
+                                promises: promises,
+                                completion: completion)
+        }
+    }
+    
     func setsData() -> [[String: Any]] {
         let setsPath = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(setsFileName)"
         

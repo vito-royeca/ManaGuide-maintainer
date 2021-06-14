@@ -9,7 +9,7 @@
 import PromiseKit
 
 extension Maintainer {
-    func createScryfallPromise() -> Promise<Void> {
+    func processScryfallPromise() -> Promise<Void> {
         let query = "UPDATE server_info SET scryfall_version = $1"
         let parameters = [ManaKit.Constants.ScryfallDate]
         

@@ -11,6 +11,25 @@ import PostgresClientKit
 import PromiseKit
 
 extension Maintainer {
+    func processRulesData() -> Promise<Void> {
+        return Promise { seal in
+            var promises = [()->Promise<Void>]()
+            
+            promises.append({
+                return self.createDeleteRulesPromise()
+
+            })
+            promises.append(contentsOf: self.filterRules(lines: rulesArray))
+
+            let completion = {
+                seal.fulfill(())
+            }
+            self.execInSequence(label: "createRulesData",
+                                promises: promises,
+                                completion: completion)
+        }
+    }
+
     func rulesData() -> [String] {
         let data = try! String(contentsOfFile: rulesLocalPath, encoding: .ascii)
         let lines = data.components(separatedBy: .newlines)
