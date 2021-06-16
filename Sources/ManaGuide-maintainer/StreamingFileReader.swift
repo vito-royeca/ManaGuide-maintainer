@@ -22,6 +22,10 @@ class StreamingFileReader {
     }
     
     func readLine() -> String? {
+//        if buffer.count <= 0 {
+//            return nil
+//        }
+
         var rangeOfDelimiter = buffer.range(of: delimiter)
         
         while rangeOfDelimiter == nil {
@@ -45,7 +49,9 @@ class StreamingFileReader {
         let line = String(data: buffer.subdata(in: rangeOfLine), encoding: .utf8)
         
         buffer.removeSubrange(rangeOfLine)
-        
+        if rangeOfLine.upperBound == 0 && rangeOfLine.lowerBound == 0 {
+            print(line ?? "----------")
+        }
         return line?.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

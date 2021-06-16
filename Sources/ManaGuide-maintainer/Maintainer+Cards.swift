@@ -7,15 +7,62 @@
 //
 
 import Foundation
+import PMJSON
 import PostgresClientKit
 import PromiseKit
 
 extension Maintainer {
     func processCardsData() -> Promise<Void> {
         return Promise { seal in
-            var line = 0
-            
-            
+            firstly {
+                Promise { seal2 in
+                    var promises = [()->Promise<Void>]()
+                    var artists = Set<String>()
+                    var rarities = Set<String>()
+                    var watermarks = Set<String>()
+                    
+                    let label = "Read Card Data"
+                    let date = startActivity(label: label)
+                    
+                    self.readCardDataLines(completion: { dict in
+                        if let artist = dict["artist"] as? String {
+                            artists.insert(artist)
+                        }
+                        if let rarity = dict["rarity"] as? String {
+                            rarities.insert(rarity)
+                        }
+                        if let watermark = dict["watermark"] as? String {
+                            watermarks.insert(watermark)
+                        }
+                    })
+                    endActivity(label: label, from: date)
+                    
+                    promises.append(contentsOf: artists.map { artist in
+                        return {
+                            return self.create(artist: artist)
+                        }
+                    })
+                    promises.append(contentsOf: rarities.map { rarity in
+                        return {
+                            return self.create(rarity: rarity)
+                        }
+                    })
+                    promises.append(contentsOf: watermarks.map { watermark in
+                        return {
+                            return self.create(watermark: watermark)
+                        }
+                    })
+                    self.execInSequence(label: "createMiscCardData",
+                                        promises: promises,
+                                        completion: {
+                                            seal2.fulfill()
+                                        })
+                }
+            }.done {
+                seal.fulfill(())
+            }.catch { error in
+                seal.reject(error)
+            }
         }
         
 //        return Promise { seal in
@@ -59,145 +106,68 @@ extension Maintainer {
 //        }
     }
     
-//    func processCard(line: Int) {
-//        firstly {
-//            readCardData(lineNum: line)
-//        }.done { string in
-//            index = index+1
-//            print(line)
-//
-//            if result {
-//                self.processCard(line: index)
-//            }
-//        }.catch { error in
-//            print("error")
-//        }
-//    }
-    
-    func readCardData(line: Int) -> Promise<String> {
-        return Promise { seal in
-            let cardsPath = "\(cachePath)/\(cardsRemotePath.components(separatedBy: "/").last ?? "")"
-            let fileReader = StreamingFileReader(path: cardsPath)
-            var cleanLine = ""
-            var currentLineNum = 0
+    func readCardDataLines(completion: ([String: Any]) -> Void) {
+        let cardsPath = "\(cachePath)/\(cardsRemotePath.components(separatedBy: "/").last ?? "")"
+        let fileReader = StreamingFileReader(path: cardsPath)
+        
+        while let line = fileReader.readLine() {
+            var cleanLine = String(line)
             
-            while let fileLine = fileReader.readLine() {
-                if !fileLine.hasPrefix("{") {
-                    continue
-                }
-                
-                if currentLineNum == line {
-                    cleanLine = String(fileLine)
+            if cleanLine.hasSuffix("}},") {
+                cleanLine.removeLast()
+            }
+            
+            guard cleanLine.hasPrefix("{\""),
+                let data = cleanLine.data(using: .utf16),
+                let dict = try! JSONSerialization.jsonObject(with: data,
+                                                             options: .mutableContainers) as? [String: Any] else {
+                continue
+            }
                     
-                    if cleanLine.hasSuffix("}},") {
-                        cleanLine.removeLast()
-                    }
-                    break
-                } else {
-                    currentLineNum += 1
-                }
-            }
-            seal.fulfill(cleanLine)
+            completion(dict)
         }
     }
     
-    func processCard(dict: [String: Any]) -> Promise<Void> {
-        return Promise { seal in
-            var promises = [()->Promise<Void>]()
-            var newDict = [String: Any]()
-            
-            for (k,v) in dict {
-                newDict[k] = v
-            }
-
-            if let set = dict["set"] as? String,
-               let language = dict["lang"] as? String,
-               let collectorNumber = dict["collector_number"] as? String {
-                let newId = "\(set)_\(language)_\(collectorNumber.replacingOccurrences(of: "★", with: "star"))"
-                newDict["new_id"] = newId
-            }
-
-            // cards
-            promises.append(contentsOf: self.filterArtists(array: [newDict]))
-            promises.append(contentsOf: self.filterRarities(array: [newDict]))
-            promises.append(contentsOf: self.filterLanguages(array: [newDict]))
-            promises.append(contentsOf: self.filterWatermarks(array: [newDict]))
-            promises.append(contentsOf: self.filterLayouts(array: [newDict]))
-            promises.append(contentsOf: self.filterFrames(array: [newDict]))
-            promises.append(contentsOf: self.filterFrameEffects(array: [newDict]))
-            promises.append(contentsOf: self.filterColors(array: [newDict]))
-            promises.append(contentsOf: self.filterFormats(array: [newDict]))
-            promises.append(contentsOf: self.filterLegalities(array: [newDict]))
-            promises.append(contentsOf: self.filterTypes(array: [newDict]))
-            promises.append(contentsOf: self.filterComponents(array: [newDict]))
-            promises.append(contentsOf: self.filterCards(array: [newDict]))
-
-            // parts
-            promises.append({
-                return self.createDeletePartsPromise()
-            })
-            promises.append(contentsOf: self.filterParts(array: [newDict]))
-
-            // faces
-            promises.append({
-                return self.createDeleteFacesPromise()
-            })
-            promises.append(contentsOf: self.filterFaces(array: [newDict]))
-
-            let completion = {
-                seal.fulfill(())
-            }
-            self.execInSequence(label: "createCardsData",
-                                promises: promises,
-                                completion: completion)
-        }
-    }
-    
-//    func cardsData() -> [[String: Any]] {
-//        let cardsPath = "\(cachePath)/\(cardsRemotePath.components(separatedBy: "/").last ?? "")"
-//        
-//        let data = try! Data(contentsOf: URL(fileURLWithPath: cardsPath), options: .mappedIfSafe)
-//        guard let array = try! JSONSerialization.jsonObject(with: data,
-//                                                            options: .allowFragments) as? [[String: Any]] else {
-//            fatalError("Malformed data")
+//    func processLine(line: Int, completion: ([String: Any]) -> Void) {
+//        if line % self.printMilestone == 0 {
+//            print("Line #\(line) \(Date())")
 //        }
-//        
-//        return array
+//
+//        let string = readCardData(line: line)
+//        let nextLine = line + 1
+//
+//        if string.hasPrefix("[") { // first line
+//            self.processLine(line: nextLine, completion: completion)
+//        } else if string.hasPrefix("{\"") { // data line
+//            if let data = string.data(using: .utf16),
+//                let dict = try! JSONSerialization.jsonObject(with: data,
+//                                                             options: .allowFragments) as? [String: Any] {
+//                completion(dict)
+//                self.processLine(line: nextLine, completion: completion)
+//            }
+//        }
 //    }
-
-    func filterArtists(array: [[String: Any]]) -> [()->Promise<Void>] {
-        var filteredData = Set<String>()
-        
-        for dict in array {
-            if let artist = dict["artist"] as? String {
-                filteredData.insert(artist)
-            }
-        }
-        let promises: [()->Promise<Void>] = filteredData.map { artist in
-            return {
-                return self.createArtistPromise(artist: artist)
-            }
-        }
-        
-        return promises
-    }
-    
-    func filterRarities(array: [[String: Any]]) -> [()->Promise<Void>] {
-        var filteredData = Set<String>()
-        
-        for dict in array {
-            if let rarity = dict["rarity"] as? String {
-                filteredData.insert(rarity)
-            }
-        }
-        let promises: [()->Promise<Void>] = filteredData.map { rarity in
-            return {
-                return self.createRarityPromise(rarity: rarity)
-            }
-        }
-        
-        return promises
-    }
+//
+//    func readCardData(line: Int) -> String {
+//        let cardsPath = "\(cachePath)/\(cardsRemotePath.components(separatedBy: "/").last ?? "")"
+//        let fileReader = StreamingFileReader(path: cardsPath)
+//        var cleanLine = ""
+//        var currentLineNum = 0
+//
+//        while let fileLine = fileReader.readLine() {
+//            if currentLineNum == line {
+//                cleanLine = String(fileLine)
+//
+//                if cleanLine.hasSuffix("}},") {
+//                    cleanLine.removeLast()
+//                }
+//                break
+//            } else {
+//                currentLineNum += 1
+//            }
+//        }
+//        return cleanLine
+//    }
     
     func filterLanguages(array: [[String: Any]]) -> [()->Promise<Void>] {
         var filteredData = [[String: String]]()
@@ -286,23 +256,6 @@ extension Maintainer {
         return promises
     }
     
-    func filterWatermarks(array: [[String: Any]]) -> [()->Promise<Void>] {
-        var filteredData = Set<String>()
-        
-        for dict in array {
-            if let watermark = dict["watermark"] as? String {
-                filteredData.insert(watermark)
-            }
-        }
-        let promises: [()->Promise<Void>] = filteredData.map { watermark in
-            return {
-                return self.createWatermarkPromise(name: watermark)
-            }
-        }
-        
-        return promises
-    }
-
     func filterLayouts(array: [[String: Any]]) -> [()->Promise<Void>] {
         var filteredData = [[String: String]]()
         
@@ -707,10 +660,10 @@ extension Maintainer {
             }
         }
         
-        promises.append(contentsOf: filterArtists(array: facesArray))
-        promises.append(contentsOf: filterRarities(array: facesArray))
+//        promises.append(contentsOf: filterArtists(array: facesArray))
+//        promises.append(contentsOf: filterRarities(array: facesArray))
         promises.append(contentsOf: filterLanguages(array: facesArray))
-        promises.append(contentsOf: filterWatermarks(array: facesArray))
+//        promises.append(contentsOf: filterWatermarks(array: facesArray))
         promises.append(contentsOf: filterLayouts(array: facesArray))
         promises.append(contentsOf: filterFrames(array: facesArray))
         promises.append(contentsOf: filterFrameEffects(array: facesArray))

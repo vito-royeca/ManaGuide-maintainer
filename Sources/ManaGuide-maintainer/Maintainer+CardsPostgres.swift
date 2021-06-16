@@ -30,7 +30,7 @@ extension Maintainer {
         }
     }
     
-    func createArtistPromise(artist: String) -> Promise<Void> {
+    func create(artist: String) -> Promise<Void> {
         let names = artist.components(separatedBy: " ")
         var firstName = ""
         var lastName = ""
@@ -64,7 +64,7 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createRarityPromise(rarity: String) -> Promise<Void> {
+    func create(rarity: String) -> Promise<Void> {
         let capName = capitalize(string: displayFor(name: rarity))
         let nameSection = sectionFor(name: rarity) ?? "NULL"
         
@@ -99,9 +99,9 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createWatermarkPromise(name: String) -> Promise<Void> {
-        let capName = capitalize(string: displayFor(name: name))
-        let nameSection = sectionFor(name: name) ?? "NULL"
+    func create(watermark: String) -> Promise<Void> {
+        let capName = capitalize(string: displayFor(name: watermark))
+        let nameSection = sectionFor(name: watermark) ?? "NULL"
         
         let query = "SELECT createOrUpdateWatermark($1,$2)"
         let parameters = [capName,

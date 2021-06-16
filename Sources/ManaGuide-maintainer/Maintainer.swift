@@ -29,7 +29,6 @@ class Maintainer {
     
     // MARK: - Variables
     var tcgplayerAPIToken = ""
-    var dateStart = Date()
     
     // remote file names
     let bulkDataRemotePath = "https://api.scryfall.com/bulk-data"
@@ -171,7 +170,8 @@ class Maintainer {
     }
     
     private func updateDatabase() {
-        startActivity()
+        let label = "Managuide Maintainer"
+        let dateStart = startActivity(label: label)
         
         bulkDataLocalPath = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(bulkDataFileName)"
         setsLocalPath     = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(setsFileName)"
@@ -196,17 +196,17 @@ class Maintainer {
             self.fetchCardImages()
         }.then {
             self.processSetsData()
-        }.then {
-            self.createCardsData()
-        }.then {
+        }*/.then {
+            self.processCardsData()
+        }/*.then {
             self.processRulingsData()
         }.then {
             self.processRulesData()
         }.then {
             self.processOtherCardsData()
-        }*/.then {
+        }.then {
             self.processPricingData()
-        }/*.then {
+        }.then {
             self.processScryfallPromise()
         }*/.done {
 //            do {
@@ -220,7 +220,7 @@ class Maintainer {
 //                print(error)
 //                exit(EXIT_FAILURE)
 //            }
-
+            self.endActivity(label: label, from: dateStart)
             exit(EXIT_SUCCESS)
         }.catch { error in
             print(error)
@@ -228,7 +228,7 @@ class Maintainer {
         }
     }
 
-    private func createBulkData() -> Promise<Void> {
+    func createBulkData() -> Promise<Void> {
         return Promise { seal in
             let _ = bulkArray
             seal.fulfill(())
@@ -305,7 +305,7 @@ class Maintainer {
         }
     }
     
-    private func execPG(query: String, parameters: [Any]?) {
+    func execPG(query: String, parameters: [Any]?) {
         do {
             let statement = try connection.prepareStatement(text: query)
             
@@ -360,7 +360,7 @@ class Maintainer {
             completion()
         }
     }
-    
+
     // MARK: - Utility methods
     func sectionFor(name: String) -> String? {
         if name.count == 0 {
@@ -442,17 +442,18 @@ class Maintainer {
         return termOrder
     }
     
-    func startActivity() {
-        dateStart = Date()
-        print("Starting on... \(dateStart)")
+    func startActivity(label: String) -> Date {
+        let date = Date()
+        print("\(label) started on... \(date)")
+        return date
     }
     
-    func endActivity() {
+    func endActivity(label: String, from: Date) {
         let dateEnd = Date()
-        let timeDifference = dateEnd.timeIntervalSince(dateStart)
+        let timeDifference = dateEnd.timeIntervalSince(from)
         
-        print("Total Time Elapsed on: \(dateStart) - \(dateEnd) = \(format(timeDifference))")
-        print("docsPath = \(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])")
+        print("\(label) ended on: \(dateEnd)")
+        print("Elapsed time: \(format(timeDifference))")
     }
 
     func format(_ interval: TimeInterval) -> String {
