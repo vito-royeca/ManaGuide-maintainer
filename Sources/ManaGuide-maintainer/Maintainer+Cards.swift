@@ -12,180 +12,6 @@ import PostgresClientKit
 import PromiseKit
 
 extension Maintainer {
-    func processMiscCardsData() -> Promise<Void> {
-        return Promise { seal in
-            var promises = [()->Promise<Void>]()
-            var artists = Set<String>()
-            var languages = Set<[String: String]>()
-            var rarities = Set<String>()
-            var watermarks = Set<String>()
-            var layouts = Set<[String: String]>()
-            var frames = Set<[String: String]>()
-            var frameEffects = Set<[String: String]>()
-            var colors = [[String: Any]]()
-            var formats = Set<String>()
-            var legalities = Set<String>()
-            var types = [[String: Any]]()
-            var components = Set<String>()
-
-            let label = "Read Card Data"
-            let date = startActivity(label: label)
-
-            self.readCardDataLines(completion: { dict in
-                if let artist = dict["artist"] as? String {
-                    artists.insert(artist)
-                }
-                if let rarity = dict["rarity"] as? String {
-                    rarities.insert(rarity)
-                }
-                if let language = filterLanguage(dict: dict) {
-                    languages.insert(language)
-                }
-                if let watermark = dict["watermark"] as? String {
-                    watermarks.insert(watermark)
-                }
-                if let layout = filterLayout(dict: dict) {
-                    layouts.insert(layout)
-                }
-                if let frame = filterFrame(dict: dict) {
-                    frames.insert(frame)
-                }
-                for frameEffect in filterFrameEffects(dict: dict) {
-                    frameEffects.insert(frameEffect)
-                }
-                for color in filterColors(dict: dict) {
-                    let found = colors.filter {
-                        $0["name"] as? String == color["name"] as? String
-                    }
-
-                    if found.isEmpty {
-                        colors.append(color)
-                    }
-                }
-                if let dictLegalities = dict["legalities"] as? [String: String] {
-                    for key in dictLegalities.keys {
-                        formats.insert(key)
-                    }
-                    for value in dictLegalities.values {
-                        legalities.insert(value)
-                    }
-                }
-                for type in filterTypes(dict: dict) {
-                    let found = types.filter {
-                        $0["name"] as? String == type["name"] as? String
-                    }
-
-                    if found.isEmpty {
-                        types.append(type)
-                    }
-                }
-                for component in filterComponents(dict: dict) {
-                    components.insert(component)
-                }
-            })
-            endActivity(label: label, from: date)
-
-            promises.append(contentsOf: artists.map { artist in
-                return {
-                    return self.create(artist: artist)
-                }
-            })
-            artists.removeAll()
-
-            promises.append(contentsOf: rarities.map { rarity in
-                return {
-                    return self.create(rarity: rarity)
-                }
-            })
-            rarities.removeAll()
-
-            promises.append(contentsOf: languages.map { language in
-                return {
-                    return self.createLanguage(code: language["code"] ?? "NULL",
-                                               displayCode: language["display_code"] ?? "NULL",
-                                               name: language["name"] ?? "NULL")
-                }
-            })
-            languages.removeAll()
-
-            promises.append(contentsOf: watermarks.map { watermark in
-                return {
-                    return self.create(watermark: watermark)
-                }
-            })
-            watermarks.removeAll()
-
-            promises.append(contentsOf: layouts.map { layout in
-                return {
-                    return self.createLayout(name: layout["name"] ?? "NULL",
-                                             description_: layout["description_"] ?? "NULL")
-                }
-            })
-            layouts.removeAll()
-
-            promises.append(contentsOf: frames.map { frame in
-                return {
-                    return self.createFrame(name: frame["name"] ?? "NULL",
-                                            description_: frame["description_"] ?? "NULL")
-                }
-            })
-            frames.removeAll()
-
-            promises.append(contentsOf: frameEffects.map { frameEffect in
-                return {
-                    return self.createFrameEffect(id: frameEffect["id"] ?? "NULL",
-                                                  name: frameEffect["name"] ?? "NULL",
-                                                  description_: frameEffect["description_"] ?? "NULL")
-                }
-            })
-            frameEffects.removeAll()
-
-            promises.append(contentsOf: colors.map { color in
-                return {
-                    return self.createColor(symbol: color["symbol"] as? String ?? "NULL",
-                                            name: color["name"] as? String ?? "NULL",
-                                            isManaColor: color["is_mana_color"] as? Bool ?? false)
-                }
-            })
-            colors.removeAll()
-
-            promises.append(contentsOf: formats.map { format in
-                return {
-                    return self.create(format: format)
-                }
-            })
-            formats.removeAll()
-
-            promises.append(contentsOf: legalities.map { legality in
-                return {
-                    return self.create(legality: legality)
-                }
-            })
-            legalities.removeAll()
-
-            promises.append(contentsOf: types.map { type in
-                return {
-                    return self.createCardType(name: type["name"] as? String ?? "NULL",
-                                               parent: type["parent"] as? String ?? "NULL")
-                }
-            })
-            types.removeAll()
-
-            promises.append(contentsOf: components.map { component in
-                return {
-                    return self.create(component: component)
-                }
-            })
-            components.removeAll()
-
-            self.execInSequence(label: "createMiscCardData",
-                                promises: promises,
-                                completion: {
-                                    seal.fulfill()
-                                })
-        }
-    }
-    
     func processCardsData() -> Promise<Void> {
         return Promise { seal in
             let cardsPath = "\(self.cachePath)/\(self.cardsRemotePath.components(separatedBy: "/").last ?? "")"
@@ -198,60 +24,168 @@ extension Maintainer {
                 seal.fulfill()
             })
         }
-        
-//        return Promise { seal in
-//            var promises = [()->Promise<Void>]()
-//
-//            // other data card
-//            promises.append(contentsOf: self.filterArtists(array: cardsArray))
-//            promises.append(contentsOf: self.filterRarities(array: cardsArray))
-//            promises.append(contentsOf: self.filterLanguages(array: cardsArray))
-//            promises.append(contentsOf: self.filterWatermarks(array: cardsArray))
-//            promises.append(contentsOf: self.filterLayouts(array: cardsArray))
-//            promises.append(contentsOf: self.filterFrames(array: cardsArray))
-//            promises.append(contentsOf: self.filterFrameEffects(array: cardsArray))
-//            promises.append(contentsOf: self.filterColors(array: cardsArray))
-//            promises.append(contentsOf: self.filterFormats(array: cardsArray))
-//            promises.append(contentsOf: self.filterLegalities(array: cardsArray))
-//            promises.append(contentsOf: self.filterTypes(array: cardsArray))
-//            promises.append(contentsOf: self.filterComponents(array: cardsArray))
-        
-//            // cards
-//            promises.append(contentsOf: self.filterCards(array: cardsArray))
-//
-//            // parts
-//            promises.append({
-//                return self.createDeletePartsPromise()
-//            })
-//            promises.append(contentsOf: self.filterParts(array: cardsArray))
-//
-//            // faces
-//            promises.append({
-//                return self.createDeleteFacesPromise()
-//            })
-//            promises.append(contentsOf: self.filterFaces(array: cardsArray))
-//
-//            let completion = {
-//                seal.fulfill(())
-//            }
-//            self.execInSequence(label: "createCardsData",
-//                                promises: promises,
-//                                completion: completion)
-//        }
     }
     
-    func processCardPartsData() -> Promise<Void> {
-        return Promise { seal in
-            let cardsPath = "\(self.cachePath)/\(self.cardsRemotePath.components(separatedBy: "/").last ?? "")"
-            let fileReader = StreamingFileReader(path: cardsPath)
-            let label = "processCardPartsData"
-            let date = self.startActivity(label: label)
+    func loopReadCards(fileReader: StreamingFileReader, start: Int, callback: @escaping () -> Void) {
+        let cards = self.readCardData(fileReader: fileReader, lines: self.printMilestone)
+        
+        if !cards.isEmpty {
+            let index = start + cards.count
+            var promises = [()->Promise<Void>]()
             
-            self.loopReadCardParts(fileReader: fileReader, start: 0, callback: {
-                self.endActivity(label: label, from: date)
-                seal.fulfill()
+            if start == 0 {
+                promises.append({
+                    return self.createDeleteParts()
+                })
+                promises.append({
+                    return self.createDeleteFaces()
+                })
+            }
+            for card in cards {
+                promises.append(contentsOf: self.createCardPromises(dict: card))
+            }
+            
+            self.execInSequence(label: "createCards: \(index)",
+                                promises: promises,
+                                completion: {
+                                    self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
+                                    
+            })
+        } else {
+            callback()
+        }
+    }
+    
+//    func processCardPartsAndFacesData() -> Promise<Void> {
+//        return Promise { seal in
+//            let cardsPath = "\(self.cachePath)/\(self.cardsRemotePath.components(separatedBy: "/").last ?? "")"
+//            let fileReader = StreamingFileReader(path: cardsPath)
+//            let label = "processCardPartsAndFacesData"
+//            let date = self.startActivity(label: label)
+//
+//            self.loopReadCardPartsAndFaces(fileReader: fileReader, start: 0, callback: {
+//                self.endActivity(label: label, from: date)
+//                seal.fulfill()
+//            })
+//        }
+//    }
+    
+    func createCardPromises(dict: [String: Any]) -> [()->Promise<Void>] {
+        var promises = [()->Promise<Void>]()
+        
+        if let artist = dict["artist"] as? String {
+            promises.append({
+                return self.create(artist: artist)
             })
         }
+        
+        if let rarity = dict["rarity"] as? String {
+            promises.append({
+                return self.create(rarity: rarity)
+            })
+        }
+        
+        if let language = filterLanguage(dict: dict) {
+            promises.append({
+                return self.createLanguage(code: language["code"] ?? "NULL",
+                                           displayCode: language["display_code"] ?? "NULL",
+                                           name: language["name"] ?? "NULL")
+            })
+        }
+        
+        if let watermark = dict["watermark"] as? String {
+            promises.append({
+                return self.create(watermark: watermark)
+            })
+        }
+        
+        if let layout = filterLayout(dict: dict) {
+            promises.append({
+                return self.createLayout(name: layout["name"] ?? "NULL",
+                                         description_: layout["description_"] ?? "NULL")
+            })
+        }
+        
+        if let frame = filterFrame(dict: dict) {
+            promises.append({
+                return self.createFrame(name: frame["name"] ?? "NULL",
+                                        description_: frame["description_"] ?? "NULL")
+            })
+        }
+        
+        for frameEffect in filterFrameEffects(dict: dict) {
+            promises.append({
+                return self.createFrameEffect(id: frameEffect["id"] ?? "NULL",
+                                              name: frameEffect["name"] ?? "NULL",
+                                              description_: frameEffect["description_"] ?? "NULL")
+            })
+        }
+        
+        for color in filterColors(dict: dict) {
+            promises.append({
+                return self.createColor(symbol: color["symbol"] as? String ?? "NULL",
+                                        name: color["name"] as? String ?? "NULL",
+                                        isManaColor: color["is_mana_color"] as? Bool ?? false)
+            })
+        }
+        
+        if let dictLegalities = dict["legalities"] as? [String: String] {
+            for key in dictLegalities.keys {
+                promises.append({
+                    return self.create(format: key)
+                })
+            }
+            for value in dictLegalities.values {
+                promises.append({
+                    return self.create(legality: value)
+                })
+            }
+        }
+        
+        for type in filterTypes(dict: dict) {
+            promises.append(({
+                return self.createCardType(name: type["name"] as? String ?? "NULL",
+                                           parent: type["parent"] as? String ?? "NULL")
+            }))
+        }
+        
+        for component in filterComponents(dict: dict) {
+            promises.append({
+                return self.create(component: component)
+            })
+        }
+        
+        promises.append({
+            return self.create(card: dict)
+        })
+        
+        if let parts = self.filterParts(dict: dict) {
+            for part in parts {
+                promises.append({
+                    return self.createPart(card: part["cmcard"] as? String ?? "NULL",
+                                           component: part["cmcomponent"] as? String ?? "NULL",
+                                           cardPart: part["cmcard_part"] as? String ?? "NULL")
+                })
+            }
+        }
+        
+        if let faces = self.filterFaces(dict: dict) {
+            for face in faces {
+                promises.append({
+                    return self.create(card: face)
+                })
+                
+                if let card = face["cmcard"] as? String,
+                   let cardFace = face["new_id"] as? String {
+                    promises.append({
+                        return self.createFace(card: card,
+                                               cardFace: cardFace)
+                    })
+                }
+            }
+        }
+        
+        return promises
     }
     
     func readCardDataLines(completion: ([String: Any]) -> Void) {
@@ -301,73 +235,6 @@ extension Maintainer {
         }
         
         return array
-    }
-    
-    func loopReadCards(fileReader: StreamingFileReader, start: Int, callback: @escaping () -> Void) {
-        let cards = self.readCardData(fileReader: fileReader, lines: self.printMilestone * 2)
-        
-        if !cards.isEmpty {
-            let index = start + cards.count
-            var promises = [()->Promise<Void>]()
-                
-            promises.append(contentsOf: cards.map { card in
-                return {
-                    return self.create(card: card)
-                }
-            })
-            
-            self.execInSequence(label: "createCards: \(index)",
-                                promises: promises,
-                                completion: {
-                                    self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
-                                    
-            })
-        } else {
-            callback()
-        }
-    }
-    
-    func loopReadCardParts(fileReader: StreamingFileReader, start: Int, callback: @escaping () -> Void) {
-        let cards = self.readCardData(fileReader: fileReader, lines: self.printMilestone * 2)
-        
-        if !cards.isEmpty {
-            let index = start + cards.count
-            var array = [[String: Any]]()
-            
-            for card in cards {
-                if let parts = self.filterParts(dict: card) {
-                    array.append(contentsOf: parts)
-                }
-            }
-            
-            if !array.isEmpty {
-                var promises = [()->Promise<Void>]()
-                
-                if start == 0 {
-                    promises.append({
-                        return self.createDeletePartsPromise()
-                    })
-                }
-                promises.append(contentsOf: array.map { part in
-                    return {
-                        return self.createPartPromise(card: part["cmcard"] as? String ?? "NULL",
-                                                      component: part["cmcomponent"] as? String ?? "NULL",
-                                                      cardPart: part["cmcard_part"] as? String ?? "NULL")
-                    }
-                })
-                
-                self.execInSequence(label: "createCardParts: \(index)",
-                                    promises: promises,
-                                    completion: {
-                                        self.loopReadCardParts(fileReader: fileReader, start: index, callback: callback)
-                                        
-                })
-            } else {
-                self.loopReadCardParts(fileReader: fileReader, start: index, callback: callback)
-            }
-        } else {
-            callback()
-        }
     }
     
     func filterLanguage(dict: [String: Any]) -> [String: String]? {
@@ -628,7 +495,6 @@ extension Maintainer {
             return array
         }
         
-        
         for color in colors {
             
             let symbol = color
@@ -689,6 +555,7 @@ extension Maintainer {
               let collectorNumber = dict["collector_number"] as? String else {
             return nil
         }
+        
         let newId = "\(set)_\(language)_\(collectorNumber.replacingOccurrences(of: "★", with: "star"))"
         var array = [[String: Any]]()
         
@@ -706,69 +573,39 @@ extension Maintainer {
         return array
     }
     
-    func filterFaces(array: [[String: Any]]) -> [()->Promise<Void>] {
-        var promises = [()->Promise<Void>]()
-        var facesArray = [[String: Any]]()
-        var filteredData = [[String: Any]]()
-        var cardFaceData = [[String: String]]()
-        
-        for dict in array {
-            if let id = dict["id"] as? String,
-                let new_id = dict["new_id"] as? String,
-                let faces = dict["card_faces"] as? [[String: Any]] {
-             
-                for i in 0...faces.count-1 {
-                    let face = faces[i]
-                    let faceId = "\(new_id)_\(i)"
-                    var newFace = [String: Any]()
-                    
-                    for (k,v) in face {
-                        if k == "image_uris" {
-                            continue
-                        }
-                        newFace[k] = v
-                    }
-                    newFace["id"] = id
-                    newFace["face_order"] = i
-                    newFace["new_id"] = faceId
-                    
-                    facesArray.append(face)
-                    filteredData.append(newFace)
-                    cardFaceData.append(["cmcard": new_id,
-                                         "cmcard_face": faceId])
-                }
-            }
+    func filterFaces(dict: [String: Any]) -> [[String: Any]]? {
+        guard let faces = dict["card_faces"] as? [[String: Any]],
+              let set = dict["set"] as? String,
+              let language = dict["lang"] as? String,
+              let collectorNumber = dict["collector_number"] as? String else {
+            return nil
         }
         
-//        promises.append(contentsOf: filterArtists(array: facesArray))
-//        promises.append(contentsOf: filterRarities(array: facesArray))
-//        promises.append(contentsOf: filterLanguages(array: facesArray))
-//        promises.append(contentsOf: filterWatermarks(array: facesArray))
-//        promises.append(contentsOf: filterLayouts(array: facesArray))
-//        promises.append(contentsOf: filterFrames(array: facesArray))
-//        promises.append(contentsOf: filterFrameEffects(array: facesArray))
-//        promises.append(contentsOf: filterColors(array: facesArray))
-//        promises.append(contentsOf: filterFormats(array: facesArray))
-//        promises.append(contentsOf: filterLegalities(array: facesArray))
-//        promises.append(contentsOf: filterTypes(array: facesArray))
-//        promises.append(contentsOf: filterComponents(array: facesArray))
-//        promises.append(contentsOf: filteredData.map { dict in
-//            return {
-//                return self.createCardPromise(dict: dict)
-//            }
-//        })
-        promises.append(contentsOf: cardFaceData.map { face in
-            return {
-                return self.createFacePromise(card: face["cmcard"] ?? "NULL",
-                                              cardFace: face["cmcard_face"] ?? "NULL")
-            }
-        })
+        let newId = "\(set)_\(language)_\(collectorNumber.replacingOccurrences(of: "★", with: "star"))"
+        var array = [[String: Any]]()
         
-        return promises
+        
+        for i in 0...faces.count-1 {
+            let face = faces[i]
+            let faceId = "\(newId)_\(i)"
+            var newFace = [String: Any]()
+            
+            for (k,v) in face {
+                if k == "image_uris" {
+                    continue
+                }
+                newFace[k] = v
+            }
+            newFace["face_order"] = i
+            newFace["new_id"] = faceId
+            newFace["cmcard"] = newId
+            
+            array.append(newFace)
+        }
+        
+        return array
     }
     
-    
-
     private func extractTypesFrom(_ typeLine: String) -> [[String: String]]  {
         var filteredTypes = [[String: String]]()
         let emdash = "\u{2014}"

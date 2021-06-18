@@ -169,12 +169,8 @@ class Maintainer {
             self.fetchCardImages()
         }.then {
             self.processSetsData()
-        }.then {
-            self.processMiscCardsData()
         }*/.then {
             self.processCardsData()
-        }.then {
-            self.processCardPartsData()
         }/*.then {
             self.processRulingsData()
         }.then {
@@ -306,6 +302,7 @@ class Maintainer {
     }
     
     func execInSequence(label: String, promises: [()->Promise<Void>], completion: @escaping () -> Void) {
+        let startDate = Date()
         var promise = promises.first!()
         let countTotal = promises.count
         var countIndex = 0
@@ -328,6 +325,9 @@ class Maintainer {
         }
         promise.done {_ in
             animation.complete(success: true)
+            let endDate = Date()
+            let timeDifference = endDate.timeIntervalSince(startDate)
+            print("Elapsed time: \(self.format(timeDifference))")
             completion()
         }.catch { error in
             print(error)

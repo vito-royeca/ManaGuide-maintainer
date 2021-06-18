@@ -190,13 +190,13 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createDeleteFacesPromise() -> Promise<Void> {
+    func createDeleteFaces() -> Promise<Void> {
         let query = "DELETE FROM cmcard_face"
         return createPromise(with: query,
                              parameters: nil)
     }
     
-    func createFacePromise(card: String, cardFace: String) -> Promise<Void> {
+    func createFace(card: String, cardFace: String) -> Promise<Void> {
         let query = "SELECT createOrUpdateCardFaces($1,$2)"
         let parameters = [card,
                           cardFace]
@@ -204,13 +204,13 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createDeletePartsPromise() -> Promise<Void> {
+    func createDeleteParts() -> Promise<Void> {
         let query = "DELETE FROM cmcard_component_part"
         return createPromise(with: query,
                              parameters: nil)
     }
     
-    func createPartPromise(card: String, component: String, cardPart: String) -> Promise<Void> {
+    func createPart(card: String, component: String, cardPart: String) -> Promise<Void> {
         let capName = capitalize(string: displayFor(name: component))
         
         let query = "SELECT createOrUpdateCardParts($1,$2,$3)"
