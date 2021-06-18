@@ -359,7 +359,7 @@ extension Maintainer {
         let faceOrder = card["face_order"] as? Int ?? Int(0)
         let newId = "\(set)_\(language)_\(collectorNumber.replacingOccurrences(of: "★", with: "star"))"
         let oracle_id = card["oracle_id"] as? String ?? "NULL"
-        
+        let id = card["id"] as? String ?? "NULL"
         
         // unhandled...
         // border_color
@@ -368,7 +368,7 @@ extension Maintainer {
         // preview.previewed_at
         // preview.source_uri
         // preview.source
-        let query = "SELECT createOrUpdateCard($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43,$44,$45,$46,$47,$48,$49,$50,$51,$52)"
+        let query = "SELECT createOrUpdateCard($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43,$44,$45,$46,$47,$48,$49,$50,$51,$52,$53)"
         let parameters = [collectorNumber,
                           cmc,
                           flavorText,
@@ -420,7 +420,8 @@ extension Maintainer {
                           cardtypeSupertypes,
                           faceOrder,
                           newId,
-                          oracle_id] as [Any]
+                          oracle_id,
+                          id] as [Any]
         return createPromise(with: query,
                              parameters: parameters)
     }

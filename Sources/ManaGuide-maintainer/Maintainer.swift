@@ -169,10 +169,12 @@ class Maintainer {
             self.fetchCardImages()
         }.then {
             self.processSetsData()
-        }*/.then {
-            self.processMiscCardsData()
         }.then {
+            self.processMiscCardsData()
+        }*/.then {
             self.processCardsData()
+        }.then {
+            self.processCardPartsData()
         }/*.then {
             self.processRulingsData()
         }.then {
@@ -309,7 +311,7 @@ class Maintainer {
         var countIndex = 0
 
         let animation = PercentProgressAnimation(stream: stdoutStream,
-                                                 header: "\(label) started on \(Date())")
+                                                 header: "\(label)")
         
         for next in promises {
             promise = promise.then { n -> Promise<Void> in

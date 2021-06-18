@@ -190,8 +190,11 @@ extension Maintainer {
         return Promise { seal in
             let cardsPath = "\(self.cachePath)/\(self.cardsRemotePath.components(separatedBy: "/").last ?? "")"
             let fileReader = StreamingFileReader(path: cardsPath)
+            let label = "processCardsData"
+            let date = self.startActivity(label: label)
             
             self.loopReadCards(fileReader: fileReader, start: 0, callback: {
+                self.endActivity(label: label, from: date)
                 seal.fulfill()
             })
         }
@@ -235,6 +238,20 @@ extension Maintainer {
 //                                promises: promises,
 //                                completion: completion)
 //        }
+    }
+    
+    func processCardPartsData() -> Promise<Void> {
+        return Promise { seal in
+            let cardsPath = "\(self.cachePath)/\(self.cardsRemotePath.components(separatedBy: "/").last ?? "")"
+            let fileReader = StreamingFileReader(path: cardsPath)
+            let label = "processCardPartsData"
+            let date = self.startActivity(label: label)
+            
+            self.loopReadCardParts(fileReader: fileReader, start: 0, callback: {
+                self.endActivity(label: label, from: date)
+                seal.fulfill()
+            })
+        }
     }
     
     func readCardDataLines(completion: ([String: Any]) -> Void) {
@@ -287,7 +304,7 @@ extension Maintainer {
     }
     
     func loopReadCards(fileReader: StreamingFileReader, start: Int, callback: @escaping () -> Void) {
-        let cards = self.readCardData(fileReader: fileReader, lines: self.printMilestone)
+        let cards = self.readCardData(fileReader: fileReader, lines: self.printMilestone * 2)
         
         if !cards.isEmpty {
             let index = start + cards.count
@@ -299,7 +316,7 @@ extension Maintainer {
                 }
             })
             
-            self.execInSequence(label: "createCardData: \(index)",
+            self.execInSequence(label: "createCards: \(index)",
                                 promises: promises,
                                 completion: {
                                     self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
@@ -310,29 +327,48 @@ extension Maintainer {
         }
     }
     
-//    func loopReadCardParts(fileReader: StreamingFileReader, start: Int, callback: @escaping () -> Void) {
-//        let cards = self.readCardData(fileReader: fileReader, lines: self.printMilestone)
-//        
-//        if !cards.isEmpty {
-//            let index = start + cards.count
-//            var promises = [()->Promise<Void>]()
-//                
-//            promises.append(contentsOf: cards.map { card in
-//                return {
-//                    return self.create(card: card)
-//                }
-//            })
-//            
-//            self.execInSequence(label: "createCardData: \(index)",
-//                                promises: promises,
-//                                completion: {
-//                                    self.loopReadCardParts(fileReader: fileReader, start: index, callback: callback)
-//                                    
-//            })
-//        } else {
-//            callback()
-//        }
-//    }
+    func loopReadCardParts(fileReader: StreamingFileReader, start: Int, callback: @escaping () -> Void) {
+        let cards = self.readCardData(fileReader: fileReader, lines: self.printMilestone * 2)
+        
+        if !cards.isEmpty {
+            let index = start + cards.count
+            var array = [[String: Any]]()
+            
+            for card in cards {
+                if let parts = self.filterParts(dict: card) {
+                    array.append(contentsOf: parts)
+                }
+            }
+            
+            if !array.isEmpty {
+                var promises = [()->Promise<Void>]()
+                
+                if start == 0 {
+                    promises.append({
+                        return self.createDeletePartsPromise()
+                    })
+                }
+                promises.append(contentsOf: array.map { part in
+                    return {
+                        return self.createPartPromise(card: part["cmcard"] as? String ?? "NULL",
+                                                      component: part["cmcomponent"] as? String ?? "NULL",
+                                                      cardPart: part["cmcard_part"] as? String ?? "NULL")
+                    }
+                })
+                
+                self.execInSequence(label: "createCardParts: \(index)",
+                                    promises: promises,
+                                    completion: {
+                                        self.loopReadCardParts(fileReader: fileReader, start: index, callback: callback)
+                                        
+                })
+            } else {
+                self.loopReadCardParts(fileReader: fileReader, start: index, callback: callback)
+            }
+        } else {
+            callback()
+        }
+    }
     
     func filterLanguage(dict: [String: Any]) -> [String: String]? {
         guard let lang = dict["lang"] as? String else {
@@ -661,20 +697,11 @@ extension Maintainer {
             
             if let partId = part["id"] as? String,
                 let component = part["component"] as? String {
-                
                 array.append(["cmcard": newId,
                               "cmcomponent": component,
                               "cmcard_part": partId])
             }
         }
-        
-//        promises.append(contentsOf: cardPartData.map { part in
-//            return {
-//                return self.createPartPromise(card: part["cmcard"] ?? "NULL",
-//                                              component: part["cmcomponent"] ?? "NULL",
-//                                              cardPart: part["cmcard_part"] ?? "NULL")
-//            }
-//        })
         
         return array
     }
