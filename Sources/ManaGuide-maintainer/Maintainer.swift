@@ -66,33 +66,6 @@ class Maintainer {
         }
     }
     
-//    var _cardsArray: [[String: Any]]?
-//    var cardsArray: [[String: Any]] {
-//        get {
-//            if _cardsArray == nil {
-//                _cardsArray = [[String: Any]]()
-//
-//                for dict in self.cardsData() {
-//                    var newDict = [String: Any]()
-//
-//                    for (k,v) in dict {
-//                        newDict[k] = v
-//                    }
-//
-//                    if let set = dict["set"] as? String,
-//                       let language = dict["lang"] as? String,
-//                       let collectorNumber = dict["collector_number"] as? String {
-//                        let newId = "\(set)_\(language)_\(collectorNumber.replacingOccurrences(of: "★", with: "star"))"
-//                        newDict["new_id"] = newId
-//                    }
-//                    _cardsArray!.append(newDict)
-//                }
-//
-//            }
-//            return _cardsArray!
-//        }
-//    }
-    
     var _rulingsArray: [[String: Any]]?
     var rulingsArray: [[String: Any]] {
         get {
@@ -197,6 +170,8 @@ class Maintainer {
         }.then {
             self.processSetsData()
         }*/.then {
+            self.processMiscCardsData()
+        }.then {
             self.processCardsData()
         }/*.then {
             self.processRulingsData()
@@ -341,11 +316,9 @@ class Maintainer {
                 countIndex += 1
 
                 if countIndex % self.printMilestone == 0 {
-//                    print("Exec... \(countIndex)/\(countTotal) \(Date())")
-                    
                     animation.update(step: countIndex,
                                      total: countTotal,
-                                     text: "Exec..")
+                                     text: "Exec...")
                     
                 }
                 return next()
@@ -353,7 +326,6 @@ class Maintainer {
         }
         promise.done {_ in
             animation.complete(success: true)
-            print("\(label) done on \(Date())")
             completion()
         }.catch { error in
             print(error)
@@ -449,10 +421,10 @@ class Maintainer {
     }
     
     func endActivity(label: String, from: Date) {
-        let dateEnd = Date()
-        let timeDifference = dateEnd.timeIntervalSince(from)
+        let endDate = Date()
+        let timeDifference = endDate.timeIntervalSince(from)
         
-        print("\(label) ended on: \(dateEnd)")
+        print("\(label) ended on: \(endDate)")
         print("Elapsed time: \(format(timeDifference))")
     }
 

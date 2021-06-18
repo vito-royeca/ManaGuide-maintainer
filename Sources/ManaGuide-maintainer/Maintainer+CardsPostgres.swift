@@ -75,7 +75,7 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createLanguagePromise(code: String, displayCode: String, name: String) -> Promise<Void> {
+    func createLanguage(code: String, displayCode: String, name: String) -> Promise<Void> {
         let nameSection = sectionFor(name: name) ?? "NULL"
         
         let query = "SELECT createOrUpdateLanguage($1,$2,$3,$4)"
@@ -87,7 +87,7 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createLayoutPromise(name: String, description_: String) -> Promise<Void> {
+    func createLayout(name: String, description_: String) -> Promise<Void> {
         let capName = capitalize(string: displayFor(name: name))
         let nameSection = sectionFor(name: name) ?? "NULL"
         
@@ -110,7 +110,7 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createFramePromise(name: String, description_: String) -> Promise<Void> {
+    func createFrame(name: String, description_: String) -> Promise<Void> {
         let capName = capitalize(string: displayFor(name: name))
         let nameSection = sectionFor(name: name) ?? "NULL"
         
@@ -122,7 +122,7 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createFrameEffectPromise(id: String, name: String, description_: String) -> Promise<Void> {
+    func createFrameEffect(id: String, name: String, description_: String) -> Promise<Void> {
         let nameSection = sectionFor(name: name) ?? "NULL"
         
         let query = "SELECT createOrUpdateFrameEffect($1,$2,$3,$4)"
@@ -134,7 +134,7 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createColorPromise(symbol: String, name: String, isManaColor: Bool) -> Promise<Void> {
+    func createColor(symbol: String, name: String, isManaColor: Bool) -> Promise<Void> {
         let nameSection = sectionFor(name: name) ?? "NULL"
         
         let query = "SELECT createOrUpdateColor($1,$2,$3,$4)"
@@ -146,9 +146,9 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createFormatPromise(name: String) -> Promise<Void> {
-        let capName = capitalize(string: displayFor(name: name))
-        let nameSection = sectionFor(name: name) ?? "NULL"
+    func create(format: String) -> Promise<Void> {
+        let capName = capitalize(string: displayFor(name: format))
+        let nameSection = sectionFor(name: format) ?? "NULL"
         
         let query = "SELECT createOrUpdateFormat($1,$2)"
         let parameters = [capName,
@@ -157,9 +157,9 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createLegalityPromise(name: String) -> Promise<Void> {
-        let capName = capitalize(string: displayFor(name: name))
-        let nameSection = sectionFor(name: name) ?? "NULL"
+    func create(legality: String) -> Promise<Void> {
+        let capName = capitalize(string: displayFor(name: legality))
+        let nameSection = sectionFor(name: legality) ?? "NULL"
         
         let query = "SELECT createOrUpdateLegality($1,$2)"
         let parameters = [capName,
@@ -168,7 +168,7 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createCardTypePromise(name: String, parent: String) -> Promise<Void> {
+    func createCardType(name: String, parent: String) -> Promise<Void> {
         let nameSection = sectionFor(name: name) ?? "NULL"
         
         let query = "SELECT createOrUpdateCardType($1,$2,$3)"
@@ -179,9 +179,9 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createComponentPromise(name: String) -> Promise<Void> {
-        let capName = capitalize(string: displayFor(name: name))
-        let nameSection = sectionFor(name: name) ?? "NULL"
+    func create(component: String) -> Promise<Void> {
+        let capName = capitalize(string: displayFor(name: component))
+        let nameSection = sectionFor(name: component) ?? "NULL"
         
         let query = "SELECT createOrUpdateComponent($1,$2)"
         let parameters = [capName,
@@ -236,22 +236,22 @@ extension Maintainer {
                              parameters: nil)
     }
     
-    func createCardPromise(dict: [String: Any]) -> Promise<Void> {
-        let collectorNumber = dict["collector_number"] as? String ?? "NULL"
-        let cmc = dict["cmc"] as? Double ?? Double(0)
-        let flavorText = dict["flavor_text"] as? String ?? "NULL"
-        let isFoil = dict["foil"] as? Bool ?? false
-        let isFullArt = dict["full_art"] as? Bool ?? false
-        let isHighresImage = dict["highres_image"] as? Bool ?? false
-        let isNonfoil = dict["nonfoil"] as? Bool ?? false
-        let isOversized = dict["oversized"] as? Bool ?? false
-        let isReserved = dict["reserved"] as? Bool ?? false
-        let isStorySpotlight = dict["story_spotlight"] as? Bool ?? false
-        let loyalty = dict["loyalty"] as? String ?? "NULL"
-        let manaCost = dict["mana_cost"] as? String ?? "NULL"
+    func create(card: [String: Any]) -> Promise<Void> {
+        let collectorNumber = card["collector_number"] as? String ?? "NULL"
+        let cmc = card["cmc"] as? Double ?? Double(0)
+        let flavorText = card["flavor_text"] as? String ?? "NULL"
+        let isFoil = card["foil"] as? Bool ?? false
+        let isFullArt = card["full_art"] as? Bool ?? false
+        let isHighresImage = card["highres_image"] as? Bool ?? false
+        let isNonfoil = card["nonfoil"] as? Bool ?? false
+        let isOversized = card["oversized"] as? Bool ?? false
+        let isReserved = card["reserved"] as? Bool ?? false
+        let isStorySpotlight = card["story_spotlight"] as? Bool ?? false
+        let loyalty = card["loyalty"] as? String ?? "NULL"
+        let manaCost = card["mana_cost"] as? String ?? "NULL"
         
         var multiverseIds = "{}"
-        if let a = dict["multiverse_ids"] as? [Int],
+        if let a = card["multiverse_ids"] as? [Int],
             !a.isEmpty {
             multiverseIds = "\(a)"
                 .replacingOccurrences(of: "[", with: "{")
@@ -259,7 +259,7 @@ extension Maintainer {
         }
         
         var myNameSection = "NULL"
-        if let name = dict["name"] as? String {
+        if let name = card["name"] as? String {
             myNameSection = sectionFor(name: name) ?? "NULL"
         }
         
@@ -268,38 +268,34 @@ extension Maintainer {
             myNumberOrder = order(of: collectorNumber)
         }
         
-        let name = dict["name"] as? String ?? "NULL"
-        let oracleText = dict["oracle_text"] as? String ?? "NULL"
-        let power = dict["power"] as? String ?? "NULL"
-        let printedName = dict["printed_name"] as? String ?? "NULL"
-        let printedText = dict["printed_text"] as? String ?? "NULL"
-        let toughness = dict["toughness"] as? String ?? "NULL"
-        let arenaId = dict["arena_id"] as? String ?? "NULL"
-        let mtgoId = dict["mtgo_id"] as? String ?? "NULL"
-        let tcgplayerId = dict["tcgplayer_id"] as? Int ?? Int(0)
-        let handModifier = dict["hand_modifier"] as? String ?? "NULL"
-        let lifeModifier = dict["life_modifier"] as? String ?? "NULL"
-        let isBooster = dict["booster"] as? Bool ?? false
-        let isDigital = dict["digital"] as? Bool ?? false
-        let isPromo = dict["promo"] as? Bool ?? false
-        let releasedAt = dict["released_at"] as? String ?? "NULL"
-        let isTextless = dict["textless"] as? Bool ?? false
-        let mtgoFoilId = dict["mtgo_foil_id"] as? String ?? "NULL"
-        let isReprint = dict["reprint"] as? Bool ?? false
-        let id = dict["id"] as? String ?? "NULL"
-        let cardBackId = dict["card_back_id"] as? String ?? "NULL"
-        let oracleId = dict["oracle_id"] as? String ?? "NULL"
-        let illustrationId = dict["illustration_id"] as? String ?? "NULL"
-        let artist = dict["artist"] as? String ?? "NULL"
-        let set = dict["set"] as? String ?? "NULL"
-        let rarity = capitalize(string: dict["rarity"] as? String ?? "NULL")
-        let language = dict["lang"] as? String ?? "NULL"
-        let layout = capitalize(string: displayFor(name: dict["layout"] as? String ?? "NULL"))
-        let watermark = capitalize(string: dict["watermark"] as? String ?? "NULL")
-        let frame = capitalize(string: dict["frame"] as? String ?? "NULL")
+        let name = card["name"] as? String ?? "NULL"
+        let oracleText = card["oracle_text"] as? String ?? "NULL"
+        let power = card["power"] as? String ?? "NULL"
+        let printedName = card["printed_name"] as? String ?? "NULL"
+        let printedText = card["printed_text"] as? String ?? "NULL"
+        let toughness = card["toughness"] as? String ?? "NULL"
+        let arenaId = card["arena_id"] as? String ?? "NULL"
+        let mtgoId = card["mtgo_id"] as? String ?? "NULL"
+        let tcgplayerId = card["tcgplayer_id"] as? Int ?? Int(0)
+        let handModifier = card["hand_modifier"] as? String ?? "NULL"
+        let lifeModifier = card["life_modifier"] as? String ?? "NULL"
+        let isBooster = card["booster"] as? Bool ?? false
+        let isDigital = card["digital"] as? Bool ?? false
+        let isPromo = card["promo"] as? Bool ?? false
+        let releasedAt = card["released_at"] as? String ?? "NULL"
+        let isTextless = card["textless"] as? Bool ?? false
+        let mtgoFoilId = card["mtgo_foil_id"] as? String ?? "NULL"
+        let isReprint = card["reprint"] as? Bool ?? false
+        let artist = card["artist"] as? String ?? "NULL"
+        let set = card["set"] as? String ?? "NULL"
+        let rarity = capitalize(string: card["rarity"] as? String ?? "NULL")
+        let language = card["lang"] as? String ?? "NULL"
+        let layout = capitalize(string: displayFor(name: card["layout"] as? String ?? "NULL"))
+        let watermark = capitalize(string: card["watermark"] as? String ?? "NULL")
+        let frame = capitalize(string: card["frame"] as? String ?? "NULL")
         
         var frameEffects = "{}"
-        if let a = dict["frame_effects"] as? [String],
+        if let a = card["frame_effects"] as? [String],
             !a.isEmpty {
             frameEffects = "\(a)"
                 .replacingOccurrences(of: "[", with: "{")
@@ -307,7 +303,7 @@ extension Maintainer {
         }
         
         var colors = "{}"
-        if let a = dict["colors"] as? [String],
+        if let a = card["colors"] as? [String],
             !a.isEmpty {
             colors = "\(a)"
                 .replacingOccurrences(of: "[", with: "{")
@@ -315,7 +311,7 @@ extension Maintainer {
         }
         
         var colorIdentities = "{}"
-        if let a = dict["color_identity"] as? [String],
+        if let a = card["color_identity"] as? [String],
             !a.isEmpty {
             colorIdentities = "\(a)"
                 .replacingOccurrences(of: "[", with: "{")
@@ -323,7 +319,7 @@ extension Maintainer {
         }
         
         var colorIndicators = "{}"
-        if let a = dict["color_indicator"] as? [String],
+        if let a = card["color_indicator"] as? [String],
             !a.isEmpty {
             colorIndicators = "\(a)"
                 .replacingOccurrences(of: "[", with: "{")
@@ -331,7 +327,7 @@ extension Maintainer {
         }
         
         var legalities = "{}"
-        if let legalitiesDict = dict["legalities"] as? [String: String] {
+        if let legalitiesDict = card["legalities"] as? [String: String] {
             var newLegalities = [String: String]()
             for (k,v) in legalitiesDict {
                 newLegalities[capitalize(string: displayFor(name: k))] = capitalize(string: displayFor(name: v))
@@ -341,11 +337,11 @@ extension Maintainer {
                 .replacingOccurrences(of: "]", with: "}")
         }
         
-        let typeLine = dict["type_line"] as? String ?? "NULL"
-        let printedTypeLine = dict["printed_type_line"] as? String ?? "NULL"
+        let typeLine = card["type_line"] as? String ?? "NULL"
+        let printedTypeLine = card["printed_type_line"] as? String ?? "NULL"
         
         var cardtypeSubtypes = "{}"
-        if let tl = dict["type_line"] as? String {
+        if let tl = card["type_line"] as? String {
             let subtypes = extractSubtypesFrom(tl)
             cardtypeSubtypes = "\(subtypes)"
                 .replacingOccurrences(of: "[", with: "{")
@@ -353,15 +349,16 @@ extension Maintainer {
         }
         
         var cardtypeSupertypes = "{}"
-        if let tl = dict["type_line"] as? String {
+        if let tl = card["type_line"] as? String {
             let supertypes = extractSupertypesFrom(tl)
             cardtypeSupertypes = "\(supertypes)"
                 .replacingOccurrences(of: "[", with: "{")
                 .replacingOccurrences(of: "]", with: "}")
         }
         
-        let faceOrder = dict["face_order"] as? Int ?? Int(0)
-        let newId = dict["new_id"] as? String ?? "NULL"
+        let faceOrder = card["face_order"] as? Int ?? Int(0)
+        let newId = "\(set)_\(language)_\(collectorNumber.replacingOccurrences(of: "★", with: "star"))"
+        let oracle_id = card["oracle_id"] as? String ?? "NULL"
         
         
         // unhandled...
@@ -371,7 +368,7 @@ extension Maintainer {
         // preview.previewed_at
         // preview.source_uri
         // preview.source
-        let query = "SELECT createOrUpdateCard($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43,$44,$45,$46,$47,$48,$49,$50,$51,$52,$53,$54,$55)"
+        let query = "SELECT createOrUpdateCard($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43,$44,$45,$46,$47,$48,$49,$50,$51,$52)"
         let parameters = [collectorNumber,
                           cmc,
                           flavorText,
@@ -405,10 +402,6 @@ extension Maintainer {
                           isTextless,
                           mtgoFoilId,
                           isReprint,
-                          id,
-                          cardBackId,
-                          oracleId,
-                          illustrationId,
                           artist,
                           set,
                           rarity,
@@ -426,27 +419,9 @@ extension Maintainer {
                           cardtypeSubtypes,
                           cardtypeSupertypes,
                           faceOrder,
-                          newId] as [Any]
+                          newId,
+                          oracle_id] as [Any]
         return createPromise(with: query,
                              parameters: parameters)
     }
-    
-//    func extractImageUrls(set: String, language: String, id: String, imageUrisDict: [String: String]) -> [String: String] {
-//        var dict = [String: String]()
-//
-//        if let artCrop = imageUrisDict["art_crop"],
-//            let u = artCrop.components(separatedBy: "?").first,
-//            let ext = u.components(separatedBy: ".").last {
-//
-//            dict["art_crop"] = "\(set)/\(language)/\(id)/art_crop.\(ext)"
-//        }
-//        if let normal = imageUrisDict["normal"],
-//            let u = normal.components(separatedBy: "?").first,
-//            let ext = u.components(separatedBy: ".").last {
-//
-//            dict["normal"] = "\(set)/\(language)/\(id)/normal.\(ext)"
-//        }
-//
-//        return dict
-//    }
 }
