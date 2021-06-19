@@ -60,6 +60,7 @@ class Maintainer {
     var typesCache  = [[String: Any]]()
     var componentsCache   = [String]()
     
+    // lazy variables
     var _bulkArray: [[String: Any]]?
     var bulkArray: [[String: Any]] {
         get {
@@ -110,15 +111,31 @@ class Maintainer {
         }
     }
     
+    // connection variables
+    var host: String
+    var port: Int
+    var database: String
+    var user: String
+    var password: String
+    
+    // MARK: - init
+    init(host: String, port: Int, database: String, user: String, password: String) {
+        self.host = host
+        self.port = port
+        self.database = database
+        self.user = user
+        self.password = password
+    }
+    
     // MARK: - Database methods
 
     func createConnection() -> Connection {
         var configuration = PostgresClientKit.ConnectionConfiguration()
-        configuration.host = "192.168.1.182"
-        configuration.port = 5432
-        configuration.database = "managuide_prod"
-        configuration.user = "managuide"
-        configuration.credential = .cleartextPassword(password: "DarkC0nfidant")
+        configuration.host = host
+        configuration.port = port
+        configuration.database = database
+        configuration.user = user
+        configuration.credential = .cleartextPassword(password: password)
         configuration.ssl = false
         
         do {
@@ -155,32 +172,32 @@ class Maintainer {
             self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath)
         }/*.then {
             self.fetchCardImages()
-        }.then {
-            self.processSetsData()
         }*/.then {
+            self.processSetsData()
+        }.then {
             self.processCardsData()
-        }/*.then {
+        }.then {
             self.processRulingsData()
         }.then {
-            self.processRulesData()
+            self.processComprehensiveRulesData()
         }.then {
             self.processOtherCardsData()
         }.then {
             self.processPricingData()
         }.then {
             self.processScryfallPromise()
-        }*/.done {
-//            do {
-//                try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
-//                try FileManager.default.removeItem(atPath: self.setsLocalPath)
-//                try FileManager.default.removeItem(atPath: self.keyruneLocalPath)
-//                try FileManager.default.removeItem(atPath: self.cardsLocalPath)
-//                try FileManager.default.removeItem(atPath: self.rulingsLocalPath)
-//                try FileManager.default.removeItem(atPath: self.rulesLocalPath)
-//            } catch {
-//                print(error)
-//                exit(EXIT_FAILURE)
-//            }
+        }.done {
+            do {
+                try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
+                try FileManager.default.removeItem(atPath: self.setsLocalPath)
+                try FileManager.default.removeItem(atPath: self.keyruneLocalPath)
+                try FileManager.default.removeItem(atPath: self.cardsLocalPath)
+                try FileManager.default.removeItem(atPath: self.rulingsLocalPath)
+                try FileManager.default.removeItem(atPath: self.rulesLocalPath)
+            } catch {
+                print(error)
+                exit(EXIT_FAILURE)
+            }
             self.endActivity(label: label, from: dateStart)
             exit(EXIT_SUCCESS)
         }.catch { error in
@@ -300,19 +317,9 @@ class Maintainer {
         for next in promises {
             promise = promise.then { n -> Promise<Void> in
                 countIndex += 1
-
-                if countIndex % self.printMilestone == 0 {
-                    animation.update(step: countIndex,
-                                     total: countTotal,
-                                     text: "Exec...")
-                    
-                }
-                if countIndex == countTotal {
-                    animation.update(step: countIndex,
-                                     total: countTotal,
-                                     text: "Done")
-                    
-                }
+                animation.update(step: countIndex,
+                                 total: countTotal,
+                                 text: countIndex == countTotal ? "Done" : "Exec...")
                 return next()
             }
         }

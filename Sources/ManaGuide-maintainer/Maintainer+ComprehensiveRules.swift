@@ -11,9 +11,9 @@ import PostgresClientKit
 import PromiseKit
 
 extension Maintainer {
-    func processRulesData() -> Promise<Void> {
+    func processComprehensiveRulesData() -> Promise<Void> {
         return Promise { seal in
-            let label = "processRulesData"
+            let label = "processComprehensiveRulesData"
             let date = self.startActivity(label: label)
             var promises = [()->Promise<Void>]()
             

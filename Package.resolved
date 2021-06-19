@@ -29,15 +29,6 @@
         }
       },
       {
-        "package": "PMJSON",
-        "repositoryURL": "https://github.com/postmates/PMJSON.git",
-        "state": {
-          "branch": null,
-          "revision": "ca099701c4c76f6b6b31c63523b711898c824b35",
-          "version": "3.1.2"
-        }
-      },
-      {
         "package": "PostgresClientKit",
         "repositoryURL": "https://github.com/codewinsdotcom/PostgresClientKit",
         "state": {
