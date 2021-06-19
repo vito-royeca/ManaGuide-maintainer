@@ -12,8 +12,10 @@ import PromiseKit
 extension Maintainer {
     func processRulingsData() -> Promise<Void> {
         return Promise { seal in
+            let label = "processRulingsData"
+            let date = self.startActivity(label: label)
             var promises = [()->Promise<Void>]()
-            
+
             promises.append({
                 return self.createDeleteRulingsPromise()
 
@@ -25,9 +27,10 @@ extension Maintainer {
             })
 
             let completion = {
+                self.endActivity(label: label, from: date)
                 seal.fulfill(())
             }
-            self.execInSequence(label: "createRulingsData",
+            self.execInSequence(label: label,
                                 promises: promises,
                                 completion: completion)
         }

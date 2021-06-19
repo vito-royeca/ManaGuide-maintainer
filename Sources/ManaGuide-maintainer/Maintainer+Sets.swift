@@ -13,6 +13,8 @@ import PromiseKit
 extension Maintainer {
     func processSetsData() -> Promise<Void> {
         return Promise { seal in
+            let label = "processSetsData"
+            let date = self.startActivity(label: label)
             var promises = [()->Promise<Void>]()
             
             promises.append(contentsOf: self.filterSetBlocks(array: setsArray))
@@ -21,9 +23,10 @@ extension Maintainer {
             promises.append(contentsOf: self.createKeyrunePromises(array: setsArray))
 
             let completion = {
+                self.endActivity(label: label, from: date)
                 seal.fulfill(())
             }
-            self.execInSequence(label: "createSetsData",
+            self.execInSequence(label: label,
                                 promises: promises,
                                 completion: completion)
         }

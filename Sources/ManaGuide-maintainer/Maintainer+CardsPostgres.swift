@@ -13,16 +13,16 @@ import PromiseKit
 extension Maintainer {
     func processOtherCardsData() -> Promise<Void> {
         return Promise { seal in
-            
+            let label = "processOtherCardsData"
+            let date = self.startActivity(label: label)
             let promises = [createOtherLanguagesPromise(),
                             createOtherPrintingsPromise(),
                             createVariationsPromise()]
             
-            print("Start createOtherCardsData:")
             firstly {
                 when(fulfilled: promises)
             }.done {
-                print("End createOtherCardsData!")
+                self.endActivity(label: label, from: date)
                 seal.fulfill(())
             }.catch { error in
                 seal.reject(error)

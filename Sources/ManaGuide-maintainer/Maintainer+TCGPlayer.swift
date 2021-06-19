@@ -17,6 +17,9 @@ import PMKFoundation
 extension Maintainer {
     func processPricingData() -> Promise<Void> {
         return Promise { seal in
+            let label = "processPricingData"
+            let date = self.startActivity(label: label)
+            
             firstly {
                 self.createStorePromise(name: self.storeName)
             }.then {
@@ -27,9 +30,10 @@ extension Maintainer {
                 self.fetchTcgPlayerCardPricing(groupIds: groupIds)
             }.done { promises in
                 let completion = {
+                    self.endActivity(label: label, from: date)
                     seal.fulfill(())
                 }
-                self.execInSequence(label: "createPricingData",
+                self.execInSequence(label: label,
                                     promises: promises,
                                     completion: completion)
             }.catch { error in

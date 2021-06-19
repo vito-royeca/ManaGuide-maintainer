@@ -27,6 +27,8 @@ extension Maintainer {
     }
     
     func loopReadCards(fileReader: StreamingFileReader, start: Int, callback: @escaping () -> Void) {
+        let label = "createCards"
+        let date = self.startActivity(label: label)
         let cards = self.readCardData(fileReader: fileReader, lines: self.printMilestone)
         
         if !cards.isEmpty {
@@ -45,9 +47,11 @@ extension Maintainer {
                 promises.append(contentsOf: self.createCardPromises(dict: card))
             }
             
-            self.execInSequence(label: "createCards: \(index)",
+            self.execInSequence(label: "\(label): \(index)",
                                 promises: promises,
                                 completion: {
+                                    self.endActivity(label: "\(label): \(index)", from: date)
+                                    
                                     self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
                                     
             })
@@ -56,103 +60,137 @@ extension Maintainer {
         }
     }
     
-//    func processCardPartsAndFacesData() -> Promise<Void> {
-//        return Promise { seal in
-//            let cardsPath = "\(self.cachePath)/\(self.cardsRemotePath.components(separatedBy: "/").last ?? "")"
-//            let fileReader = StreamingFileReader(path: cardsPath)
-//            let label = "processCardPartsAndFacesData"
-//            let date = self.startActivity(label: label)
-//
-//            self.loopReadCardPartsAndFaces(fileReader: fileReader, start: 0, callback: {
-//                self.endActivity(label: label, from: date)
-//                seal.fulfill()
-//            })
-//        }
-//    }
-    
     func createCardPromises(dict: [String: Any]) -> [()->Promise<Void>] {
         var promises = [()->Promise<Void>]()
         
         if let artist = dict["artist"] as? String {
-            promises.append({
-                return self.create(artist: artist)
-            })
+            if !artistsCache.contains(artist) {
+                artistsCache.append(artist)
+                
+                promises.append({
+                    return self.create(artist: artist)
+                })
+            }
         }
         
         if let rarity = dict["rarity"] as? String {
-            promises.append({
-                return self.create(rarity: rarity)
-            })
+            if !raritiesCache.contains(rarity) {
+                raritiesCache.append(rarity)
+                
+                promises.append({
+                    return self.create(rarity: rarity)
+                })
+            }
         }
         
         if let language = filterLanguage(dict: dict) {
-            promises.append({
-                return self.createLanguage(code: language["code"] ?? "NULL",
-                                           displayCode: language["display_code"] ?? "NULL",
-                                           name: language["name"] ?? "NULL")
-            })
+            if languagesCache.filter({ $0["code"] == language["code"] }).isEmpty {
+                languagesCache.append(language)
+                
+                promises.append({
+                    return self.createLanguage(code: language["code"] ?? "NULL",
+                                               displayCode: language["display_code"] ?? "NULL",
+                                               name: language["name"] ?? "NULL")
+                })
+            }
         }
         
         if let watermark = dict["watermark"] as? String {
-            promises.append({
-                return self.create(watermark: watermark)
-            })
+            if !watermarksCache.contains(watermark) {
+                watermarksCache.append(watermark)
+                
+                promises.append({
+                    return self.create(watermark: watermark)
+                })
+            }
         }
         
         if let layout = filterLayout(dict: dict) {
-            promises.append({
-                return self.createLayout(name: layout["name"] ?? "NULL",
-                                         description_: layout["description_"] ?? "NULL")
-            })
+            if layoutsCache.filter({ $0["name"] == layout["name"] }).isEmpty {
+                layoutsCache.append(layout)
+                
+                promises.append({
+                    return self.createLayout(name: layout["name"] ?? "NULL",
+                                             description_: layout["description_"] ?? "NULL")
+                })
+            }
         }
         
         if let frame = filterFrame(dict: dict) {
-            promises.append({
-                return self.createFrame(name: frame["name"] ?? "NULL",
-                                        description_: frame["description_"] ?? "NULL")
-            })
+            if framesCache.filter({ $0["name"] == frame["name"] }).isEmpty {
+                framesCache.append(frame)
+                
+                promises.append({
+                    return self.createFrame(name: frame["name"] ?? "NULL",
+                                            description_: frame["description_"] ?? "NULL")
+                })
+            }
         }
         
         for frameEffect in filterFrameEffects(dict: dict) {
-            promises.append({
-                return self.createFrameEffect(id: frameEffect["id"] ?? "NULL",
-                                              name: frameEffect["name"] ?? "NULL",
-                                              description_: frameEffect["description_"] ?? "NULL")
-            })
+            if frameEffectsCache.filter({ $0["id"] == frameEffect["id"] }).isEmpty {
+                frameEffectsCache.append(frameEffect)
+                
+                promises.append({
+                    return self.createFrameEffect(id: frameEffect["id"] ?? "NULL",
+                                                  name: frameEffect["name"] ?? "NULL",
+                                                  description_: frameEffect["description_"] ?? "NULL")
+                })
+            }
         }
         
         for color in filterColors(dict: dict) {
-            promises.append({
-                return self.createColor(symbol: color["symbol"] as? String ?? "NULL",
-                                        name: color["name"] as? String ?? "NULL",
-                                        isManaColor: color["is_mana_color"] as? Bool ?? false)
-            })
+            if colorsCache.filter({ $0["name"] as? String ?? "NULL" == color["name"] as? String ?? "NULL" }).isEmpty {
+                colorsCache.append(color)
+                
+                promises.append({
+                    return self.createColor(symbol: color["symbol"] as? String ?? "NULL",
+                                            name: color["name"] as? String ?? "NULL",
+                                            isManaColor: color["is_mana_color"] as? Bool ?? false)
+                })
+            }
         }
         
         if let dictLegalities = dict["legalities"] as? [String: String] {
             for key in dictLegalities.keys {
-                promises.append({
-                    return self.create(format: key)
-                })
+                if !formatsCache.contains(key) {
+                    formatsCache.append(key)
+                    
+                    promises.append({
+                        return self.create(format: key)
+                    })
+                }
             }
             for value in dictLegalities.values {
-                promises.append({
-                    return self.create(legality: value)
-                })
+                if !legalitiesCache.contains(value) {
+                    legalitiesCache.append(value)
+                    
+                    promises.append({
+                        return self.create(legality: value)
+                    })
+                }
             }
         }
         
         for type in filterTypes(dict: dict) {
-            promises.append(({
-                return self.createCardType(name: type["name"] as? String ?? "NULL",
-                                           parent: type["parent"] as? String ?? "NULL")
-            }))
+            if typesCache.filter({ $0["name"] as? String ?? "NULL" == type["name"] as? String ?? "NULL" }).isEmpty {
+                typesCache.append(type)
+                
+                promises.append(({
+                    return self.createCardType(name: type["name"] as? String ?? "NULL",
+                                               parent: type["parent"] as? String ?? "NULL")
+                }))
+            }
         }
         
         for component in filterComponents(dict: dict) {
-            promises.append({
-                return self.create(component: component)
-            })
+            if !componentsCache.contains(component) {
+                componentsCache.append(component)
+                
+                promises.append({
+                    return self.create(component: component)
+                })
+            }
         }
         
         promises.append({

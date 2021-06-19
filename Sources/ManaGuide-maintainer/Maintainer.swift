@@ -46,6 +46,20 @@ class Maintainer {
     var keyruneLocalPath   = ""
     var rulesLocalPath     = ""
     
+    // caches
+    var artistsCache      = [String]()
+    var raritiesCache     = [String]()
+    var languagesCache    = [[String: String]]()
+    var watermarksCache   = [String]()
+    var layoutsCache      = [[String: String]]()
+    var framesCache       = [[String: String]]()
+    var frameEffectsCache = [[String: String]]()
+    var colorsCache       = [[String: Any]]()
+    var formatsCache      = [String]()
+    var legalitiesCache   = [String]()
+    var typesCache  = [[String: Any]]()
+    var componentsCache   = [String]()
+    
     var _bulkArray: [[String: Any]]?
     var bulkArray: [[String: Any]] {
         get {
@@ -97,32 +111,6 @@ class Maintainer {
     }
     
     // MARK: - Database methods
-    func checkServerInfo() {
-        /*let viewModel = ServerInfoViewModel()
-        
-        firstly {
-            viewModel.fetchRemoteData()
-        }.compactMap { (data, result) in
-            try JSONSerialization.jsonObject(with: data) as? [[String: Any]]
-        }.then { data in
-            viewModel.saveLocalData(data: data)
-        }.then {
-            viewModel.fetchLocalData()
-        }.done {
-//            if let serverInfo = viewModel.allObjects()?.first as? MGServerInfo {
-//                if serverInfo.scryfallVersion != ManaKit.Constants.ScryfallDate {
-//                    viewModel.deleteAllCache()
-//                    self.updateDatabase()
-//                }
-//            } else {
-                viewModel.deleteAllCache()
-                self.updateDatabase()
-//            }
-        }.catch { error in
-            print(error)
-        }*/
-        self.updateDatabase()
-    }
 
     func createConnection() -> Connection {
         var configuration = PostgresClientKit.ConnectionConfiguration()
@@ -142,7 +130,7 @@ class Maintainer {
         }
     }
     
-    private func updateDatabase() {
+    func updateDatabase() {
         let label = "Managuide Maintainer"
         let dateStart = startActivity(label: label)
         
@@ -302,7 +290,6 @@ class Maintainer {
     }
     
     func execInSequence(label: String, promises: [()->Promise<Void>], completion: @escaping () -> Void) {
-        let startDate = Date()
         var promise = promises.first!()
         let countTotal = promises.count
         var countIndex = 0
@@ -320,14 +307,17 @@ class Maintainer {
                                      text: "Exec...")
                     
                 }
+                if countIndex == countTotal {
+                    animation.update(step: countIndex,
+                                     total: countTotal,
+                                     text: "Done")
+                    
+                }
                 return next()
             }
         }
         promise.done {_ in
             animation.complete(success: true)
-            let endDate = Date()
-            let timeDifference = endDate.timeIntervalSince(startDate)
-            print("Elapsed time: \(self.format(timeDifference))")
             completion()
         }.catch { error in
             print(error)
@@ -428,6 +418,7 @@ class Maintainer {
         
         print("\(label) ended on: \(endDate)")
         print("Elapsed time: \(format(timeDifference))")
+        print("")
     }
 
     func format(_ interval: TimeInterval) -> String {
