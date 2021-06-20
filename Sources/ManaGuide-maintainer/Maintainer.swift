@@ -155,17 +155,28 @@ class Maintainer {
         let label = "Managuide Maintainer"
         let dateStart = startActivity(label: label)
         let completion = {
-//            do {
-//                try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
-//                try FileManager.default.removeItem(atPath: self.setsLocalPath)
-//                try FileManager.default.removeItem(atPath: self.keyruneLocalPath)
-//                try FileManager.default.removeItem(atPath: self.cardsLocalPath)
-//                try FileManager.default.removeItem(atPath: self.rulingsLocalPath)
-//                try FileManager.default.removeItem(atPath: self.rulesLocalPath)
-//            } catch {
-//                print(error)
-//                exit(EXIT_FAILURE)
-//            }
+            do {
+                if FileManager.default.fileExists(atPath: self.bulkDataLocalPath) {
+                    try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
+                }
+                if FileManager.default.fileExists(atPath: self.setsLocalPath) {
+                    try FileManager.default.removeItem(atPath: self.setsLocalPath)
+                }
+                if FileManager.default.fileExists(atPath: self.keyruneLocalPath) {
+                    try FileManager.default.removeItem(atPath: self.keyruneLocalPath)
+                }
+                if FileManager.default.fileExists(atPath: self.cardsLocalPath) {
+                    try FileManager.default.removeItem(atPath: self.cardsLocalPath)
+                }
+                if FileManager.default.fileExists(atPath: self.rulingsLocalPath) {
+                    try FileManager.default.removeItem(atPath: self.rulingsLocalPath)
+                }
+                if FileManager.default.fileExists(atPath: self.rulesLocalPath) {
+                    try FileManager.default.removeItem(atPath: self.rulesLocalPath)
+                }
+            } catch {
+                print(error)
+            }
             self.endActivity(label: label, from: dateStart)
             exit(EXIT_SUCCESS)
         }
@@ -176,17 +187,33 @@ class Maintainer {
         keyruneLocalPath  = "\(cachePath)/\(filePrefix)_\(keyruneFileName)"
         rulesLocalPath    = "\(cachePath)/\(filePrefix)_\(rulesFileName)"
 
-        var promises: [()->Promise<Void>] = [
-            { self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath) },
-            { self.createBulkData() },
-            { self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath) },
-            { self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath) },
-            { self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath) },
-            { self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath) },
-            { self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath) }
-        ]
+        var promises = [()->Promise<Void>]()
         
         if isFullUpdate {
+            // downloads
+            promises.append({
+                self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath)
+            })
+            promises.append({
+                self.createBulkData()
+            })
+            promises.append({
+                self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath)
+            })
+            promises.append({
+                self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath)
+            })
+            promises.append({
+                self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath)
+            })
+            promises.append({
+                self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath)
+            })
+            promises.append({
+                self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath)
+            })
+            
+            // updates
             promises.append({
                 self.fetchCardImages()
             })
