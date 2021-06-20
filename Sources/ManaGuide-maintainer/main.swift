@@ -41,15 +41,6 @@ struct Managuide: ParsableCommand {
 // Run the parser.
 Managuide.main()
 
-// or...
-//let maintainer = Maintainer(host: "host",
-//                            port: 5432,
-//                            database: "managuide_prod",
-//                            user: "managuide",
-//                            password: "querida",
-//                            isFullUpdate: false)
-//maintainer.updateDatabase()
-
 // wait until all threads are done before exiting
 RunLoop.current.run()
 
