@@ -19,6 +19,9 @@ struct Managuide: ParsableCommand {
     @Option(help: "Database password.")
     var password: String
     
+    @Option(help: "Full update: true | false")
+    var fullUpdate: Bool
+    
     func run() throws {
         ManaKit.sharedInstance.configure(apiURL: "http://192.168.1.182:1993",
                                                  partnerKey: "ManaGuide",
@@ -29,7 +32,8 @@ struct Managuide: ParsableCommand {
                                     port: port,
                                     database: database,
                                     user: user,
-                                    password: password)
+                                    password: password,
+                                    isFullUpdate: fullUpdate)
         maintainer.updateDatabase()
     }
 }
@@ -42,7 +46,8 @@ Managuide.main()
 //                            port: 5432,
 //                            database: "managuide_prod",
 //                            user: "managuide",
-//                            password: "querida")
+//                            password: "querida",
+//                            isFullUpdate: false)
 //maintainer.updateDatabase()
 
 // wait until all threads are done before exiting

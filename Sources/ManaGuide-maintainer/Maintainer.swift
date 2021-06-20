@@ -29,6 +29,7 @@ class Maintainer {
     
     // MARK: - Variables
     var tcgplayerAPIToken = ""
+    var filePrefix = ""
     
     // remote file names
     let bulkDataRemotePath = "https://api.scryfall.com/bulk-data"
@@ -111,20 +112,23 @@ class Maintainer {
         }
     }
     
-    // connection variables
+    // options variables
     var host: String
     var port: Int
     var database: String
     var user: String
     var password: String
+    var isFullUpdate: Bool
     
     // MARK: - init
-    init(host: String, port: Int, database: String, user: String, password: String) {
+
+    init(host: String, port: Int, database: String, user: String, password: String, isFullUpdate: Bool) {
         self.host = host
         self.port = port
         self.database = database
         self.user = user
         self.password = password
+        self.isFullUpdate = isFullUpdate
     }
     
     // MARK: - Database methods
@@ -166,14 +170,15 @@ class Maintainer {
             exit(EXIT_SUCCESS)
         }
         
-        bulkDataLocalPath = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(bulkDataFileName)"
-        setsLocalPath     = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(setsFileName)"
-        keyruneLocalPath  = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(keyruneFileName)"
-        rulesLocalPath    = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(rulesFileName)"
+        filePrefix = format2(Date().timeIntervalSince1970)
+        bulkDataLocalPath = "\(cachePath)/\(filePrefix)_\(bulkDataFileName)"
+        setsLocalPath     = "\(cachePath)/\(filePrefix)_\(setsFileName)"
+        keyruneLocalPath  = "\(cachePath)/\(filePrefix)_\(keyruneFileName)"
+        rulesLocalPath    = "\(cachePath)/\(filePrefix)_\(rulesFileName)"
 
         var promises: [()->Promise<Void>] = [
-            { return self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath) },
-            { return self.createBulkData() },
+            { self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath) },
+            { self.createBulkData() },
             { self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath) },
             { self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath) },
             { self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath) },
@@ -181,42 +186,46 @@ class Maintainer {
             { self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath) }
         ]
         
-        promises.append({
-            self.fetchCardImages()
-        })
-        promises.append({
-            self.processSetsData()
-        })
-        promises.append({
-            self.processCardsData(type: .misc)
-        })
-        promises.append({
-            self.processCardsData(type: .cards)
-        })
-        promises.append({
-            self.processCardsData(type: .partsAndFaces)
-        })
-        promises.append({
-            self.processRulingsData()
-        })
-        promises.append({
-            self.processComprehensiveRulesData()
-        })
-        promises.append({
-            self.processOtherCardsData()
-        })
+        if isFullUpdate {
+            promises.append({
+                self.fetchCardImages()
+            })
+            promises.append({
+                self.processSetsData()
+            })
+            promises.append({
+                self.processCardsData(type: .misc)
+            })
+            promises.append({
+                self.processCardsData(type: .cards)
+            })
+            promises.append({
+                self.processCardsData(type: .partsAndFaces)
+            })
+            promises.append({
+                self.processRulingsData()
+            })
+            promises.append({
+                self.processComprehensiveRulesData()
+            })
+            promises.append({
+                self.processOtherCardsData()
+            })
+        }
+        
         promises.append({
             self.processPricingData()
         })
         promises.append({
-            self.processScryfallPromise()
+            self.processServerUpdatePromise()
         })
-
+        
         execInSequence(label: label,
                        promises: promises,
                        completion: completion)
     }
 
+    // MARK: - Bulk Data methods
     func createBulkData() -> Promise<Void> {
         return Promise { seal in
             let _ = bulkArray
@@ -225,7 +234,7 @@ class Maintainer {
     }
     
     func bulkData() -> [[String: Any]] {
-        let bulkDataPath  = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(bulkDataFileName)"
+        let bulkDataPath  = "\(cachePath)/\(filePrefix)_\(bulkDataFileName)"
         let data = try! Data(contentsOf: URL(fileURLWithPath: bulkDataPath))
         guard let dict = try! JSONSerialization.jsonObject(with: data,
                                                            options: .mutableContainers) as? [String: Any] else {
@@ -257,6 +266,7 @@ class Maintainer {
     }
     
     // MARK: - Promise methods
+    
     func fetchData(from remotePath: String, saveTo localPath: String) -> Promise<Void> {
         return Promise { seal in
             let willFetch = !FileManager.default.fileExists(atPath: localPath)
@@ -347,7 +357,6 @@ class Maintainer {
             completion()
         }.catch { error in
             print(error)
-//            exit(EXIT_FAILURE)
         }
     }
 
@@ -484,6 +493,17 @@ class Maintainer {
         let minutes = (interval / 60).truncatingRemainder(dividingBy: 60)
         let hours = (interval / 3600)
         return String(format: "%.2d:%.2d:%.2d", Int(hours), Int(minutes), Int(seconds))
+    }
+    
+    func format2(_ interval: TimeInterval) -> String {
+        if interval == 0 {
+            return "HHmmss"
+        }
+        
+        let seconds = interval.truncatingRemainder(dividingBy: 60)
+        let minutes = (interval / 60).truncatingRemainder(dividingBy: 60)
+        let hours = (interval / 3600)
+        return String(format: "%.2d%.2d%.2d", Int(hours), Int(minutes), Int(seconds))
     }
 }
 

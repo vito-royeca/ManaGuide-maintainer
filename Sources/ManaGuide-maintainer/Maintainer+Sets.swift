@@ -33,7 +33,7 @@ extension Maintainer {
     }
     
     func setsData() -> [[String: Any]] {
-        let setsPath = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(setsFileName)"
+        let setsPath = "\(cachePath)/\(filePrefix)_\(setsFileName)"
         
         let data = try! Data(contentsOf: URL(fileURLWithPath: setsPath))
         guard let dict = try! JSONSerialization.jsonObject(with: data,

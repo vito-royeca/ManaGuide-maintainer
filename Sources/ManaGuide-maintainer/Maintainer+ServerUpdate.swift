@@ -1,5 +1,5 @@
 //
-//  Maintainer+ServerInfo.swift
+//  Maintainer+ServerUpdate.swift
 //  ManaKit
 //
 //  Created by Vito Royeca on 12/7/19.
@@ -9,9 +9,9 @@
 import PromiseKit
 
 extension Maintainer {
-    func processScryfallPromise() -> Promise<Void> {
-        let query = "UPDATE server_info SET scryfall_version = $1"
-        let parameters = [ManaKit.Constants.ScryfallDate]
+    func processServerUpdatePromise() -> Promise<Void> {
+        let query = "SELECT createOrUpdateServerUpdate($1)"
+        let parameters = [isFullUpdate]
         
         return createPromise(with: query,
                              parameters: parameters)

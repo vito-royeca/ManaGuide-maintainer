@@ -119,7 +119,7 @@ extension Maintainer {
     }
     
     func keyruneCodes() -> HTMLDocument {
-        let keyrunePath = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(keyruneFileName)"
+        let keyrunePath = "\(cachePath)/\(filePrefix)_\(keyruneFileName)"
         let url = URL(fileURLWithPath: keyrunePath)
         
         return try! HTML(url: url, encoding: .utf8)
