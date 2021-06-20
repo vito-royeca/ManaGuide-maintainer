@@ -7,108 +7,119 @@
 //
 
 import Foundation
-//import UIKit
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
 import PostgresClientKit
 import PromiseKit
-//import SDWebImage
 
 extension Maintainer {
-//    func fetchCardImages() -> Promise<Void> {
-//        return Promise { seal in
-//            let array = self.cardsData()
-//            var promises = [()->Promise<Void>]()
-//            var filteredData = [[String: Any]]()
-//
-//            // -- Start Option 1 -- //
-//            for dict in array {
-//            // -- End Option 1 -- //
-//            
-//            // -- Start Option 2 -- //
-////            for i in 0 ... array.count-1 {
-////                if i < 50000 {
-////                    continue
-////                }
-////                let dict = array[i]
-//            // -- End Option 2 -- //
-//
-//                
-//                guard let number = dict["collector_number"] as? String,
-//                      let language = dict["lang"] as? String,
-//                      let set = dict["set"] as? String else {
-//                    continue
-//                }
-//                
-//                if let imageStatus = dict["image_status"] as? String,
-//                    let imageUrisDict = dict["image_uris"] as? [String: String] {
-//                    let imageUrisDict = createImageUris(number: number.replacingOccurrences(of: "★", with: "star"),
-//                                                        set: set,
-//                                                        language: language,
-//                                                        imageStatus: imageStatus,
-//                                                        imageUrisDict: imageUrisDict)
-//                    filteredData.append(imageUrisDict)
-//                }
-//                
-//                if let faces = dict["card_faces"] as? [[String: Any]] {
-//                    for i in 0...faces.count-1 {
-//                        let face = faces[i]
-//                        
-//                        if let imageStatus = dict["image_status"] as? String,
-//                            let imageUrisDict = face["image_uris"] as? [String: String] {
-//                            let faceImageUrisDict = createImageUris(number: "\(number.replacingOccurrences(of: "★", with: "star"))_\(i)",
-//                                                                    set: set,
-//                                                                    language: language,
-//                                                                    imageStatus: imageStatus,
-//                                                                    imageUrisDict: imageUrisDict)
-//                            filteredData.append(faceImageUrisDict)
-//                        }
-//                    }
-//                }
-//            }
-//            
-//            promises.append(contentsOf: filteredData.map { dict in
-//                return {
-//                    return self.createImageDownloadPromise(dict: dict)
-//                }
-//            })
-//            
-//            let completion = {
-//                seal.fulfill(())
-//            }
-//            self.execInSequence(label: "fetchCardImages",
-//                                promises: promises,
-//                                completion: completion)
-//        }
-//    }
-    
-    func createImageUris(number: String, set: String, language: String, imageStatus: String, imageUrisDict: [String: String]) -> [String: Any] {
-        var newDict = [String: Any]()
-        
-        // remove the key (?APIKEY) in the url
-        var newImageUris = [String: String]()
-        for (k,v) in imageUrisDict {
-            newImageUris[k] = v.components(separatedBy: "?").first
+    func fetchCardImages() -> Promise<Void> {
+        return Promise { seal in
+            let cardsPath = "\(self.cachePath)/\(self.cardsRemotePath.components(separatedBy: "/").last ?? "")"
+            let fileReader = StreamingFileReader(path: cardsPath)
+            let label = "fetchCardImages"
+            
+            let date = self.startActivity(label: label)
+            self.loopReadCards(fileReader: fileReader, start: 0, callback: {
+                self.endActivity(label: label, from: date)
+                seal.fulfill()
+            })
         }
-    
-        newDict["number"]      =  number
-        newDict["language"]    =  language
-        newDict["set"]         =  set
-        newDict["imageStatus"] =  imageStatus
-        newDict["imageUris"]   =  newImageUris
-        
-        return newDict
     }
+    
+    private func loopReadCards(fileReader: StreamingFileReader, start: Int, callback: @escaping () -> Void) {
+        let label = "readCardsData"
+        let date = self.startActivity(label: label)
+        let cards = self.readFileData(fileReader: fileReader, lines: self.printMilestone)
+        
+        if !cards.isEmpty {
+            let index = start + cards.count
+            var promises = [()->Promise<Void>]()
+            let label2 = "downloadCardImages"
+            
+            for card in cards {
+                promises.append(contentsOf: self.createImageDownloadPromises(dict: card))
+            }
+            
+            if !promises.isEmpty {
+                self.execInSequence(label: "\(label2): \(index)",
+                                    promises: promises,
+                                    completion: {
+                                        self.endActivity(label: "\(label)", from: date)
+                                        self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
+                                        
+                })
+            } else {
+                self.endActivity(label: "\(label)", from: date)
+                self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
+            }
+        } else {
+            callback()
+        }
+    }
+    
+    private func createImageDownloadPromises(dict: [String: Any]) -> [()->Promise<Void>] {
+        var promises = [()->Promise<Void>]()
+        var filteredData = [[String: Any]]()
+        
+        guard let number = dict["collector_number"] as? String,
+              let language = dict["lang"] as? String,
+              let set = dict["set"] as? String else {
+            return promises
+        }
+        
+        if let imageStatus = dict["image_status"] as? String,
+            let imageUrisDict = dict["image_uris"] as? [String: String] {
+            let imageUrisDict = createImageUris(number: number.replacingOccurrences(of: "★", with: "star"),
+                                                set: set,
+                                                language: language,
+                                                imageStatus: imageStatus,
+                                                imageUrisDict: imageUrisDict)
+            filteredData.append(imageUrisDict)
+        }
+        
+        if let faces = dict["card_faces"] as? [[String: Any]] {
+            for i in 0...faces.count-1 {
+                let face = faces[i]
+                
+                if let imageStatus = dict["image_status"] as? String,
+                    let imageUrisDict = face["image_uris"] as? [String: String] {
+                    let faceImageUrisDict = createImageUris(number: "\(number.replacingOccurrences(of: "★", with: "star"))_\(i)",
+                                                            set: set,
+                                                            language: language,
+                                                            imageStatus: imageStatus,
+                                                            imageUrisDict: imageUrisDict)
+                    filteredData.append(faceImageUrisDict)
+                }
+            }
+        }
+        
+        promises.append(contentsOf: filteredData.map { dict in
+            return {
+                return self.createImageDownloadPromise(dict: dict)
+            }
+        })
 
-    func createImageDownloadPromise(dict: [String: Any]) -> Promise<Void> {
+        return promises
+    }
+    
+    private func createImageDownloadPromise(dict: [String: Any]) -> Promise<Void> {
         return Promise { seal in
             guard let number = dict["number"] as? String,
                 let language = dict["language"] as? String,
                 let set = dict["set"] as? String,
                 let imageStatus = dict["imageStatus"] as? String,
                 let imageUris = dict["imageUris"] as? [String: String] else {
-                fatalError("Wrong download keys")
+                
+                let error = NSError(domain: "Error",
+                                    code: 500,
+                                    userInfo: [NSLocalizedDescriptionKey: "Wrong download keys"])
+                seal.reject(error)
+                return
             }
             
-            let imagesPath   = "\(cachePath)/card_images/\(set)/\(language)/\(number)"
+            let imagesPath   = "/mnt/managuide_images/cards/\(set)/\(language)/\(number)"
             let downloadPath  = "\(cachePath)/card_downloads/\(set)/\(language)/\(number)"
             var promises = [Promise<Void>]()
             var remoteImageData: Data?
@@ -188,68 +199,70 @@ extension Maintainer {
         }
     }
     
-    func saveImagePromise(imageData: Data, destinationFile: String) -> Promise<Void> {
+    private func createImageUris(number: String, set: String, language: String, imageStatus: String, imageUrisDict: [String: String]) -> [String: Any] {
+        var newDict = [String: Any]()
+        
+        // remove the key (?APIKEY) in the url
+        var newImageUris = [String: String]()
+        for (k,v) in imageUrisDict {
+            newImageUris[k] = v.components(separatedBy: "?").first
+        }
+    
+        newDict["number"]      =  number
+        newDict["language"]    =  language
+        newDict["set"]         =  set
+        newDict["imageStatus"] =  imageStatus
+        newDict["imageUris"]   =  newImageUris
+        
+        return newDict
+    }
+    
+    private func saveImagePromise(imageData: Data, destinationFile: String) -> Promise<Void> {
         return Promise { seal in
             do {
                 prepare(destinationFile: destinationFile)
                 try imageData.write(to: URL(fileURLWithPath: destinationFile))
-                print("Saved \(destinationFile)")
+//                print("Saved \(destinationFile)")
                 seal.fulfill(())
             } catch {
-                let error = NSError(domain: NSURLErrorDomain,
-                                    code: 404,
-                                    userInfo: [NSLocalizedDescriptionKey: "Unable to write to: \(destinationFile)"])
-                seal.reject(error)
+                print("Unable to write to: \(destinationFile)")
+                seal.fulfill()
             }
         }
     }
     
-    func downloadImagePromise(url: String, destinationFile: String) -> Promise<Void> {
+    private func downloadImagePromise(url: String, destinationFile: String) -> Promise<Void> {
         return Promise { seal in
-            // let completion = { (image: UIImage?, data: Data?, error: Error?, finished: Bool) in
-            //     if let error = error {
-            //         seal.reject(error)
-            //     } else {
-            //         if let data = data {
-            //             do {
-            //                 self.prepare(destinationFile: destinationFile)
-            //                 try data.write(to: URL(fileURLWithPath: destinationFile))
-            //                 print("Downloaded \(url)")
-            //                 seal.fulfill(())
-            //             } catch {
-            //                 let error = NSError(domain: NSURLErrorDomain,
-            //                                     code: 404,
-            //                                     userInfo: [NSLocalizedDescriptionKey: "Unable to write to: \(destinationFile)"])
-            //                 seal.reject(error)
-            //             }
-            //         } else {
-            //             let error = NSError(domain: NSURLErrorDomain,
-            //                                 code: 404,
-            //                                 userInfo: [NSLocalizedDescriptionKey: "Data not found: \(url)"])
-            //             seal.reject(error)
-            //         }
-            //     }
-            // }
-            // SDWebImageDownloader.shared.downloadImage(with: URL(string: url),
-            //                                           options: .lowPriority,
-            //                                           progress: nil,
-            //                                           completed: completion)
+            firstly {
+                URLSession.shared.dataTask(.promise, with: URL(string: url)!)
+            }.done { response in
+                do {
+                    self.prepare(destinationFile: destinationFile)
+                    try response.data.write(to: URL(fileURLWithPath: destinationFile))
+//                    print("Downloaded \(url)")
+                    seal.fulfill(())
+                } catch {
+                    print("Unable to write to: \(destinationFile)")
+                    seal.fulfill()
+                }
+            }.catch { error in
+                print(error)
+                seal.fulfill(())
+            }
         }
     }
     
-    func copyImagePromise(sourceFile: String, destinationFile: String) -> Promise<Void> {
+    private func copyImagePromise(sourceFile: String, destinationFile: String) -> Promise<Void> {
         return Promise { seal in
             do {
                 prepare(destinationFile: destinationFile)
                 try FileManager.default.copyItem(at: URL(fileURLWithPath: sourceFile),
                                                  to: URL(fileURLWithPath: destinationFile))
-                print("Copied \(destinationFile)")
+//                print("Copied \(destinationFile)")
                 seal.fulfill(())
             } catch {
-                let error = NSError(domain: NSURLErrorDomain,
-                                    code: 404,
-                                    userInfo: [NSLocalizedDescriptionKey: "Unable to write to: \(destinationFile)"])
-                seal.reject(error)
+                print("Unable to write to: \(destinationFile)")
+                seal.fulfill()
             }
         }
     }

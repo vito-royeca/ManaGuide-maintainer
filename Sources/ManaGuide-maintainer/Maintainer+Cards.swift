@@ -41,7 +41,7 @@ extension Maintainer {
     private func loopReadCards(fileReader: StreamingFileReader, dataType: CardsDataType, start: Int, callback: @escaping () -> Void) {
         let label = "readCardsData"
         let date = self.startActivity(label: label)
-        let cards = self.readCardData(fileReader: fileReader, lines: self.printMilestone)
+        let cards = self.readFileData(fileReader: fileReader, lines: self.printMilestone)
         
         if !cards.isEmpty {
             let index = start + cards.count
@@ -269,77 +269,27 @@ extension Maintainer {
         return promises
     }
     
-//    private func createCardFacesPromises(dict: [String: Any]) -> [()->Promise<Void>] {
-//        var promises = [()->Promise<Void>]()
-//
-//        if let faces = self.filterFaces(dict: dict) {
-//            for face in faces {
-//                promises.append(contentsOf: self.createMiscCardPromises(dict: face))
-//                promises.append({
-//                    return self.create(card: face)
-//                })
-//
-//                if let card = face["cmcard"] as? String,
-//                   let cardFace = face["new_id"] as? String {
-//                    promises.append({
-//                        return self.createFace(card: card,
-//                                               cardFace: cardFace)
-//                    })
-//                }
+//    private func readCardDataLines(completion: ([String: Any]) -> Void) {
+//        let cardsPath = "\(cachePath)/\(cardsRemotePath.components(separatedBy: "/").last ?? "")"
+//        let fileReader = StreamingFileReader(path: cardsPath)
+//        
+//        while let line = fileReader.readLine() {
+//            var cleanLine = String(line)
+//            
+//            if cleanLine.hasSuffix("}},") {
+//                cleanLine.removeLast()
 //            }
+//            
+//            guard cleanLine.hasPrefix("{\""),
+//                let data = cleanLine.data(using: .utf16),
+//                let dict = try! JSONSerialization.jsonObject(with: data,
+//                                                             options: .mutableContainers) as? [String: Any] else {
+//                continue
+//            }
+//                    
+//            completion(dict)
 //        }
-//
-//        return promises
 //    }
-    
-    private func readCardDataLines(completion: ([String: Any]) -> Void) {
-        let cardsPath = "\(cachePath)/\(cardsRemotePath.components(separatedBy: "/").last ?? "")"
-        let fileReader = StreamingFileReader(path: cardsPath)
-        
-        while let line = fileReader.readLine() {
-            var cleanLine = String(line)
-            
-            if cleanLine.hasSuffix("}},") {
-                cleanLine.removeLast()
-            }
-            
-            guard cleanLine.hasPrefix("{\""),
-                let data = cleanLine.data(using: .utf16),
-                let dict = try! JSONSerialization.jsonObject(with: data,
-                                                             options: .mutableContainers) as? [String: Any] else {
-                continue
-            }
-                    
-            completion(dict)
-        }
-    }
-    
-    private func readCardData(fileReader: StreamingFileReader, lines: Int) -> [[String: Any]] {
-        var array = [[String: Any]]()
-        
-        while let line = fileReader.readLine() {
-            var cleanLine = String(line)
-            
-            if cleanLine.hasSuffix("}},") {
-                cleanLine.removeLast()
-            }
-            
-            guard cleanLine.hasPrefix("{\""),
-                let data = cleanLine.data(using: .utf16),
-                let dict = try! JSONSerialization.jsonObject(with: data,
-                                                             options: .mutableContainers) as? [String: Any] else {
-                continue
-            }
-            
-            array.append(dict)
-            
-            if array.count == lines {
-                break
-            }
-        }
-        
-        return array
-    }
     
     private func filterLanguage(dict: [String: Any]) -> [String: String]? {
         guard let lang = dict["lang"] as? String else {

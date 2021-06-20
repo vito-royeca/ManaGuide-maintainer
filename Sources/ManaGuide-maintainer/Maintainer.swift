@@ -151,51 +151,39 @@ class Maintainer {
         let label = "Managuide Maintainer"
         let dateStart = startActivity(label: label)
         let completion = {
-            do {
-                try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
-                try FileManager.default.removeItem(atPath: self.setsLocalPath)
-                try FileManager.default.removeItem(atPath: self.keyruneLocalPath)
-                try FileManager.default.removeItem(atPath: self.cardsLocalPath)
-                try FileManager.default.removeItem(atPath: self.rulingsLocalPath)
-                try FileManager.default.removeItem(atPath: self.rulesLocalPath)
-            } catch {
-                print(error)
-                exit(EXIT_FAILURE)
-            }
+//            do {
+//                try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
+//                try FileManager.default.removeItem(atPath: self.setsLocalPath)
+//                try FileManager.default.removeItem(atPath: self.keyruneLocalPath)
+//                try FileManager.default.removeItem(atPath: self.cardsLocalPath)
+//                try FileManager.default.removeItem(atPath: self.rulingsLocalPath)
+//                try FileManager.default.removeItem(atPath: self.rulesLocalPath)
+//            } catch {
+//                print(error)
+//                exit(EXIT_FAILURE)
+//            }
             self.endActivity(label: label, from: dateStart)
             exit(EXIT_SUCCESS)
         }
-        var promises = [()->Promise<Void>]()
         
         bulkDataLocalPath = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(bulkDataFileName)"
         setsLocalPath     = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(setsFileName)"
         keyruneLocalPath  = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(keyruneFileName)"
         rulesLocalPath    = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(rulesFileName)"
+
+        var promises: [()->Promise<Void>] = [
+            { return self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath) },
+            { return self.createBulkData() },
+            { self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath) },
+            { self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath) },
+            { self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath) },
+            { self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath) },
+            { self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath) }
+        ]
         
         promises.append({
-            return self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath)
+            self.fetchCardImages()
         })
-        promises.append({
-            return self.createBulkData()
-        })
-        promises.append({
-            self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath)
-        })
-        promises.append({
-            self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath)
-        })
-        promises.append({
-            self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath)
-        })
-        promises.append({
-            self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath)
-        })
-        promises.append({
-            self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath)
-        })
-//        promises.append({
-//            self.fetchCardImages()
-//        })
         promises.append({
             self.processSetsData()
         })
@@ -208,9 +196,6 @@ class Maintainer {
         promises.append({
             self.processCardsData(type: .partsAndFaces)
         })
-//        promises.append({
-//            self.processCardsData(type: .faces)
-//        })
         promises.append({
             self.processRulingsData()
         })
@@ -290,7 +275,6 @@ class Maintainer {
                                                    with: rq,
                                                    to: URL(fileURLWithPath: localPath))
                 }.done { _ in
-                    
                     seal.fulfill(())
                 }.catch { error in
                     seal.reject(error)
@@ -328,7 +312,7 @@ class Maintainer {
             
             statement.close()
         } catch {
-            fatalError("\(error)")
+            print(error)
         }
     }
     
@@ -363,11 +347,39 @@ class Maintainer {
             completion()
         }.catch { error in
             print(error)
-            exit(EXIT_FAILURE)
+//            exit(EXIT_FAILURE)
         }
     }
 
     // MARK: - Utility methods
+    
+    func readFileData(fileReader: StreamingFileReader, lines: Int) -> [[String: Any]] {
+        var array = [[String: Any]]()
+        
+        while let line = fileReader.readLine() {
+            var cleanLine = String(line)
+            
+            if cleanLine.hasSuffix("}},") {
+                cleanLine.removeLast()
+            }
+            
+            guard cleanLine.hasPrefix("{\""),
+                let data = cleanLine.data(using: .utf16),
+                let dict = try! JSONSerialization.jsonObject(with: data,
+                                                             options: .mutableContainers) as? [String: Any] else {
+                continue
+            }
+            
+            array.append(dict)
+            
+            if array.count == lines {
+                break
+            }
+        }
+        
+        return array
+    }
+    
     func sectionFor(name: String) -> String? {
         if name.count == 0 {
             return nil
