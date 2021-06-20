@@ -150,43 +150,7 @@ class Maintainer {
     func updateDatabase() {
         let label = "Managuide Maintainer"
         let dateStart = startActivity(label: label)
-        
-        bulkDataLocalPath = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(bulkDataFileName)"
-        setsLocalPath     = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(setsFileName)"
-        keyruneLocalPath  = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(keyruneFileName)"
-        rulesLocalPath    = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(rulesFileName)"
-        
-        firstly {
-            fetchData(from: bulkDataRemotePath, saveTo: bulkDataLocalPath)
-        }.then {
-            self.createBulkData()
-        }.then {
-            self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath)
-        }.then {
-            self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath)
-        }.then {
-            self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath)
-        }.then {
-            self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath)
-        }.then {
-            self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath)
-        }/*.then {
-            self.fetchCardImages()
-        }*/.then {
-            self.processSetsData()
-        }.then {
-            self.processCardsData()
-        }.then {
-            self.processRulingsData()
-        }.then {
-            self.processComprehensiveRulesData()
-        }.then {
-            self.processOtherCardsData()
-        }.then {
-            self.processPricingData()
-        }.then {
-            self.processScryfallPromise()
-        }.done {
+        let completion = {
             do {
                 try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
                 try FileManager.default.removeItem(atPath: self.setsLocalPath)
@@ -200,10 +164,72 @@ class Maintainer {
             }
             self.endActivity(label: label, from: dateStart)
             exit(EXIT_SUCCESS)
-        }.catch { error in
-            print(error)
-            exit(EXIT_FAILURE)
         }
+        var promises = [()->Promise<Void>]()
+        
+        bulkDataLocalPath = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(bulkDataFileName)"
+        setsLocalPath     = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(setsFileName)"
+        keyruneLocalPath  = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(keyruneFileName)"
+        rulesLocalPath    = "\(cachePath)/\(ManaKit.Constants.ScryfallDate)_\(rulesFileName)"
+        
+        promises.append({
+            return self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath)
+        })
+        promises.append({
+            return self.createBulkData()
+        })
+        promises.append({
+            self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath)
+        })
+        promises.append({
+            self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath)
+        })
+        promises.append({
+            self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath)
+        })
+        promises.append({
+            self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath)
+        })
+        promises.append({
+            self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath)
+        })
+//        promises.append({
+//            self.fetchCardImages()
+//        })
+        promises.append({
+            self.processSetsData()
+        })
+        promises.append({
+            self.processCardsData(type: .misc)
+        })
+        promises.append({
+            self.processCardsData(type: .cards)
+        })
+        promises.append({
+            self.processCardsData(type: .partsAndFaces)
+        })
+//        promises.append({
+//            self.processCardsData(type: .faces)
+//        })
+        promises.append({
+            self.processRulingsData()
+        })
+        promises.append({
+            self.processComprehensiveRulesData()
+        })
+        promises.append({
+            self.processOtherCardsData()
+        })
+        promises.append({
+            self.processPricingData()
+        })
+        promises.append({
+            self.processScryfallPromise()
+        })
+
+        execInSequence(label: label,
+                       promises: promises,
+                       completion: completion)
     }
 
     func createBulkData() -> Promise<Void> {
@@ -317,9 +343,18 @@ class Maintainer {
         for next in promises {
             promise = promise.then { n -> Promise<Void> in
                 countIndex += 1
-                animation.update(step: countIndex,
-                                 total: countTotal,
-                                 text: countIndex == countTotal ? "Done" : "Exec...")
+
+                if countIndex == countTotal {
+                    animation.update(step: countIndex,
+                                     total: countTotal,
+                                     text: "Done")
+                } else {
+                    if countIndex % 2 == 0 {
+                        animation.update(step: countIndex,
+                                         total: countTotal,
+                                         text: "Exec...")
+                    }
+                }
                 return next()
             }
         }
@@ -328,7 +363,7 @@ class Maintainer {
             completion()
         }.catch { error in
             print(error)
-            completion()
+            exit(EXIT_FAILURE)
         }
     }
 

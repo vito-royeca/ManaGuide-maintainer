@@ -10,56 +10,87 @@ import Foundation
 import PostgresClientKit
 import PromiseKit
 
+enum CardsDataType {
+    case misc, cards, partsAndFaces
+}
+
 extension Maintainer {
-    func processCardsData() -> Promise<Void> {
+    func processCardsData(type: CardsDataType) -> Promise<Void> {
         return Promise { seal in
             let cardsPath = "\(self.cachePath)/\(self.cardsRemotePath.components(separatedBy: "/").last ?? "")"
             let fileReader = StreamingFileReader(path: cardsPath)
-            let label = "processCardsData"
-            let date = self.startActivity(label: label)
+            var label = ""
             
-            self.loopReadCards(fileReader: fileReader, start: 0, callback: {
+            switch type {
+            case .misc:
+                label = "createMiscCards"
+            case .cards:
+                label = "createCards"
+            case .partsAndFaces:
+                label = "createCardPartsAndFaces"
+            }
+            
+            let date = self.startActivity(label: label)
+            self.loopReadCards(fileReader: fileReader, dataType: type, start: 0, callback: {
                 self.endActivity(label: label, from: date)
                 seal.fulfill()
             })
         }
     }
     
-    func loopReadCards(fileReader: StreamingFileReader, start: Int, callback: @escaping () -> Void) {
-        let label = "createCards"
+    private func loopReadCards(fileReader: StreamingFileReader, dataType: CardsDataType, start: Int, callback: @escaping () -> Void) {
+        let label = "readCardsData"
         let date = self.startActivity(label: label)
         let cards = self.readCardData(fileReader: fileReader, lines: self.printMilestone)
         
         if !cards.isEmpty {
             let index = start + cards.count
             var promises = [()->Promise<Void>]()
+            var label2 = ""
             
             if start == 0 {
-                promises.append({
-                    return self.createDeleteParts()
-                })
-                promises.append({
-                    return self.createDeleteFaces()
-                })
-            }
-            for card in cards {
-                promises.append(contentsOf: self.createCardPromises(dict: card))
+                if dataType == .partsAndFaces {
+                    promises.append({
+                        return self.createDeleteParts()
+                    })
+                    promises.append({
+                        return self.createDeleteFaces()
+                    })
+                }
             }
             
-            self.execInSequence(label: "\(label): \(index)",
-                                promises: promises,
-                                completion: {
-                                    self.endActivity(label: "\(label): \(index)", from: date)
-                                    
-                                    self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
-                                    
-            })
+            for card in cards {
+                switch dataType {
+                case .misc:
+                    label2 = "createMiscCards"
+                    promises.append(contentsOf: self.createMiscCardPromises(dict: card))
+                case .cards:
+                    label2 = "createCards"
+                    promises.append(contentsOf: self.createCardPromises(dict: card))
+                case .partsAndFaces:
+                    label2 = "createCardPartsAndFaces"
+                    promises.append(contentsOf: self.createCardPartsAndFacesPromises(dict: card))
+                }
+            }
+            
+            if !promises.isEmpty {
+                self.execInSequence(label: "\(label2): \(index)",
+                                    promises: promises,
+                                    completion: {
+                                        self.endActivity(label: "\(label)", from: date)
+                                        self.loopReadCards(fileReader: fileReader, dataType: dataType, start: index, callback: callback)
+                                        
+                })
+            } else {
+                self.endActivity(label: "\(label)", from: date)
+                self.loopReadCards(fileReader: fileReader, dataType: dataType, start: index, callback: callback)
+            }
         } else {
             callback()
         }
     }
     
-    func createCardPromises(dict: [String: Any]) -> [()->Promise<Void>] {
+    private func createMiscCardPromises(dict: [String: Any]) -> [()->Promise<Void>] {
         var promises = [()->Promise<Void>]()
         
         if let artist = dict["artist"] as? String {
@@ -192,9 +223,21 @@ extension Maintainer {
             }
         }
         
+        return promises
+    }
+    
+    private func createCardPromises(dict: [String: Any]) -> [()->Promise<Void>] {
+        var promises = [()->Promise<Void>]()
+        
         promises.append({
             return self.create(card: dict)
         })
+
+        return promises
+    }
+    
+    private func createCardPartsAndFacesPromises(dict: [String: Any]) -> [()->Promise<Void>] {
+        var promises = [()->Promise<Void>]()
         
         if let parts = self.filterParts(dict: dict) {
             for part in parts {
@@ -205,9 +248,10 @@ extension Maintainer {
                 })
             }
         }
-        
+
         if let faces = self.filterFaces(dict: dict) {
             for face in faces {
+                promises.append(contentsOf: self.createMiscCardPromises(dict: face))
                 promises.append({
                     return self.create(card: face)
                 })
@@ -225,7 +269,30 @@ extension Maintainer {
         return promises
     }
     
-    func readCardDataLines(completion: ([String: Any]) -> Void) {
+//    private func createCardFacesPromises(dict: [String: Any]) -> [()->Promise<Void>] {
+//        var promises = [()->Promise<Void>]()
+//
+//        if let faces = self.filterFaces(dict: dict) {
+//            for face in faces {
+//                promises.append(contentsOf: self.createMiscCardPromises(dict: face))
+//                promises.append({
+//                    return self.create(card: face)
+//                })
+//
+//                if let card = face["cmcard"] as? String,
+//                   let cardFace = face["new_id"] as? String {
+//                    promises.append({
+//                        return self.createFace(card: card,
+//                                               cardFace: cardFace)
+//                    })
+//                }
+//            }
+//        }
+//
+//        return promises
+//    }
+    
+    private func readCardDataLines(completion: ([String: Any]) -> Void) {
         let cardsPath = "\(cachePath)/\(cardsRemotePath.components(separatedBy: "/").last ?? "")"
         let fileReader = StreamingFileReader(path: cardsPath)
         
@@ -247,7 +314,7 @@ extension Maintainer {
         }
     }
     
-    func readCardData(fileReader: StreamingFileReader, lines: Int) -> [[String: Any]] {
+    private func readCardData(fileReader: StreamingFileReader, lines: Int) -> [[String: Any]] {
         var array = [[String: Any]]()
         
         while let line = fileReader.readLine() {
@@ -274,7 +341,7 @@ extension Maintainer {
         return array
     }
     
-    func filterLanguage(dict: [String: Any]) -> [String: String]? {
+    private func filterLanguage(dict: [String: Any]) -> [String: String]? {
         guard let lang = dict["lang"] as? String else {
             return nil
         }
@@ -359,7 +426,7 @@ extension Maintainer {
         ]
     }
     
-    func filterLayout(dict: [String: Any]) -> [String: String]? {
+    private func filterLayout(dict: [String: Any]) -> [String: String]? {
         guard let layout = dict["layout"] as? String else {
             return nil
         }
@@ -416,7 +483,7 @@ extension Maintainer {
         ]
     }
     
-    func filterFrame(dict: [String: Any]) -> [String: String]? {
+    private func filterFrame(dict: [String: Any]) -> [String: String]? {
         guard let frame = dict["frame"] as? String else {
             return nil
         }
@@ -444,7 +511,7 @@ extension Maintainer {
         ]
     }
     
-    func filterFrameEffects(dict: [String: Any]) -> [[String: String]] {
+    private func filterFrameEffects(dict: [String: Any]) -> [[String: String]] {
         var array = [[String: String]]()
         
         guard let frameEffects = dict["frame_effects"] as? [String] else {
@@ -525,7 +592,7 @@ extension Maintainer {
         return array
     }
     
-    func filterColors(dict: [String: Any]) -> [[String: Any]] {
+    private func filterColors(dict: [String: Any]) -> [[String: Any]] {
         var array = [[String: Any]]()
         
         guard let colors = dict["colors"] as? [String] else {
@@ -561,7 +628,7 @@ extension Maintainer {
         return array
     }
     
-    func filterTypes(dict: [String: Any]) -> [[String: Any]] {
+    private func filterTypes(dict: [String: Any]) -> [[String: Any]] {
         guard let typeLine = dict["type_line"] as? String else {
             return [[String: Any]]()
         }
@@ -569,7 +636,7 @@ extension Maintainer {
         return extractTypesFrom(typeLine)
     }
     
-    func filterComponents(dict: [String: Any]) -> [String] {
+    private func filterComponents(dict: [String: Any]) -> [String] {
         var array = [String]()
         
         guard let parts = dict["all_parts"] as? [[String: Any]] else {
@@ -585,7 +652,7 @@ extension Maintainer {
         return array
     }
     
-    func filterParts(dict: [String: Any]) -> [[String: Any]]? {
+    private func filterParts(dict: [String: Any]) -> [[String: Any]]? {
         guard let parts = dict["all_parts"] as? [[String: Any]],
               let set = dict["set"] as? String,
               let language = dict["lang"] as? String,
@@ -610,7 +677,7 @@ extension Maintainer {
         return array
     }
     
-    func filterFaces(dict: [String: Any]) -> [[String: Any]]? {
+    private func filterFaces(dict: [String: Any]) -> [[String: Any]]? {
         guard let faces = dict["card_faces"] as? [[String: Any]],
               let set = dict["set"] as? String,
               let language = dict["lang"] as? String,
@@ -633,9 +700,13 @@ extension Maintainer {
                 }
                 newFace[k] = v
             }
+            newFace["set"] = set
+            newFace["lang"] = language
+            newFace["collector_number"] = collectorNumber
+            
             newFace["face_order"] = i
-            newFace["new_id"] = faceId
             newFace["cmcard"] = newId
+            newFace["new_id"] = faceId
             
             array.append(newFace)
         }
@@ -643,7 +714,7 @@ extension Maintainer {
         return array
     }
     
-    private func extractTypesFrom(_ typeLine: String) -> [[String: String]]  {
+    func extractTypesFrom(_ typeLine: String) -> [[String: String]]  {
         var filteredTypes = [[String: String]]()
         let emdash = "\u{2014}"
         var types = Set<String>()

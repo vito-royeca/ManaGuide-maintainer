@@ -357,7 +357,7 @@ extension Maintainer {
         }
         
         let faceOrder = card["face_order"] as? Int ?? Int(0)
-        let newId = "\(set)_\(language)_\(collectorNumber.replacingOccurrences(of: "★", with: "star"))"
+        let newId = card["new_id"] as? String ?? "\(set)_\(language)_\(collectorNumber.replacingOccurrences(of: "★", with: "star"))"
         let oracle_id = card["oracle_id"] as? String ?? "NULL"
         let id = card["id"] as? String ?? "NULL"
         
