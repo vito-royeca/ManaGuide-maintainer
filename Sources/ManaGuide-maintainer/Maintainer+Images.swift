@@ -10,6 +10,7 @@ import Foundation
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
+//import CryptoKit
 import PostgresClientKit
 import PromiseKit
 
@@ -141,6 +142,7 @@ extension Maintainer {
 //                    if !FileManager.default.fileExists(atPath: downloadFile) {
 //                        willDownload = true
 //                    }
+//                    let md5String = Insecure.MD5.hash(data: data).map { String(format: "%02hhx", $0) }.joined()
 //                } else {
                     if FileManager.default.fileExists(atPath: imageFile) {
     //                    do {

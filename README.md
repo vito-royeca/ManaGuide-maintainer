@@ -4,7 +4,7 @@ ManaGuide-maintainer is a command line interface (CLI) non-iOS/ mac OS program w
 
 ## Usage
 
-    ManaGuide-maintainer --host <host> --port <port> --database <database> --user <user> --password <password> --full-update <full-update>
+   $  ManaGuide-maintainer --host <host> --port <port> --database <database> --user <user> --password <password> --full-update <full-update>
 
     OPTIONS:
       --host <host>           Database host.
@@ -24,6 +24,6 @@ ManaGuide-maintainer is a command line interface (CLI) non-iOS/ mac OS program w
 ## Author
 
 Vito Royeca
-https://vitoroyeca.com
+
 vito.royeca@gmail.com
 
