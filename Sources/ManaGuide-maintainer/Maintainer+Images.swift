@@ -121,21 +121,17 @@ extension Maintainer {
             }
             
             let imagesPath   = "\(imagesPath)/\(set)/\(language)/\(number)"
-            let downloadPath  = "\(cachePath)/card_downloads/\(set)/\(language)/\(number)"
             var promises = [Promise<Void>]()
             
             for (k,v) in imageUris {
                 var imageFile = "\(imagesPath)/\(k)"
-                var downloadFile = "\(downloadPath)/\(k)"
                 var remoteImageData: Data?
                 var willDownload = false
                 
                 if v.lowercased().hasSuffix("png") {
                     imageFile = "\(imageFile).png"
-                    downloadFile = "\(downloadFile).png"
                 } else if v.lowercased().hasSuffix("jpg") {
                     imageFile = "\(imageFile).jpg"
-                    downloadFile = "\(downloadFile).jpg"
                 }
                 
                 if FileManager.default.fileExists(atPath: imageFile) {
@@ -145,17 +141,7 @@ extension Maintainer {
                         }
                     } else {
                         if k == "art_crop" || k == "normal" || k == "png" {
-                            self.writeStatus(directoryPath: downloadPath, status: imageStatus)
-                        }
-                    }
-                } else if FileManager.default.fileExists(atPath: downloadFile) {
-                    if let directoryStatus = self.readStatus(directoryPath: downloadPath) {
-                        if imageStatus != directoryStatus {
-                            willDownload = true
-                        }
-                    } else {
-                        if k == "art_crop" || k == "normal" || k == "png" {
-                            self.writeStatus(directoryPath: downloadPath, status: imageStatus)
+                            self.writeStatus(directoryPath: imagesPath, status: imageStatus)
                         }
                     }
                 } else {
@@ -163,7 +149,7 @@ extension Maintainer {
                         willDownload = false
                     } else {
                         if k == "art_crop" || k == "normal" || k == "png" {
-                            self.writeStatus(directoryPath: downloadPath, status: imageStatus)
+                            self.writeStatus(directoryPath: imagesPath, status: imageStatus)
                         }
                         willDownload = true
                     }
@@ -173,10 +159,10 @@ extension Maintainer {
                     if k == "art_crop" || k == "normal" || k == "png" {
                         if let remoteImageData = remoteImageData {
                             promises.append(saveImagePromise(imageData: remoteImageData,
-                                                             destinationFile: downloadFile))
+                                                             destinationFile: imageFile))
                         } else {
                             promises.append(downloadImagePromise(url: v,
-                                                                 destinationFile: downloadFile))
+                                                                 destinationFile: imageFile))
                         }
                     }
                 }
