@@ -135,9 +135,14 @@ extension Maintainer {
                    code == "tafr" ||
                    code == "aafr" {
                     keyruneCodes[code] = ["e972", "xdnd"] // Adventures in the Forgotten Realms
-                } else if code == "rmh1" ||
-                   code == "mh2" {
+                } else if code == "h1r" {
                    keyruneCodes[code] = ["e95b", "mh1"] // modern horizons 1
+                } else if code == "mh2" ||
+                   code == "tmh2" ||
+                   code == "amh2" {
+                   keyruneCodes[code] = ["e97b", "mh2"] // modern horizons 2
+                }else if code == "khc"{
+                   keyruneCodes[code] = ["e97d", "khc"] // kaldheim commander
                 } else if code == "j20" ||
                    code == "j21" {
                    keyruneCodes[code] = ["e96a", "j20"] // judge academy
