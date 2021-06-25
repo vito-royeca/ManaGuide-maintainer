@@ -119,16 +119,18 @@ class Maintainer {
     var user: String
     var password: String
     var isFullUpdate: Bool
+    var imagesPath: String
     
     // MARK: - init
 
-    init(host: String, port: Int, database: String, user: String, password: String, isFullUpdate: Bool) {
+    init(host: String, port: Int, database: String, user: String, password: String, isFullUpdate: Bool, imagesPath: String) {
         self.host = host
         self.port = port
         self.database = database
         self.user = user
         self.password = password
         self.isFullUpdate = isFullUpdate
+        self.imagesPath = imagesPath
     }
     
     // MARK: - Database methods

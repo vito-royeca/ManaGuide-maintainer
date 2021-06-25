@@ -120,14 +120,14 @@ extension Maintainer {
                 return
             }
             
-            let imagesPath   = "/mnt/managuide_images/cards/\(set)/\(language)/\(number)"
+            let imagesPath   = "\(imagesPath)/\(set)/\(language)/\(number)"
             let downloadPath  = "\(cachePath)/card_downloads/\(set)/\(language)/\(number)"
             var promises = [Promise<Void>]()
-            var remoteImageData: Data?
             
             for (k,v) in imageUris {
                 var imageFile = "\(imagesPath)/\(k)"
                 var downloadFile = "\(downloadPath)/\(k)"
+                var remoteImageData: Data?
                 var willDownload = false
                 
                 if v.lowercased().hasSuffix("png") {
@@ -138,40 +138,36 @@ extension Maintainer {
                     downloadFile = "\(downloadFile).jpg"
                 }
                 
-//                if imageStatus == "highres_scan" {
-//                    if !FileManager.default.fileExists(atPath: downloadFile) {
-//                        willDownload = true
-//                    }
-//                    let md5String = Insecure.MD5.hash(data: data).map { String(format: "%02hhx", $0) }.joined()
-//                } else {
-                    if FileManager.default.fileExists(atPath: imageFile) {
-    //                    do {
-    //                      // Compare local and remote files
-    //                      let localImageData = try Data(contentsOf: URL(fileURLWithPath: imageFile))
-    //                      remoteImageData = try Data(contentsOf: URL(string: v)!)
-    //                      willDownload = localImageData != remoteImageData
-    //                    } catch {
-    //                      print(error)
-    //                      willDownload = true
-    //                    }
-                    } else if FileManager.default.fileExists(atPath: downloadFile) {
-    //                    do {
-    //                      // Compare local and remote files
-    //                      let localImageData = try Data(contentsOf: URL(fileURLWithPath: downloadFile))
-    //                      remoteImageData = try Data(contentsOf: URL(string: v)!)
-    //                      willDownload = localImageData != remoteImageData
-    //                    } catch {
-    //                      print(error)
-    //                      willDownload = true
-    //                    }
-                    } else {
-                        if v.hasSuffix("soon.jpg") || v.hasSuffix("soon.png") {
-                            willDownload = false
-                        } else {
+                if FileManager.default.fileExists(atPath: imageFile) {
+                    if let directoryStatus = self.readStatus(directoryPath: imagesPath) {
+                        if imageStatus != directoryStatus {
                             willDownload = true
                         }
+                    } else {
+                        if k == "art_crop" || k == "normal" || k == "png" {
+                            self.writeStatus(directoryPath: downloadPath, status: imageStatus)
+                        }
                     }
-//                }
+                } else if FileManager.default.fileExists(atPath: downloadFile) {
+                    if let directoryStatus = self.readStatus(directoryPath: downloadPath) {
+                        if imageStatus != directoryStatus {
+                            willDownload = true
+                        }
+                    } else {
+                        if k == "art_crop" || k == "normal" || k == "png" {
+                            self.writeStatus(directoryPath: downloadPath, status: imageStatus)
+                        }
+                    }
+                } else {
+                    if v.hasSuffix("soon.jpg") || v.hasSuffix("soon.png") {
+                        willDownload = false
+                    } else {
+                        if k == "art_crop" || k == "normal" || k == "png" {
+                            self.writeStatus(directoryPath: downloadPath, status: imageStatus)
+                        }
+                        willDownload = true
+                    }
+                }
 
                 if willDownload {
                     if k == "art_crop" || k == "normal" || k == "png" {
@@ -201,6 +197,47 @@ extension Maintainer {
         }
     }
     
+    private func readStatus(directoryPath: String) -> String? {
+        let statusFile = "\(directoryPath)/status.txt"
+        
+        guard FileManager.default.fileExists(atPath: statusFile) else {
+            return nil
+        }
+        
+        do {
+            let status = try String(contentsOfFile: statusFile)
+            return status
+        } catch {
+            return nil
+        }
+    }
+    
+    private func writeStatus(directoryPath: String, status: String) {
+        let statusFile = "\(directoryPath)/status.txt"
+        
+        if status != self.readStatus(directoryPath: directoryPath) ?? "" {
+            if FileManager.default.fileExists(atPath: statusFile) {
+                try! FileManager.default.removeItem(atPath: statusFile)
+            }
+            
+            self.prepare(destinationFile: statusFile)
+            try! status.write(toFile: statusFile, atomically: true, encoding: .utf8)
+        }
+    }
+    
+//    private func compare(localFile local: String, andRemoteFile remote: String) -> Bool {
+//        do {
+//            let localImageData = try Data(contentsOf: URL(fileURLWithPath: local))
+//            let remoteImageData = try Data(contentsOf: URL(string: remote)!)
+//            let localMD5 = Insecure.MD5.hash(data: localImageData).map { String(format: "%02hhx", $0) }.joined()
+//            let remoteMD5 = Insecure.MD5.hash(data: remoteImageData).map { String(format: "%02hhx", $0) }.joined()
+//            return localMD5 == remoteMD5
+//        } catch { error in
+//            print(error)
+//            return false
+//        }
+//    }
+
     private func createImageUris(number: String, set: String, language: String, imageStatus: String, imageUrisDict: [String: String]) -> [String: Any] {
         var newDict = [String: Any]()
         

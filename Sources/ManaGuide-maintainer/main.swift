@@ -4,24 +4,27 @@ import ArgumentParser
 
 // Define our parser.
 struct Managuide: ParsableCommand {
-    @Option(help: "Database host.")
+    @Option(help: "Database host")
     var host: String
     
-    @Option(help: "Database port.")
+    @Option(help: "Database port")
     var port: Int
     
-    @Option(help: "Database name.")
+    @Option(help: "Database name")
     var database: String
     
-    @Option(help: "Database user.")
+    @Option(help: "Database user")
     var user: String
     
-    @Option(help: "Database password.")
+    @Option(help: "Database password")
     var password: String
     
     @Option(help: "Full update: true | false")
     var fullUpdate: Bool
     
+    @Option(help: "Card images path")
+    var imagesPath: String
+
     func run() throws {
         ManaKit.sharedInstance.configure(apiURL: "http://192.168.1.182:1993",
                                                  partnerKey: "ManaGuide",
@@ -33,7 +36,8 @@ struct Managuide: ParsableCommand {
                                     database: database,
                                     user: user,
                                     password: password,
-                                    isFullUpdate: fullUpdate)
+                                    isFullUpdate: fullUpdate,
+                                    imagesPath: imagesPath)
         maintainer.updateDatabase()
     }
 }

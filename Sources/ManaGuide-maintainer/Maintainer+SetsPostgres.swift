@@ -131,7 +131,12 @@ extension Maintainer {
         // manual fix
         for dict in array {
             if let code = dict["code"] as? String {
-                if code == "rmh1" {
+                if code == "afr" ||
+                   code == "tafr" ||
+                   code == "aafr" {
+                    keyruneCodes[code] = ["e972", "xdnd"] // Adventures in the Forgotten Realms
+                } else if code == "rmh1" ||
+                   code == "mh2" {
                    keyruneCodes[code] = ["e95b", "mh1"] // modern horizons 1
                 } else if code == "j20" ||
                    code == "j21" {
@@ -205,7 +210,8 @@ extension Maintainer {
                     code == "plgs" ||
                     code == "g17" ||
                     code == "pl21" ||
-                    code == "pwp21" {
+                    code == "pwp21" ||
+                    code == "plg21" {
                     keyruneCodes[code] = ["e687", "pmei"]  // media insert
                  } else if code == "pal99" {
                     keyruneCodes[code] = ["e622", "usg"]  // urza's saga
