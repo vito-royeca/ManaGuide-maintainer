@@ -133,21 +133,22 @@ extension Maintainer {
             if let code = dict["code"] as? String {
                 if code == "afr" ||
                    code == "tafr" ||
-                   code == "aafr" {
-                    keyruneCodes[code] = ["e972", "xdnd"] // Adventures in the Forgotten Realms
-                } else if code == "h1r" {
-                   keyruneCodes[code] = ["e95b", "mh1"] // modern horizons 1
-                } else if code == "mh2" ||
+                   code == "aafr" ||
+                   code == "afc" {
+                   keyruneCodes[code] = ["e972", "xdnd"] // Adventures in the Forgotten Realms
+                }else if code == "mh2" ||
                    code == "tmh2" ||
                    code == "amh2" {
-                   keyruneCodes[code] = ["e97b", "mh2"] // modern horizons 2
-                }else if code == "khc"{
-                   keyruneCodes[code] = ["e97d", "khc"] // kaldheim commander
+                   keyruneCodes[code] = ["e97b", "mh2"]  // modern horizons 2
+                } else if code == "h1r" {
+                    keyruneCodes[code] = ["e95b", "mh1"] // modern horizons 1
+                } else if code == "khc"{
+                   keyruneCodes[code] = ["e97d", "khc"]  // kaldheim commander
                 } else if code == "j20" ||
                    code == "j21" {
-                   keyruneCodes[code] = ["e96a", "j20"] // judge academy
+                   keyruneCodes[code] = ["e96a", "j20"]  // judge academy
                 } else if code == "plist" {
-                   keyruneCodes[code] = ["e971", "mb1"] // plist
+                   keyruneCodes[code] = ["e971", "mb1"]  // plist
                 } else if code == "tznr" ||
                    code == "aznr" ||
                    code == "pznr" ||
@@ -270,30 +271,30 @@ extension Maintainer {
                     keyruneCodes[code] = ["e688", "parl"]  // dci
                 } else if code == "ana" ||
                     code == "anb"{
-                    keyruneCodes[code] = ["e943", "parl3"]  // arena league
+                    keyruneCodes[code] = ["e943", "parl3"] // arena league
                 } else if code == "ced" {
                     keyruneCodes[code] = ["e926", "xcle"]  // CE
                 } else if code == "dvd" ||
                     code == "tdvd"{
-                    keyruneCodes[code] = ["e66b", "ddc"] // divine vs demonic
+                    keyruneCodes[code] = ["e66b", "ddc"]   // divine vs demonic
                 } else if code == "gvl" ||
                     code == "tgvl"{
-                    keyruneCodes[code] = ["e66c", "ddd"]  // garruk vs liliana
+                    keyruneCodes[code] = ["e66c", "ddd"]   // garruk vs liliana
                 } else if code == "jvc" ||
                     code == "tjvc"{
-                    keyruneCodes[code] = ["e66a", "dd2"]  // jace vs chandra
+                    keyruneCodes[code] = ["e66a", "dd2"]   // jace vs chandra
                 } else if code == "dd1" {
-                    keyruneCodes[code] = ["e669", "evg"]  // elves vs goblins
+                    keyruneCodes[code] = ["e669", "evg"]   // elves vs goblins
                 } else if code == "pdtp" {
-                    keyruneCodes[code] = ["e915", "pxbox"]  // xbox media promo
+                    keyruneCodes[code] = ["e915", "pxbox"] // xbox media promo
                 } else if code == "pdp12" {
-                    keyruneCodes[code] = ["e60f", "m13"]  // m13
+                    keyruneCodes[code] = ["e60f", "m13"]   // m13
                 } else if code == "pdp13" {
-                    keyruneCodes[code] = ["e610", "m14"]  // m14
+                    keyruneCodes[code] = ["e610", "m14"]   // m14
                 } else if code == "pdp14" {
-                    keyruneCodes[code] = ["e611", "m15"]  // m15
+                    keyruneCodes[code] = ["e611", "m15"]   // m15
                 } else if code == "fbb" {
-                    keyruneCodes[code] = ["e603", "3ed"]  // revised / 3ed
+                    keyruneCodes[code] = ["e603", "3ed"]   // revised / 3ed
                 } else if code == "phuk" ||
                     code == "psal" {
                     keyruneCodes[code] = ["e909", "psalvat05"]  // Salvat 2005
@@ -302,9 +303,9 @@ extension Maintainer {
                     keyruneCodes[code] = ["e68a", "pbook"]  // book inserts
                 } else if code == "pi13" ||
                     code == "pi14" {
-                    keyruneCodes[code] = ["e92c", "pidw"]  // IDW promo
+                    keyruneCodes[code] = ["e92c", "pidw"]   // IDW promo
                 } else if code == "cei" {
-                    keyruneCodes[code] = ["e927", "xice"]  // cei
+                    keyruneCodes[code] = ["e927", "xice"]   // cei
                 } else if code == "pmoa" ||
                     code == "prm" {
                     keyruneCodes[code] = ["e91b", "pmodo"]  // magic online
@@ -312,7 +313,7 @@ extension Maintainer {
                     keyruneCodes[code] = ["e91e", "xmods"]  // magic online deck series
                 } else if code == "ren" ||
                     code == "rin" {
-                    keyruneCodes[code] = ["e917", "xren"]  // rennaisance
+                    keyruneCodes[code] = ["e917", "xren"]   // rennaisance
                 } else if code == "pmps07" ||
                     code == "pmps08" ||
                     code == "pmps09" ||

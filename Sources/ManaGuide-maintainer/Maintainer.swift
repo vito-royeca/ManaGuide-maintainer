@@ -23,7 +23,6 @@ class Maintainer {
     let setsFileName      = "scryfall-sets.json"
     let keyruneFileName   = "keyrune.html"
     let rulesFileName     = "MagicCompRules.txt"
-//    let setCodesForProcessing:[String]? = nil
     let storeName = "TCGPlayer"
     let cachePath = "/tmp"
     
@@ -37,7 +36,7 @@ class Maintainer {
     var rulingsRemotePath  = ""
     let setsRemotePath     = "https://api.scryfall.com/sets"
     let keyruneRemotePath  = "https://keyrune.andrewgioia.com/cheatsheet.html"
-    let rulesRemotePath    = "https://media.wizards.com/2021/downloads/MagicCompRules 20210419.txt"
+    let rulesRemotePath    = "https://media.wizards.com/2021/downloads/MagicCompRules 20210609.txt"
     
     // local file names
     var bulkDataLocalPath  = ""
