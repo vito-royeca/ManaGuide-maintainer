@@ -247,6 +247,9 @@ class Maintainer {
         promises.append({
             self.processServerUpdatePromise()
         })
+        promises.append({
+            self.processServerVacuumPromise()
+        })
         
         execInSequence(label: label,
                        promises: promises,

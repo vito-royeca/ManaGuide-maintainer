@@ -16,4 +16,11 @@ extension Maintainer {
         return createPromise(with: query,
                              parameters: parameters)
     }
+    
+    func processServerVacuumPromise() -> Promise<Void> {
+        let query = "VACUUM FULL ANALYZE"
+        
+        return createPromise(with: query,
+                             parameters: nil)
+    }
 }
