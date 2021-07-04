@@ -131,11 +131,19 @@ extension Maintainer {
         // manual fix
         for dict in array {
             if let code = dict["code"] as? String {
-                if code == "afr" ||
+                if code == "pz2" {
+                    keyruneCodes[code] = ["e91f", "pz2"] // treasure chests
+                } else if code == "pz1" {
+                    keyruneCodes[code] = ["e90c", "pz1"] // legendary cube
+                } else if code == "pdp10" {
+                    keyruneCodes[code] = ["e689", "dpa"] // duels of the plainswalkers
+                } else if code == "pgru" {
+                    keyruneCodes[code] = ["e683", "pgru"] // guru lands
+                } else if code == "afr" ||
                    code == "tafr" ||
                    code == "aafr" ||
                    code == "afc" {
-                   keyruneCodes[code] = ["e972", "xdnd"] // Adventures in the Forgotten Realms
+                   keyruneCodes[code] = ["e972", "xdnd"] // adventures in the forgotten realms
                 }else if code == "mh2" ||
                    code == "tmh2" ||
                    code == "amh2" {
@@ -154,9 +162,9 @@ extension Maintainer {
                    code == "pznr" ||
                    code == "sznr" ||
                    code == "mznr" {
-                   keyruneCodes[code] = ["e963", "znr"] // Zendikar Rising Tokens
+                   keyruneCodes[code] = ["e963", "znr"] // zendikar rising Tokens
                 } else if code == "zne" {
-                  keyruneCodes[code] = ["e97a", "zne"]  // Zendikar Rising Expeditions
+                  keyruneCodes[code] = ["e97a", "zne"]  // zendikar rising expeditions
                 } else if code == "2xm" ||
                    code == "t2xm" {
                    keyruneCodes[code] = ["e96e", "2xm"] // double masters
@@ -211,13 +219,17 @@ extension Maintainer {
                     code == "sld" ||
                     code == "psld" ||
                     code == "j20" ||
-                    code == "htr18" ||
                     code == "slu" ||
                     code == "plgs" ||
                     code == "g17" ||
                     code == "pl21" ||
                     code == "pwp21" ||
-                    code == "plg21" {
+                    code == "plg20" ||
+                    code == "plg21" ||
+                    code == "htr16" ||
+                    code == "htr17" ||
+                    code == "htr18" ||
+                    code == "htr19" {
                     keyruneCodes[code] = ["e687", "pmei"]  // media insert
                  } else if code == "pal99" {
                     keyruneCodes[code] = ["e622", "usg"]  // urza's saga
@@ -299,10 +311,12 @@ extension Maintainer {
                     code == "psal" {
                     keyruneCodes[code] = ["e909", "psalvat05"]  // Salvat 2005
                 } else if code == "phpr" ||
-                    code == "pbok" {
+                    code == "pbok" ||
+                    code == "pbook" {
                     keyruneCodes[code] = ["e68a", "pbook"]  // book inserts
                 } else if code == "pi13" ||
-                    code == "pi14" {
+                    code == "pi14" ||
+                    code == "pidw" {
                     keyruneCodes[code] = ["e92c", "pidw"]   // IDW promo
                 } else if code == "cei" {
                     keyruneCodes[code] = ["e927", "xice"]   // cei
@@ -314,7 +328,8 @@ extension Maintainer {
                 } else if code == "ren" ||
                     code == "rin" {
                     keyruneCodes[code] = ["e917", "xren"]   // rennaisance
-                } else if code == "pmps07" ||
+                } else if code == "pmps06" ||
+                    code == "pmps07" ||
                     code == "pmps08" ||
                     code == "pmps09" ||
                     code == "pmps10" ||
