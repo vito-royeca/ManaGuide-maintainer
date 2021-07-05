@@ -299,12 +299,12 @@ extension Maintainer {
                     keyruneCodes[code] = ["e669", "evg"]   // elves vs goblins
                 } else if code == "pdtp" {
                     keyruneCodes[code] = ["e915", "pxbox"] // xbox media promo
-                } else if code == "pdp12" {
-                    keyruneCodes[code] = ["e60f", "m13"]   // m13
                 } else if code == "pdp13" {
-                    keyruneCodes[code] = ["e610", "m14"]   // m14
+                    keyruneCodes[code] = ["e60f", "m13"]   // m13
                 } else if code == "pdp14" {
-                    keyruneCodes[code] = ["e611", "m15"]   // m15
+                    keyruneCodes[code] = ["e610", "m14"]   // m14
+                } else if code == "pdp15" {
+                    keyruneCodes[code] = ["e611", "m10"]   // m15
                 } else if code == "fbb" {
                     keyruneCodes[code] = ["e603", "3ed"]   // revised / 3ed
                 } else if code == "phuk" ||
