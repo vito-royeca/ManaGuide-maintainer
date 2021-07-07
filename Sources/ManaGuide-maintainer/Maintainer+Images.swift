@@ -136,7 +136,7 @@ extension Maintainer {
                 
                 if FileManager.default.fileExists(atPath: imageFile) {
                     if let directoryStatus = self.readStatus(directoryPath: imagesPath) {
-                        if imageStatus != directoryStatus {
+                        if imageStatus != directoryStatus.trimmingCharacters(in: .whitespacesAndNewlines) {
                             willDownload = true
                         }
                     } else {
@@ -201,7 +201,7 @@ extension Maintainer {
     private func writeStatus(directoryPath: String, status: String) {
         let statusFile = "\(directoryPath)/status.txt"
         
-        if status != self.readStatus(directoryPath: directoryPath) ?? "" {
+        if status != (self.readStatus(directoryPath: directoryPath) ?? "").trimmingCharacters(in: .whitespacesAndNewlines) {
             if FileManager.default.fileExists(atPath: statusFile) {
                 try! FileManager.default.removeItem(atPath: statusFile)
             }
@@ -271,7 +271,7 @@ extension Maintainer {
                     seal.fulfill()
                 }
             }.catch { error in
-                print(error)
+                print("\(error): \(url)")
                 seal.fulfill(())
             }
         }

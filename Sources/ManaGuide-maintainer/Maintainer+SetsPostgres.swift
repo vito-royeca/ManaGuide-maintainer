@@ -131,7 +131,10 @@ extension Maintainer {
         // manual fix
         for dict in array {
             if let code = dict["code"] as? String {
-                if code == "pz2" {
+                if code == "oc21" ||
+                   code == "tc21" {
+                    keyruneCodes[code] = ["e97e", "c21"] // commander 21
+                } else  if code == "pz2" {
                     keyruneCodes[code] = ["e91f", "pz2"] // treasure chests
                 } else if code == "pz1" {
                     keyruneCodes[code] = ["e90c", "pz1"] // legendary cube
