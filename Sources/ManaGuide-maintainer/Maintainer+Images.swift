@@ -120,11 +120,15 @@ extension Maintainer {
                 return
             }
             
-            let imagesPath   = "\(imagesPath)/\(set)/\(language)/\(number)"
+            let path   = "\(imagesPath)/\(set)/\(language)/\(number)"
             var promises = [Promise<Void>]()
             
             for (k,v) in imageUris {
-                var imageFile = "\(imagesPath)/\(k)"
+                if !(k == "art_crop" || k == "normal" || k == "png") {
+                    continue
+                }
+                
+                var imageFile = "\(path)/\(k)"
                 var remoteImageData: Data?
                 var willDownload = false
                 
@@ -135,35 +139,26 @@ extension Maintainer {
                 }
                 
                 if FileManager.default.fileExists(atPath: imageFile) {
-                    if let directoryStatus = self.readStatus(directoryPath: imagesPath) {
-                        if imageStatus != directoryStatus.trimmingCharacters(in: .whitespacesAndNewlines) {
+                    if let status = self.readStatus(directoryPath: path) {
+                        if imageStatus != status {
                             willDownload = true
                         }
                     } else {
-                        if k == "art_crop" || k == "normal" || k == "png" {
-                            self.writeStatus(directoryPath: imagesPath, status: imageStatus)
-                        }
+                        willDownload = true
                     }
                 } else {
-                    if v.hasSuffix("soon.jpg") || v.hasSuffix("soon.png") {
-                        willDownload = false
-                    } else {
-                        if k == "art_crop" || k == "normal" || k == "png" {
-                            self.writeStatus(directoryPath: imagesPath, status: imageStatus)
-                        }
+                    if !v.hasSuffix("soon.jpg") || !v.hasSuffix("soon.png") {
                         willDownload = true
                     }
                 }
 
                 if willDownload {
-                    if k == "art_crop" || k == "normal" || k == "png" {
-                        if let remoteImageData = remoteImageData {
-                            promises.append(saveImagePromise(imageData: remoteImageData,
+                    if let remoteImageData = remoteImageData {
+                        promises.append(saveImagePromise(imageData: remoteImageData,
+                                                         destinationFile: imageFile))
+                    } else {
+                        promises.append(downloadImagePromise(url: v,
                                                              destinationFile: imageFile))
-                        } else {
-                            promises.append(downloadImagePromise(url: v,
-                                                                 destinationFile: imageFile))
-                        }
                     }
                 }
             }
@@ -174,6 +169,8 @@ extension Maintainer {
                 firstly {
                     when(fulfilled: promises)
                 }.done {
+                    self.writeStatus(directoryPath: path, status: imageStatus)
+                    print("Downloaded \(path)")
                     seal.fulfill(())
                 }.catch { error in
                     print(error)
@@ -192,7 +189,7 @@ extension Maintainer {
         
         do {
             let status = try String(contentsOfFile: statusFile)
-            return status
+            return status.trimmingCharacters(in: .whitespacesAndNewlines)
         } catch {
             return nil
         }
@@ -201,7 +198,7 @@ extension Maintainer {
     private func writeStatus(directoryPath: String, status: String) {
         let statusFile = "\(directoryPath)/status.txt"
         
-        if status != (self.readStatus(directoryPath: directoryPath) ?? "").trimmingCharacters(in: .whitespacesAndNewlines) {
+        if status != (self.readStatus(directoryPath: directoryPath) ?? "") {
             if FileManager.default.fileExists(atPath: statusFile) {
                 try! FileManager.default.removeItem(atPath: statusFile)
             }
@@ -248,6 +245,7 @@ extension Maintainer {
                 prepare(destinationFile: destinationFile)
                 try imageData.write(to: URL(fileURLWithPath: destinationFile))
 //                print("Saved \(destinationFile)")
+                
                 seal.fulfill(())
             } catch {
                 print("Unable to write to: \(destinationFile)")
@@ -265,6 +263,7 @@ extension Maintainer {
                     self.prepare(destinationFile: destinationFile)
                     try response.data.write(to: URL(fileURLWithPath: destinationFile))
 //                    print("Downloaded \(url)")
+                    
                     seal.fulfill(())
                 } catch {
                     print("Unable to write to: \(destinationFile)")

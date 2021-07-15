@@ -145,7 +145,8 @@ extension Maintainer {
                 } else if code == "afr" ||
                    code == "tafr" ||
                    code == "aafr" ||
-                   code == "afc" {
+                   code == "afc" ||
+                   code == "pafr" {
                    keyruneCodes[code] = ["e972", "xdnd"] // adventures in the forgotten realms
                 }else if code == "mh2" ||
                    code == "tmh2" ||

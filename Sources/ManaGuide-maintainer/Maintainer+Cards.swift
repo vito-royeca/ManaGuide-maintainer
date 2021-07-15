@@ -23,7 +23,7 @@ extension Maintainer {
             
             switch type {
             case .misc:
-                label = "createMiscCards"
+                label = "createMiscData"
             case .cards:
                 label = "createCards"
             case .partsAndFaces:
@@ -62,7 +62,7 @@ extension Maintainer {
             for card in cards {
                 switch dataType {
                 case .misc:
-                    label2 = "createMiscCards"
+                    label2 = "createMiscData"
                     promises.append(contentsOf: self.createMiscCardPromises(dict: card))
                 case .cards:
                     label2 = "createCards"
