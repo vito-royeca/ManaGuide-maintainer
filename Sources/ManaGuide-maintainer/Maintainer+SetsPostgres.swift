@@ -131,7 +131,9 @@ extension Maintainer {
         // manual fix
         for dict in array {
             if let code = dict["code"] as? String {
-                if code == "oc21" ||
+                if code == "sta" {
+                    keyruneCodes[code] = ["e980", "sta"] // commander 21
+                } else if code == "oc21" ||
                    code == "tc21" {
                     keyruneCodes[code] = ["e97e", "c21"] // commander 21
                 } else  if code == "pz2" {

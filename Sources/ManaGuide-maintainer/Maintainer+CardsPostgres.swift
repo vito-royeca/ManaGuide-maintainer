@@ -190,11 +190,11 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createDeleteFaces() -> Promise<Void> {
-        let query = "DELETE FROM cmcard_face"
-        return createPromise(with: query,
-                             parameters: nil)
-    }
+//    func createDeleteFaces() -> Promise<Void> {
+//        let query = "DELETE FROM cmcard_face"
+//        return createPromise(with: query,
+//                             parameters: nil)
+//    }
     
     func createFace(card: String, cardFace: String) -> Promise<Void> {
         let query = "SELECT createOrUpdateCardFaces($1,$2)"
@@ -204,11 +204,11 @@ extension Maintainer {
                              parameters: parameters)
     }
     
-    func createDeleteParts() -> Promise<Void> {
-        let query = "DELETE FROM cmcard_component_part"
-        return createPromise(with: query,
-                             parameters: nil)
-    }
+//    func createDeleteParts() -> Promise<Void> {
+//        let query = "DELETE FROM cmcard_component_part"
+//        return createPromise(with: query,
+//                             parameters: nil)
+//    }
     
     func createPart(card: String, component: String, cardPart: String) -> Promise<Void> {
         let capName = capitalize(string: displayFor(name: component))
@@ -222,18 +222,21 @@ extension Maintainer {
     }
 
     func createOtherLanguagesPromise() -> Promise<Void> {
-        return createPromise(with: "select createOrUpdateCardOtherLanguages()",
-                         parameters: nil)
+        let parameters = [singleCardNewID ?? "NULL"]
+        return createPromise(with: "select createOrUpdateCardOtherLanguages($1)",
+                             parameters: parameters)
     }
 
     func createOtherPrintingsPromise() -> Promise<Void> {
-        return createPromise(with: "select createOrUpdateCardOtherPrintings()",
-                             parameters: nil)
+        let parameters = [singleCardNewID ?? "NULL"]
+        return createPromise(with: "select createOrUpdateCardOtherPrintings($1)",
+                             parameters: parameters)
     }
     
     func createVariationsPromise() -> Promise<Void> {
-        return createPromise(with: "select createOrUpdateCardVariations()",
-                             parameters: nil)
+        let parameters = [singleCardNewID ?? "NULL"]
+        return createPromise(with: "select createOrUpdateCardVariations($1)",
+                             parameters: parameters)
     }
     
     func create(card: [String: Any]) -> Promise<Void> {

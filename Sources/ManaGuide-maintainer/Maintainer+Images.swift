@@ -17,15 +17,43 @@ import PromiseKit
 extension Maintainer {
     func fetchCardImages() -> Promise<Void> {
         return Promise { seal in
-            let cardsPath = "\(self.cachePath)/\(self.cardsRemotePath.components(separatedBy: "/").last ?? "")"
-            let fileReader = StreamingFileReader(path: cardsPath)
             let label = "fetchCardImages"
-            
             let date = self.startActivity(label: label)
-            self.loopReadCards(fileReader: fileReader, start: 0, callback: {
+            let callback = {
                 self.endActivity(label: label, from: date)
                 seal.fulfill()
-            })
+            }
+            
+            if let _ = jsonPath {
+                readCard(callback: callback)
+            } else {
+                let fileReader = StreamingFileReader(path: cardsLocalPath)
+                self.loopReadCards(fileReader: fileReader, start: 0, callback: callback)
+            }
+        }
+    }
+    
+    private func readCard(callback: @escaping () -> Void) {
+        let label = "readCardsData"
+        let date = self.startActivity(label: label)
+        let data = try! Data(contentsOf: URL(fileURLWithPath: cardsLocalPath))
+        guard let card = try! JSONSerialization.jsonObject(with: data,
+                                                           options: .mutableContainers) as? [String: Any] else {
+            fatalError("Malformed data")
+        }
+        
+        var promises = [()->Promise<Void>]()
+        let label2 = "downloadCardImages"
+        
+        promises.append(contentsOf: self.createImageDownloadPromises(dict: card))
+        
+        if !promises.isEmpty {
+            self.execInSequence(label: "\(label2): 0",
+                                promises: promises,
+                                completion: callback)
+        } else {
+            self.endActivity(label: "\(label)", from: date)
+            callback()
         }
     }
     
@@ -132,26 +160,30 @@ extension Maintainer {
                 var remoteImageData: Data?
                 var willDownload = false
                 
-                if v.lowercased().hasSuffix("png") {
+                if v.lowercased().contains(".png") {
                     imageFile = "\(imageFile).png"
-                } else if v.lowercased().hasSuffix("jpg") {
+                } else if v.lowercased().contains(".jpg") {
                     imageFile = "\(imageFile).jpg"
                 }
                 
-                if FileManager.default.fileExists(atPath: imageFile) {
-                    if let status = self.readStatus(directoryPath: path) {
-                        if imageStatus != status {
+                if let _ = jsonPath {
+                    willDownload = true
+                } else {
+                    if FileManager.default.fileExists(atPath: imageFile) {
+                        if let status = self.readStatus(directoryPath: path) {
+                            if imageStatus != status {
+                                willDownload = true
+                            }
+                        } else {
                             willDownload = true
                         }
                     } else {
-                        willDownload = true
-                    }
-                } else {
-                    if !v.hasSuffix("soon.jpg") || !v.hasSuffix("soon.png") {
-                        willDownload = true
+                        if !v.hasSuffix("soon.jpg") || !v.hasSuffix("soon.png") {
+                            willDownload = true
+                        }
                     }
                 }
-
+                
                 if willDownload {
                     if let remoteImageData = remoteImageData {
                         promises.append(saveImagePromise(imageData: remoteImageData,
@@ -227,7 +259,7 @@ extension Maintainer {
         // remove the key (?APIKEY) in the url
         var newImageUris = [String: String]()
         for (k,v) in imageUrisDict {
-            newImageUris[k] = v.components(separatedBy: "?").first
+            newImageUris[k] = v//.components(separatedBy: "?").first
         }
     
         newDict["number"]      =  number

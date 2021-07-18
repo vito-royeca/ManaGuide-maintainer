@@ -17,8 +17,6 @@ enum CardsDataType {
 extension Maintainer {
     func processCardsData(type: CardsDataType) -> Promise<Void> {
         return Promise { seal in
-            let cardsPath = "\(self.cachePath)/\(self.cardsRemotePath.components(separatedBy: "/").last ?? "")"
-            let fileReader = StreamingFileReader(path: cardsPath)
             var label = ""
             
             switch type {
@@ -31,10 +29,56 @@ extension Maintainer {
             }
             
             let date = self.startActivity(label: label)
-            self.loopReadCards(fileReader: fileReader, dataType: type, start: 0, callback: {
+            let callback = {
                 self.endActivity(label: label, from: date)
                 seal.fulfill()
+            }
+            
+            if let _ = jsonPath {
+                self.readCard(dataType: type, callback: callback)
+            } else {
+                let fileReader = StreamingFileReader(path: cardsLocalPath)
+                self.loopReadCards(fileReader: fileReader, dataType: type, start: 0, callback: callback)
+            }
+        }
+    }
+    
+    private func readCard(dataType: CardsDataType, callback: @escaping () -> Void) {
+        let label = "readCardsData"
+        let date = self.startActivity(label: label)
+        let data = try! Data(contentsOf: URL(fileURLWithPath: cardsLocalPath))
+        guard let card = try! JSONSerialization.jsonObject(with: data,
+                                                           options: .mutableContainers) as? [String: Any] else {
+            fatalError("Malformed data")
+        }
+        
+        var promises = [()->Promise<Void>]()
+        var label2 = ""
+        
+        switch dataType {
+        case .misc:
+            label2 = "createMiscData"
+            promises.append(contentsOf: self.createMiscCardPromises(dict: card))
+        case .cards:
+            label2 = "createCards"
+            promises.append(contentsOf: self.createCardPromises(dict: card))
+        case .partsAndFaces:
+            label2 = "createCardPartsAndFaces"
+            promises.append(contentsOf: self.createCardPartsAndFacesPromises(dict: card))
+        }
+        
+        if !promises.isEmpty {
+            self.execInSequence(label: "\(label2): 0",
+                                promises: promises,
+                                completion: {
+                                    self.endActivity(label: "\(label)", from: date)
+                                    callback()
+                                    
             })
+        } else {
+            self.endActivity(label: "\(label)", from: date)
+            callback()
+            
         }
     }
     
@@ -47,17 +91,6 @@ extension Maintainer {
             let index = start + cards.count
             var promises = [()->Promise<Void>]()
             var label2 = ""
-            
-            if start == 0 {
-                if dataType == .partsAndFaces {
-                    promises.append({
-                        return self.createDeleteParts()
-                    })
-                    promises.append({
-                        return self.createDeleteFaces()
-                    })
-                }
-            }
             
             for card in cards {
                 switch dataType {
