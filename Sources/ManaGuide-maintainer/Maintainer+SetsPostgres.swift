@@ -132,7 +132,7 @@ extension Maintainer {
         for dict in array {
             if let code = dict["code"] as? String {
                 if code == "sta" {
-                    keyruneCodes[code] = ["e980", "sta"] // commander 21
+                    keyruneCodes[code] = ["e980", "sta"] // strixhaven mystical archive
                 } else if code == "oc21" ||
                    code == "tc21" {
                     keyruneCodes[code] = ["e97e", "c21"] // commander 21
@@ -148,7 +148,8 @@ extension Maintainer {
                    code == "tafr" ||
                    code == "aafr" ||
                    code == "afc" ||
-                   code == "pafr" {
+                   code == "pafr" ||
+                   code == "tafc" {
                    keyruneCodes[code] = ["e972", "xdnd"] // adventures in the forgotten realms
                 }else if code == "mh2" ||
                    code == "tmh2" ||

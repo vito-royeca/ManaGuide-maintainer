@@ -25,8 +25,11 @@ struct Managuide: ParsableCommand {
     @Option(help: "Card images path")
     var imagesPath: String
 
-    @Option(help: "JSON data path")
+    @Option(help: "JSON data path for a single card")
     var jsonPath: String?
+    
+    @Option(help: "Set name to redownload images")
+    var setName: String?
     
     func run() throws {
         ManaKit.sharedInstance.configure(apiURL: "http://192.168.1.182:1993",
@@ -41,7 +44,8 @@ struct Managuide: ParsableCommand {
                                     password: password,
                                     isFullUpdate: fullUpdate,
                                     imagesPath: imagesPath,
-                                    jsonPath: jsonPath)
+                                    jsonPath: jsonPath,
+                                    setName: setName)
         maintainer.updateDatabase()
     }
 }

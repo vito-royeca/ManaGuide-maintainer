@@ -58,32 +58,77 @@ extension Maintainer {
     }
     
     private func loopReadCards(fileReader: StreamingFileReader, start: Int, callback: @escaping () -> Void) {
-        let label = "readCardsData"
-        let date = self.startActivity(label: label)
-        let cards = self.readFileData(fileReader: fileReader, lines: self.printMilestone)
+        var index = start
         
-        if !cards.isEmpty {
-            let index = start + cards.count
-            var promises = [()->Promise<Void>]()
-            let label2 = "downloadCardImages"
-            
-            for card in cards {
-                promises.append(contentsOf: self.createImageDownloadPromises(dict: card))
+        firstly {
+            Promise { seal in
+                if start < milestone {
+                    let label = "readMileStones"
+                    let date = self.startActivity(label: label)
+                    var promises = [()->Promise<Void>]()
+                    
+                    for _ in 0...milestone/printMilestone - 1 {
+                        promises.append({
+                            return Promise<Void> { seal0 in
+                                let cards = self.readFileData(fileReader: fileReader, lines: self.printMilestone)
+                                index += cards.count
+                                seal0.fulfill()
+                        }})
+                    }
+                    
+                    if !promises.isEmpty {
+                        let completion = {
+                            self.endActivity(label: "\(label)", from: date)
+                            seal.fulfill()
+                        }
+                        
+                        self.execInSequence(label: "milestone: \(self.milestone)",
+                                            promises: promises,
+                                            completion: completion)
+                    }
+                } else {
+                    seal.fulfill()
+                }
             }
+        }.done {
+            let label = "readCardsData"
+            let date = self.startActivity(label: label)
+            let cards = self.readFileData(fileReader: fileReader, lines: self.printMilestone)
             
-            if !promises.isEmpty {
-                self.execInSequence(label: "\(label2): \(index)",
-                                    promises: promises,
-                                    completion: {
-                                        self.endActivity(label: "\(label)", from: date)
-                                        self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
-                                        
-                })
+            if !cards.isEmpty {
+                index += cards.count
+                let label2 = "downloadCardImages"
+                var promises = [()->Promise<Void>]()
+                
+                for card in cards {
+                    if let setName = self.setName {
+                        if let set = card["set"] as? String,
+                            set == setName {
+                            promises.append(contentsOf: self.createImageDownloadPromises(dict: card))
+                        }
+                    } else {
+                        promises.append(contentsOf: self.createImageDownloadPromises(dict: card))
+                    }
+                }
+                
+                if !promises.isEmpty {
+                    self.execInSequence(label: "\(label2): \(index)",
+                                        promises: promises,
+                                        completion: {
+                                            self.writeMilestone(value: index)
+                                            self.endActivity(label: "\(label)", from: date)
+                                            self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
+                                            
+                    })
+                } else {
+                    self.endActivity(label: "\(label)", from: date)
+                    self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
+                }
+                
             } else {
-                self.endActivity(label: "\(label)", from: date)
-                self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
+                callback()
             }
-        } else {
+        }.catch { error in
             callback()
         }
     }
@@ -166,21 +211,22 @@ extension Maintainer {
                     imageFile = "\(imageFile).jpg"
                 }
                 
-                if let _ = jsonPath {
-                    willDownload = true
-                } else {
-                    if FileManager.default.fileExists(atPath: imageFile) {
-                        if let status = self.readStatus(directoryPath: path) {
-                            if imageStatus != status {
+                if !v.hasSuffix("soon.jpg") || !v.hasSuffix("soon.png") {
+                    if jsonPath != nil {
+                        willDownload = true
+                    } else {
+                        if FileManager.default.fileExists(atPath: imageFile) {
+                            if let status = self.readStatus(directoryPath: path) {
+                                if imageStatus != status {
+                                    willDownload = true
+                                }
+                            } else {
                                 willDownload = true
                             }
                         } else {
                             willDownload = true
                         }
-                    } else {
-                        if !v.hasSuffix("soon.jpg") || !v.hasSuffix("soon.png") {
-                            willDownload = true
-                        }
+                        
                     }
                 }
                 
@@ -202,7 +248,7 @@ extension Maintainer {
                     when(fulfilled: promises)
                 }.done {
                     self.writeStatus(directoryPath: path, status: imageStatus)
-                    print("Downloaded \(path)")
+                    print("Downloaded \(set)/\(language)/\(number)")
                     seal.fulfill(())
                 }.catch { error in
                     print(error)
