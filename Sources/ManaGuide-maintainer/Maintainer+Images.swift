@@ -58,42 +58,13 @@ extension Maintainer {
     }
     
     private func loopReadCards(fileReader: StreamingFileReader, start: Int, callback: @escaping () -> Void) {
-        var index = start
-        
         firstly {
-            Promise { seal in
-                if start < milestone {
-                    let label = "readMileStones"
-                    let date = self.startActivity(label: label)
-                    var promises = [()->Promise<Void>]()
-                    
-                    for _ in 0...milestone/printMilestone - 1 {
-                        promises.append({
-                            return Promise<Void> { seal0 in
-                                let cards = self.readFileData(fileReader: fileReader, lines: self.printMilestone)
-                                index += cards.count
-                                seal0.fulfill()
-                        }})
-                    }
-                    
-                    if !promises.isEmpty {
-                        let completion = {
-                            self.endActivity(label: "\(label)", from: date)
-                            seal.fulfill()
-                        }
-                        
-                        self.execInSequence(label: "milestone: \(self.milestone)",
-                                            promises: promises,
-                                            completion: completion)
-                    }
-                } else {
-                    seal.fulfill()
-                }
-            }
+            seek(fileReader: fileReader, start: start)
         }.done {
             let label = "readCardsData"
             let date = self.startActivity(label: label)
             let cards = self.readFileData(fileReader: fileReader, lines: self.printMilestone)
+            var index = start + self.milestone
             
             if !cards.isEmpty {
                 index += cards.count
@@ -117,7 +88,7 @@ extension Maintainer {
                                         completion: {
                                             self.writeMilestone(value: index)
                                             self.endActivity(label: "\(label)", from: date)
-                                            self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
+                                            self.loopReadCards(fileReader: fileReader, start: start + cards.count, callback: callback)
                                             
                     })
                 } else {
@@ -130,6 +101,37 @@ extension Maintainer {
             }
         }.catch { error in
             callback()
+        }
+    }
+    
+    private func seek(fileReader: StreamingFileReader, start: Int) -> Promise<Void> {
+        return Promise { seal in
+            if start + milestone <= milestone {
+                let label = "readMileStones"
+                let date = self.startActivity(label: label)
+                var promises = [()->Promise<Void>]()
+                
+                for _ in 0...milestone / self.printMilestone {
+                    promises.append({
+                        return Promise<Void> { seal0 in
+                            let _ = self.readFileData(fileReader: fileReader, lines:  self.printMilestone)
+                            seal0.fulfill()
+                    }})
+                }
+                
+                if !promises.isEmpty {
+                    let completion = {
+                        self.endActivity(label: "\(label)", from: date)
+                        seal.fulfill()
+                    }
+                    
+                    self.execInSequence(label: "milestone: \(self.milestone)",
+                                        promises: promises,
+                                        completion: completion)
+                }
+            } else {
+                seal.fulfill()
+            }
         }
     }
     
@@ -197,7 +199,8 @@ extension Maintainer {
             var promises = [Promise<Void>]()
             
             for (k,v) in imageUris {
-                if !(k == "art_crop" || k == "normal" || k == "png") {
+                if !(k == "art_crop" || k == "normal" || k == "png") ||
+                    (v.hasSuffix("soon.jpg") || v.hasSuffix("soon.png")) {
                     continue
                 }
                 
@@ -211,23 +214,21 @@ extension Maintainer {
                     imageFile = "\(imageFile).jpg"
                 }
                 
-                if !v.hasSuffix("soon.jpg") || !v.hasSuffix("soon.png") {
-                    if jsonPath != nil {
-                        willDownload = true
-                    } else {
-                        if FileManager.default.fileExists(atPath: imageFile) {
-                            if let status = self.readStatus(directoryPath: path) {
-                                if imageStatus != status {
-                                    willDownload = true
-                                }
-                            } else {
+                if jsonPath != nil {
+                    willDownload = true
+                } else {
+                    if FileManager.default.fileExists(atPath: imageFile) {
+                        if let status = self.readStatus(directoryPath: path) {
+                            if imageStatus != status {
                                 willDownload = true
                             }
                         } else {
                             willDownload = true
                         }
-                        
+                    } else {
+                        willDownload = true
                     }
+                    
                 }
                 
                 if willDownload {
@@ -247,11 +248,13 @@ extension Maintainer {
                 firstly {
                     when(fulfilled: promises)
                 }.done {
-                    self.writeStatus(directoryPath: path, status: imageStatus)
                     print("Downloaded \(set)/\(language)/\(number)")
+                    self.writeStatus(directoryPath: path, status: imageStatus)
                     seal.fulfill(())
                 }.catch { error in
-                    print(error)
+                    print("Error downloading: \(set)/\(language)/\(number)")
+                    print("\(error)")
+                    self.writeStatus(directoryPath: path, status: "")
                     seal.fulfill(())
                 }
             }
@@ -277,10 +280,6 @@ extension Maintainer {
         let statusFile = "\(directoryPath)/status.txt"
         
         if status != (self.readStatus(directoryPath: directoryPath) ?? "") {
-            if FileManager.default.fileExists(atPath: statusFile) {
-                try! FileManager.default.removeItem(atPath: statusFile)
-            }
-            
             self.prepare(destinationFile: statusFile)
             try! status.write(toFile: statusFile, atomically: true, encoding: .utf8)
         }
@@ -340,7 +339,7 @@ extension Maintainer {
                 do {
                     self.prepare(destinationFile: destinationFile)
                     try response.data.write(to: URL(fileURLWithPath: destinationFile))
-//                    print("Downloaded \(url)")
+//                    print("Downloaded \(destinationFile)")
                     
                     seal.fulfill(())
                 } catch {
@@ -348,7 +347,7 @@ extension Maintainer {
                     seal.fulfill()
                 }
             }.catch { error in
-                print("\(error): \(url)")
+                print("\(error): \(destinationFile)")
                 seal.fulfill(())
             }
         }

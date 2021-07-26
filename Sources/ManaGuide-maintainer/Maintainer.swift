@@ -38,7 +38,7 @@ class Maintainer {
     var rulingsRemotePath  = ""
     let setsRemotePath     = "https://api.scryfall.com/sets"
     let keyruneRemotePath  = "https://keyrune.andrewgioia.com/cheatsheet.html"
-    let rulesRemotePath    = "https://media.wizards.com/2021/downloads/MagicCompRules 20210609.txt"
+    let rulesRemotePath    = "https://media.wizards.com/2021/downloads/MagicCompRules 20210712.txt"
     
     // local file names
     var bulkDataLocalPath  = ""
