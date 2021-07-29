@@ -159,8 +159,7 @@ extension Maintainer {
                     keyruneCodes[code] = ["e95b", "mh1"] // modern horizons 1
                 } else if code == "khc"{
                    keyruneCodes[code] = ["e97d", "khc"]  // kaldheim commander
-                } else if code == "j20" ||
-                   code == "j21" {
+                } else if code == "j20" {
                    keyruneCodes[code] = ["e96a", "j20"]  // judge academy
                 } else if code == "plist" {
                    keyruneCodes[code] = ["e971", "mb1"]  // plist
