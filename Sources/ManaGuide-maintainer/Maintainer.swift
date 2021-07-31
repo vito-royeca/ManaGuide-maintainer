@@ -23,14 +23,14 @@ class Maintainer {
     let setsFileName       = "scryfall-sets.json"
     let keyruneFileName    = "keyrune.html"
     let rulesFileName      = "MagicCompRules.txt"
-    let milestoneFileName  = "milestone.txt"
+    let milestoneFileName  = "milestone.json"
     let storeName          = "TCGPlayer"
     let cachePath          = "/tmp"
     
     // MARK: - Variables
     var tcgplayerAPIToken  = ""
     var filePrefix         = ""
-    var milestone          = 0
+    var milestone          = Milestone(value: 0, fileOffset: UInt64(0))
     
     // remote file names
     let bulkDataRemotePath = "https://api.scryfall.com/bulk-data"
@@ -221,7 +221,7 @@ class Maintainer {
         keyruneLocalPath   = "\(cachePath)/\(filePrefix)_\(keyruneFileName)"
         rulesLocalPath     = "\(cachePath)/\(filePrefix)_\(rulesFileName)"
         milestoneLocalPath = "\(cachePath)/\(milestoneFileName)"
-        milestone = readMilestone()
+        readMilestone()
 
         if let _ = setName {
             completion = {
@@ -511,29 +511,6 @@ class Maintainer {
         }
         
         return array
-    }
-    
-    func readMilestone() -> Int {
-        guard FileManager.default.fileExists(atPath: milestoneLocalPath) else {
-            return 0
-        }
-        
-        do {
-            let value = try String(contentsOfFile: milestoneLocalPath)
-            return Int(value.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 0
-        } catch {
-            return 0
-        }
-    }
-    
-    func writeMilestone(value: Int) {
-        if value != self.readMilestone() {
-            if FileManager.default.fileExists(atPath: milestoneLocalPath) {
-                try! FileManager.default.removeItem(atPath: milestoneLocalPath)
-            }
-            
-            try! "\(value)".write(toFile: milestoneLocalPath, atomically: true, encoding: .utf8)
-        }
     }
     
     func sectionFor(name: String) -> String? {

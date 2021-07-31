@@ -5,9 +5,11 @@ import PackageDescription
 
 let package = Package(
     name: "ManaGuide-maintainer",
+    platforms: [
+        .macOS(.v11),
+    ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
         .package(url: "https://github.com/tid-kijyun/Kanna.git", from: "5.2.2"),
         .package(url: "https://github.com/codewinsdotcom/PostgresClientKit", from: "1.0.0"),
         .package(url: "https://github.com/mxcl/PromiseKit", from: "7.0.0-rc1"),
@@ -28,8 +30,8 @@ let package = Package(
         ),
         .testTarget(
             name: "ManaGuide-maintainerTests",
-            dependencies: [.product(name: "ArgumentParser", package: "swift-argument-parser"),
-                           "ManaGuide-maintainer",
+            dependencies: ["ManaGuide-maintainer",
+                           .product(name: "ArgumentParser", package: "swift-argument-parser"),
                            "Kanna",
                            "PostgresClientKit",
                            .product(name: "PromiseKit", package: "PromiseKit"),

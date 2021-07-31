@@ -9,9 +9,10 @@
 import Foundation
 
 class StreamingFileReader {
+    let bufferSize: Int = 1024
     var fileHandle: FileHandle?
     var buffer: Data
-    let bufferSize: Int = 1024
+    var offset = UInt64(0)
     
     // Using new line as the delimiter
     let delimiter = "\n".data(using: .utf8)!
@@ -30,6 +31,7 @@ class StreamingFileReader {
         
         while rangeOfDelimiter == nil {
             guard let chunk = fileHandle?.readData(ofLength: bufferSize) else { return nil }
+            offset += UInt64(bufferSize)
             
             if chunk.count == 0 {
                 if buffer.count > 0 {
@@ -53,5 +55,14 @@ class StreamingFileReader {
             print(line ?? "----------")
         }
         return line?.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    
+    func seek(toOffset offset: UInt64) {
+        do {
+            self.offset = offset
+            try fileHandle?.seek(toOffset: offset)
+        } catch {
+            print(error)
+        }
     }
 }

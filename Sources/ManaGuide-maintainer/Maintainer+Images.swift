@@ -14,6 +14,11 @@ import Foundation
 import PostgresClientKit
 import PromiseKit
 
+struct Milestone : Codable {
+    var value: Int
+    var fileOffset: UInt64
+}
+
 extension Maintainer {
     func fetchCardImages() -> Promise<Void> {
         return Promise { seal in
@@ -58,80 +63,42 @@ extension Maintainer {
     }
     
     private func loopReadCards(fileReader: StreamingFileReader, start: Int, callback: @escaping () -> Void) {
-        firstly {
-            seek(fileReader: fileReader, start: start)
-        }.done {
-            let label = "readCardsData"
-            let date = self.startActivity(label: label)
-            let cards = self.readFileData(fileReader: fileReader, lines: self.printMilestone)
-            var index = start + self.milestone
-            
-            if !cards.isEmpty {
-                index += cards.count
-                let label2 = "downloadCardImages"
-                var promises = [()->Promise<Void>]()
-                
-                for card in cards {
-                    if let setName = self.setName {
-                        if let set = card["set"] as? String,
-                            set == setName {
-                            promises.append(contentsOf: self.createImageDownloadPromises(dict: card))
-                        }
-                    } else {
-                        promises.append(contentsOf: self.createImageDownloadPromises(dict: card))
-                    }
-                }
-                
-                if !promises.isEmpty {
-                    self.execInSequence(label: "\(label2): \(index)",
-                                        promises: promises,
-                                        completion: {
-                                            self.writeMilestone(value: index)
-                                            self.endActivity(label: "\(label)", from: date)
-                                            self.loopReadCards(fileReader: fileReader, start: start + cards.count, callback: callback)
-                                            
-                    })
-                } else {
-                    self.endActivity(label: "\(label)", from: date)
-                    self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
-                }
-                
-            } else {
-                callback()
-            }
-        }.catch { error in
-            callback()
+        if start + milestone.value <= milestone.value &&
+            milestone.fileOffset != 0 {
+            print("seeking to milestone: \(milestone.value), offset: \(milestone.fileOffset)")
+            fileReader.seek(toOffset: milestone.fileOffset)
         }
-    }
-    
-    private func seek(fileReader: StreamingFileReader, start: Int) -> Promise<Void> {
-        return Promise { seal in
-            if start + milestone <= milestone {
-                let label = "readMileStones"
-                let date = self.startActivity(label: label)
-                var promises = [()->Promise<Void>]()
-                
-                for _ in 0...milestone / self.printMilestone {
-                    promises.append({
-                        return Promise<Void> { seal0 in
-                            let _ = self.readFileData(fileReader: fileReader, lines:  self.printMilestone)
-                            seal0.fulfill()
-                    }})
-                }
-                
-                if !promises.isEmpty {
-                    let completion = {
-                        self.endActivity(label: "\(label)", from: date)
-                        seal.fulfill()
-                    }
-                    
-                    self.execInSequence(label: "milestone: \(self.milestone)",
-                                        promises: promises,
-                                        completion: completion)
-                }
-            } else {
-                seal.fulfill()
+        
+        let label = "readCardsData"
+        let date = self.startActivity(label: label)
+        let cards = self.readFileData(fileReader: fileReader, lines: self.printMilestone)
+        
+        if !cards.isEmpty {
+            let index = start + cards.count
+            let label2 = "downloadCardImages"
+            var promises = [()->Promise<Void>]()
+            
+            for card in cards {
+                promises.append(contentsOf: self.createImageDownloadPromises(dict: card))
             }
+            
+            if !promises.isEmpty {
+                self.execInSequence(label: "\(label2): \(milestone.value)",
+                                    promises: promises,
+                                    completion: {
+                                        self.milestone.value += cards.count
+                                        self.milestone.fileOffset = fileReader.offset
+                                        self.writeMilestone()
+                                        self.endActivity(label: "\(label)", from: date)
+                                        self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
+                                        
+                })
+            } else {
+                self.endActivity(label: "\(label)", from: date)
+                self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
+            }
+        } else {
+            callback()
         }
     }
     
@@ -365,6 +332,39 @@ extension Maintainer {
                 print("Unable to write to: \(destinationFile)")
                 seal.fulfill()
             }
+        }
+    }
+    
+    // MARK: - File methods
+    
+    func readMilestone() {
+        guard FileManager.default.fileExists(atPath: milestoneLocalPath) else {
+            return
+        }
+        
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: milestoneLocalPath), options: .mappedIfSafe)
+            let decoder = JSONDecoder()
+            milestone = try decoder.decode(Milestone.self, from: data)
+        } catch {
+            milestone = Milestone(value: 0, fileOffset: UInt64(0))
+        }
+    }
+    
+    func writeMilestone() {
+        do {
+            if FileManager.default.fileExists(atPath: milestoneLocalPath) {
+                try FileManager.default.removeItem(atPath: milestoneLocalPath)
+            }
+            
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(milestone)
+            
+            FileManager.default.createFile(atPath: milestoneLocalPath,
+                                           contents: data,
+                                           attributes: nil)
+        } catch {
+            fatalError(error.localizedDescription)
         }
     }
     
