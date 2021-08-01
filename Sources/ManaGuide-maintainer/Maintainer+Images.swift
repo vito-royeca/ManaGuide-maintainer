@@ -10,7 +10,6 @@ import Foundation
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
-//import CryptoKit
 import PostgresClientKit
 import PromiseKit
 
@@ -29,36 +28,8 @@ extension Maintainer {
                 seal.fulfill()
             }
             
-            if let _ = jsonPath {
-                readCard(callback: callback)
-            } else {
-                let fileReader = StreamingFileReader(path: cardsLocalPath)
-                self.loopReadCards(fileReader: fileReader, start: 0, callback: callback)
-            }
-        }
-    }
-    
-    private func readCard(callback: @escaping () -> Void) {
-        let label = "readCardsData"
-        let date = self.startActivity(label: label)
-        let data = try! Data(contentsOf: URL(fileURLWithPath: cardsLocalPath))
-        guard let card = try! JSONSerialization.jsonObject(with: data,
-                                                           options: .mutableContainers) as? [String: Any] else {
-            fatalError("Malformed data")
-        }
-        
-        var promises = [()->Promise<Void>]()
-        let label2 = "downloadCardImages"
-        
-        promises.append(contentsOf: self.createImageDownloadPromises(dict: card))
-        
-        if !promises.isEmpty {
-            self.execInSequence(label: "\(label2): 0",
-                                promises: promises,
-                                completion: callback)
-        } else {
-            self.endActivity(label: "\(label)", from: date)
-            callback()
+            let fileReader = StreamingFileReader(path: cardsLocalPath)
+            self.loopReadCards(fileReader: fileReader, start: 0, callback: callback)
         }
     }
     
@@ -172,7 +143,6 @@ extension Maintainer {
                 }
                 
                 var imageFile = "\(path)/\(k)"
-                var remoteImageData: Data?
                 var willDownload = false
                 
                 if v.lowercased().contains(".png") {
@@ -181,31 +151,21 @@ extension Maintainer {
                     imageFile = "\(imageFile).jpg"
                 }
                 
-                if jsonPath != nil {
-                    willDownload = true
-                } else {
-                    if FileManager.default.fileExists(atPath: imageFile) {
-                        if let status = self.readStatus(directoryPath: path) {
-                            if imageStatus != status {
-                                willDownload = true
-                            }
-                        } else {
+                if FileManager.default.fileExists(atPath: imageFile) {
+                    if let status = self.readStatus(directoryPath: path) {
+                        if imageStatus != status {
                             willDownload = true
                         }
                     } else {
                         willDownload = true
                     }
-                    
+                } else {
+                    willDownload = true
                 }
                 
                 if willDownload {
-                    if let remoteImageData = remoteImageData {
-                        promises.append(saveImagePromise(imageData: remoteImageData,
+                    promises.append(downloadImagePromise(url: v,
                                                          destinationFile: imageFile))
-                    } else {
-                        promises.append(downloadImagePromise(url: v,
-                                                             destinationFile: imageFile))
-                    }
                 }
             }
 
@@ -252,19 +212,6 @@ extension Maintainer {
         }
     }
     
-//    private func compare(localFile local: String, andRemoteFile remote: String) -> Bool {
-//        do {
-//            let localImageData = try Data(contentsOf: URL(fileURLWithPath: local))
-//            let remoteImageData = try Data(contentsOf: URL(string: remote)!)
-//            let localMD5 = Insecure.MD5.hash(data: localImageData).map { String(format: "%02hhx", $0) }.joined()
-//            let remoteMD5 = Insecure.MD5.hash(data: remoteImageData).map { String(format: "%02hhx", $0) }.joined()
-//            return localMD5 == remoteMD5
-//        } catch { error in
-//            print(error)
-//            return false
-//        }
-//    }
-
     private func createImageUris(number: String, set: String, language: String, imageStatus: String, imageUrisDict: [String: String]) -> [String: Any] {
         var newDict = [String: Any]()
         
@@ -283,21 +230,6 @@ extension Maintainer {
         return newDict
     }
     
-    private func saveImagePromise(imageData: Data, destinationFile: String) -> Promise<Void> {
-        return Promise { seal in
-            do {
-                prepare(destinationFile: destinationFile)
-                try imageData.write(to: URL(fileURLWithPath: destinationFile))
-//                print("Saved \(destinationFile)")
-                
-                seal.fulfill(())
-            } catch {
-                print("Unable to write to: \(destinationFile)")
-                seal.fulfill()
-            }
-        }
-    }
-    
     private func downloadImagePromise(url: String, destinationFile: String) -> Promise<Void> {
         return Promise { seal in
             firstly {
@@ -307,7 +239,6 @@ extension Maintainer {
                     self.prepare(destinationFile: destinationFile)
                     try response.data.write(to: URL(fileURLWithPath: destinationFile))
 //                    print("Downloaded \(destinationFile)")
-                    
                     seal.fulfill(())
                 } catch {
                     print("Unable to write to: \(destinationFile)")

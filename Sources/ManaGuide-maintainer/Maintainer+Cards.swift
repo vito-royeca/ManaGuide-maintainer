@@ -34,51 +34,8 @@ extension Maintainer {
                 seal.fulfill()
             }
             
-            if let _ = jsonPath {
-                self.readCard(dataType: type, callback: callback)
-            } else {
-                let fileReader = StreamingFileReader(path: cardsLocalPath)
-                self.loopReadCards(fileReader: fileReader, dataType: type, start: 0, callback: callback)
-            }
-        }
-    }
-    
-    private func readCard(dataType: CardsDataType, callback: @escaping () -> Void) {
-        let label = "readCardsData"
-        let date = self.startActivity(label: label)
-        let data = try! Data(contentsOf: URL(fileURLWithPath: cardsLocalPath))
-        guard let card = try! JSONSerialization.jsonObject(with: data,
-                                                           options: .mutableContainers) as? [String: Any] else {
-            fatalError("Malformed data")
-        }
-        
-        var promises = [()->Promise<Void>]()
-        var label2 = ""
-        
-        switch dataType {
-        case .misc:
-            label2 = "createMiscData"
-            promises.append(contentsOf: self.createMiscCardPromises(dict: card))
-        case .cards:
-            label2 = "createCards"
-            promises.append(contentsOf: self.createCardPromises(dict: card))
-        case .partsAndFaces:
-            label2 = "createCardPartsAndFaces"
-            promises.append(contentsOf: self.createCardPartsAndFacesPromises(dict: card))
-        }
-        
-        if !promises.isEmpty {
-            self.execInSequence(label: "\(label2): 0",
-                                promises: promises,
-                                completion: {
-                                    self.endActivity(label: "\(label)", from: date)
-                                    callback()
-                                    
-            })
-        } else {
-            self.endActivity(label: "\(label)", from: date)
-            callback()
-            
+            let fileReader = StreamingFileReader(path: cardsLocalPath)
+            self.loopReadCards(fileReader: fileReader, dataType: type, start: 0, callback: callback)
         }
     }
     

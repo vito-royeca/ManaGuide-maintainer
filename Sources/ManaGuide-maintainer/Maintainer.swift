@@ -113,20 +113,20 @@ class Maintainer {
             return _connection!
         }
     }
-    var _singleCardNewID: String?
-    var singleCardNewID: String? {
-        get {
-            if _singleCardNewID == nil && jsonPath != nil {
-                let data = try! Data(contentsOf: URL(fileURLWithPath: cardsLocalPath))
-                guard let card = try! JSONSerialization.jsonObject(with: data,
-                                                                   options: .mutableContainers) as? [String: Any] else {
-                    fatalError("Malformed data")
-                }
-                _singleCardNewID = "\(card["set"] ?? "NULL")_\(card["lang"] ?? "NULL")_\((card["collector_number"] as? String  ?? "NULL").replacingOccurrences(of: "★", with: "star"))"
-            }
-            return _singleCardNewID
-        }
-    }
+//    var _singleCardNewID: String?
+//    var singleCardNewID: String? {
+//        get {
+//            if _singleCardNewID == nil && jsonPath != nil {
+//                let data = try! Data(contentsOf: URL(fileURLWithPath: cardsLocalPath))
+//                guard let card = try! JSONSerialization.jsonObject(with: data,
+//                                                                   options: .mutableContainers) as? [String: Any] else {
+//                    fatalError("Malformed data")
+//                }
+//                _singleCardNewID = "\(card["set"] ?? "NULL")_\(card["lang"] ?? "NULL")_\((card["collector_number"] as? String  ?? "NULL").replacingOccurrences(of: "★", with: "star"))"
+//            }
+//            return _singleCardNewID
+//        }
+//    }
     
     // options variables
     var host: String
@@ -136,7 +136,6 @@ class Maintainer {
     var password: String
     var isFullUpdate: Bool
     var imagesPath: String
-    var jsonPath: String?
     var setName: String?
     
     // MARK: - init
@@ -148,7 +147,6 @@ class Maintainer {
          password: String,
          isFullUpdate: Bool,
          imagesPath: String,
-         jsonPath: String?,
          setName: String?) {
         self.host = host
         self.port = port
@@ -157,7 +155,6 @@ class Maintainer {
         self.password = password
         self.isFullUpdate = isFullUpdate
         self.imagesPath = imagesPath
-        self.jsonPath = jsonPath
         self.setName = setName
     }
     
@@ -255,18 +252,36 @@ class Maintainer {
                 self.fetchCardImages()
             })
         } else {
-            if let jsonPath = jsonPath {
-                cardsRemotePath = jsonPath
-                cardsLocalPath = "\(cachePath)/\((cardsRemotePath.components(separatedBy: "/").last ?? "").components(separatedBy: "?").first ?? "")"
-                
+            if isFullUpdate {
                 // downloads
                 promises.append({
+                    self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath)
+                })
+                promises.append({
+                    self.createBulkData()
+                })
+                promises.append({
+                    self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath)
+                })
+                promises.append({
+                    self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath)
+                })
+                promises.append({
                     self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath)
+                })
+                promises.append({
+                    self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath)
+                })
+                promises.append({
+                    self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath)
                 })
                 
                 // updates
                 promises.append({
                     self.fetchCardImages()
+                })
+                promises.append({
+                    self.processSetsData()
                 })
                 promises.append({
                     self.processCardsData(type: .misc)
@@ -278,71 +293,25 @@ class Maintainer {
                     self.processCardsData(type: .partsAndFaces)
                 })
                 promises.append({
+                    self.processRulingsData()
+                })
+                promises.append({
+                    self.processComprehensiveRulesData()
+                })
+                promises.append({
                     self.processOtherCardsData()
                 })
-                
-            } else {
-                if isFullUpdate {
-                    // downloads
-                    promises.append({
-                        self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath)
-                    })
-                    promises.append({
-                        self.createBulkData()
-                    })
-                    promises.append({
-                        self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath)
-                    })
-                    promises.append({
-                        self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath)
-                    })
-                    promises.append({
-                        self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath)
-                    })
-                    promises.append({
-                        self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath)
-                    })
-                    promises.append({
-                        self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath)
-                    })
-                    
-                    // updates
-                    promises.append({
-                        self.fetchCardImages()
-                    })
-                    promises.append({
-                        self.processSetsData()
-                    })
-                    promises.append({
-                        self.processCardsData(type: .misc)
-                    })
-                    promises.append({
-                        self.processCardsData(type: .cards)
-                    })
-                    promises.append({
-                        self.processCardsData(type: .partsAndFaces)
-                    })
-                    promises.append({
-                        self.processRulingsData()
-                    })
-                    promises.append({
-                        self.processComprehensiveRulesData()
-                    })
-                    promises.append({
-                        self.processOtherCardsData()
-                    })
-                }
-                
-                promises.append({
-                    self.processPricingData()
-                })
-                promises.append({
-                    self.processServerUpdatePromise()
-                })
-                promises.append({
-                    self.processServerVacuumPromise()
-                })
             }
+            
+            promises.append({
+                self.processPricingData()
+            })
+            promises.append({
+                self.processServerUpdatePromise()
+            })
+            promises.append({
+                self.processServerVacuumPromise()
+            })
         }
 
         execInSequence(label: label,
