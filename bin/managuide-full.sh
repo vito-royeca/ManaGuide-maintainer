@@ -12,3 +12,6 @@ eval " $command"
 while [ $? -ne 0 ]; do
     eval " $command"
 done
+
+# delete temp files
+rm /tmp/managuide-*

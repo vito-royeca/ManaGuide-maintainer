@@ -6,3 +6,6 @@
   --password password \
   --full-update false \
   --images-path /path/to/managuide_images/cards
+
+# delete temp files
+rm /tmp/managuide-*

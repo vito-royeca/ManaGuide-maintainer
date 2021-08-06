@@ -263,7 +263,7 @@ extension Maintainer {
         guard let lang = dict["lang"] as? String else {
             return nil
         }
-            
+        
         let code = lang
         var displayCode = "NULL"
         var name = "NULL"
@@ -510,7 +510,7 @@ extension Maintainer {
         return array
     }
     
-    private func filterColors(dict: [String: Any]) -> [[String: Any]] {
+    func filterColors(dict: [String: Any]) -> [[String: Any]] {
         var array = [[String: Any]]()
         
         guard let colors = dict["colors"] as? [String] else {
@@ -518,10 +518,10 @@ extension Maintainer {
         }
         
         for color in colors {
-            
+
             let symbol = color
             var name = "NULL"
-            
+
             switch symbol {
             case "B":
                 name = "Black"
@@ -532,7 +532,7 @@ extension Maintainer {
             case "U":
                 name = "Blue"
             case "W":
-            name = "White"
+                name = "White"
             default:
                 ()
             }
@@ -542,6 +542,32 @@ extension Maintainer {
                 "is_mana_color": true
             ])
         }
+        
+//        array = colors.compactMap({
+//            let symbol = $0
+//            var name = "NULL"
+//
+//            switch symbol {
+//            case "B":
+//                name = "Black"
+//            case "G":
+//                name = "Green"
+//            case "R":
+//                name = "Red"
+//            case "U":
+//                name = "Blue"
+//            case "W":
+//                name = "White"
+//            default:
+//                ()
+//            }
+//
+//            return [
+//                "symbol": symbol,
+//                "name": name,
+//                "is_mana_color": true
+//            ]
+//        })
         
         return array
     }

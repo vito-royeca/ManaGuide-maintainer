@@ -17,6 +17,9 @@ struct Milestone : Codable {
     var value: Int
     var fileOffset: UInt64
 }
+struct CardStatus : Codable {
+    var status: String
+}
 
 extension Maintainer {
     func fetchCardImages() -> Promise<Void> {
@@ -188,30 +191,6 @@ extension Maintainer {
         }
     }
     
-    private func readStatus(directoryPath: String) -> String? {
-        let statusFile = "\(directoryPath)/status.txt"
-        
-        guard FileManager.default.fileExists(atPath: statusFile) else {
-            return nil
-        }
-        
-        do {
-            let status = try String(contentsOfFile: statusFile)
-            return status.trimmingCharacters(in: .whitespacesAndNewlines)
-        } catch {
-            return nil
-        }
-    }
-    
-    private func writeStatus(directoryPath: String, status: String) {
-        let statusFile = "\(directoryPath)/status.txt"
-        
-        if status != (self.readStatus(directoryPath: directoryPath) ?? "") {
-            self.prepare(destinationFile: statusFile)
-            try! status.write(toFile: statusFile, atomically: true, encoding: .utf8)
-        }
-    }
-    
     private func createImageUris(number: String, set: String, language: String, imageStatus: String, imageUrisDict: [String: String]) -> [String: Any] {
         var newDict = [String: Any]()
         
@@ -292,6 +271,58 @@ extension Maintainer {
             let data = try encoder.encode(milestone)
             
             FileManager.default.createFile(atPath: milestoneLocalPath,
+                                           contents: data,
+                                           attributes: nil)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+    }
+    
+    private func readStatus(directoryPath: String) -> String? {
+        var statusFile = "\(directoryPath)/status.txt"
+        
+        if FileManager.default.fileExists(atPath: statusFile) {
+            do {
+                var status = try String(contentsOfFile: statusFile)
+                status = status.trimmingCharacters(in: .whitespacesAndNewlines)
+                try FileManager.default.removeItem(atPath: statusFile)
+                writeStatus(directoryPath: directoryPath, status: status)
+                return status
+            } catch {
+                return nil
+            }
+        } else {
+            statusFile = "\(directoryPath)/status.json"
+            
+            if FileManager.default.fileExists(atPath: statusFile) {
+                do {
+                    let data = try Data(contentsOf: URL(fileURLWithPath: statusFile), options: .mappedIfSafe)
+                    let decoder = JSONDecoder()
+                    let cardStatus = try decoder.decode(CardStatus.self, from: data)
+                    return cardStatus.status
+                } catch {
+                    return nil
+                }
+            }
+        }
+        
+        return nil
+    }
+    
+    private func writeStatus(directoryPath: String, status: String) {
+        let statusFile = "\(directoryPath)/status.json"
+        
+        do {
+            if FileManager.default.fileExists(atPath: statusFile) {
+                try FileManager.default.removeItem(atPath: statusFile)
+            }
+            
+            let cardStatus = CardStatus(status: status)
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(cardStatus)
+            
+            self.prepare(destinationFile: statusFile)
+            FileManager.default.createFile(atPath: statusFile,
                                            contents: data,
                                            attributes: nil)
         } catch {

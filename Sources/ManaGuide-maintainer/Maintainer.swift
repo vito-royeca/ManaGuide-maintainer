@@ -113,21 +113,7 @@ class Maintainer {
             return _connection!
         }
     }
-//    var _singleCardNewID: String?
-//    var singleCardNewID: String? {
-//        get {
-//            if _singleCardNewID == nil && jsonPath != nil {
-//                let data = try! Data(contentsOf: URL(fileURLWithPath: cardsLocalPath))
-//                guard let card = try! JSONSerialization.jsonObject(with: data,
-//                                                                   options: .mutableContainers) as? [String: Any] else {
-//                    fatalError("Malformed data")
-//                }
-//                _singleCardNewID = "\(card["set"] ?? "NULL")_\(card["lang"] ?? "NULL")_\((card["collector_number"] as? String  ?? "NULL").replacingOccurrences(of: "★", with: "star"))"
-//            }
-//            return _singleCardNewID
-//        }
-//    }
-    
+
     // options variables
     var host: String
     var port: Int
@@ -212,7 +198,7 @@ class Maintainer {
         }
         var promises = [()->Promise<Void>]()
 
-        filePrefix = format2(Date().timeIntervalSince1970)
+        filePrefix = "managuide-\(Date().timeIntervalSince1970)"
         bulkDataLocalPath  = "\(cachePath)/\(filePrefix)_\(bulkDataFileName)"
         setsLocalPath      = "\(cachePath)/\(filePrefix)_\(setsFileName)"
         keyruneLocalPath   = "\(cachePath)/\(filePrefix)_\(keyruneFileName)"
@@ -401,12 +387,9 @@ class Maintainer {
             let statement = try connection.prepareStatement(text: query)
             
             if let parameters = parameters {
-                var convertibles = [PostgresValueConvertible]()
-                for parameter in parameters {
-                    if let c = parameter as? PostgresValueConvertible {
-                        convertibles.append(c)
-                    }
-                }
+                let convertibles = parameters.compactMap({
+                    $0 as? PostgresValueConvertible
+                })
                 
                 try statement.execute(parameterValues: convertibles)
             } else {
@@ -586,17 +569,6 @@ class Maintainer {
         let minutes = (interval / 60).truncatingRemainder(dividingBy: 60)
         let hours = (interval / 3600)
         return String(format: "%.2d:%.2d:%.2d", Int(hours), Int(minutes), Int(seconds))
-    }
-    
-    func format2(_ interval: TimeInterval) -> String {
-        if interval == 0 {
-            return "HHmmss"
-        }
-        
-        let seconds = interval.truncatingRemainder(dividingBy: 60)
-        let minutes = (interval / 60).truncatingRemainder(dividingBy: 60)
-        let hours = (interval / 3600)
-        return String(format: "%.2d%.2d%.2d", Int(hours), Int(minutes), Int(seconds))
     }
 }
 
