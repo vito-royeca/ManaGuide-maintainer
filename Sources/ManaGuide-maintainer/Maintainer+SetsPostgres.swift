@@ -131,7 +131,11 @@ extension Maintainer {
         // manual fix
         for dict in array {
             if let code = dict["code"] as? String {
-                if code == "sta" {
+                if code == "mid" ||
+                   code == "smid" ||
+                   code == "tmid" {
+                    keyruneCodes[code] = ["e978", "xin4"] // innistrad werewolves
+                } else if code == "sta" {
                     keyruneCodes[code] = ["e980", "sta"] // strixhaven mystical archive
                 } else if code == "oc21" ||
                    code == "tc21" {

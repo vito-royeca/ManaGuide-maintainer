@@ -1,8 +1,12 @@
-echo -n "Delete status.txt? [Y/n] "
+CardsDir=/path/to/managuide_images/cards
+SetDir=$CardsDir/$1
+BeforeFindResult=$(find $SetDir -name status.json | wc -l)
+
+echo -n "Delete status files? [Y/n] "
 read answer
 
-if [ "$answer" != "${answer#[Y]}" ] ;then
-    find /path/to/managuide_images/cards/$1 -type f -name "status.txt" -exec rm -fvr {} \;
+if [ "$answer" != "${answer#[Yy]}" ] ;then
+    find $SetDir -type f -name "status.*" -exec rm -fvr {} \;
 fi
 
 read -d '' command << EOF
@@ -13,9 +17,9 @@ read -d '' command << EOF
   --user user \
   --password password \
   --full-update true \
-  --images-path /path/to/managuide_images/cards \
+  --images-path $CardsDir \
   --set-name $1 && \
-psql -h host -U user -c \
+psql -h host -U user -w -c \
   "update cmset set is_images_redownloaded = true, date_updated = now() where code = '$1'" \
   database
 EOF
@@ -26,3 +30,7 @@ done
 
 # delete temp files
 rm /tmp/managuide-*
+
+AfterFindResult=$(find $SetDir -name status.json | wc -l)
+echo "Before: ${BeforeFindResult} status.json files"
+echo "After:  ${AfterFindResult} status.json files"
