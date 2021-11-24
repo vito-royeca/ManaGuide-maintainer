@@ -29,7 +29,7 @@ while [ $? -ne 0 ]; do
 done
 
 # delete temp files
-rm /tmp/managuide-*
+find /tmp -name "managuide-*" -exec rm -fv {} \;
 
 AfterFindResult=$(find $SetDir -name status.json | wc -l)
 echo "Before: ${BeforeFindResult} status.json files"

@@ -38,7 +38,7 @@ class Maintainer {
     var rulingsRemotePath  = ""
     let setsRemotePath     = "https://api.scryfall.com/sets"
     let keyruneRemotePath  = "https://keyrune.andrewgioia.com/cheatsheet.html"
-    let rulesRemotePath    = "https://media.wizards.com/2021/downloads/MagicCompRules 20210712.txt"
+    let rulesRemotePath    = "https://media.wizards.com/2021/downloads/MagicCompRules 202109224.txt"
     
     // local file names
     var bulkDataLocalPath  = ""
@@ -122,7 +122,6 @@ class Maintainer {
     var password: String
     var isFullUpdate: Bool
     var imagesPath: String
-    var setName: String?
     
     // MARK: - init
 
@@ -132,8 +131,7 @@ class Maintainer {
          user: String,
          password: String,
          isFullUpdate: Bool,
-         imagesPath: String,
-         setName: String?) {
+         imagesPath: String) {
         self.host = host
         self.port = port
         self.database = database
@@ -141,7 +139,6 @@ class Maintainer {
         self.password = password
         self.isFullUpdate = isFullUpdate
         self.imagesPath = imagesPath
-        self.setName = setName
     }
     
     // MARK: - Database methods
@@ -167,7 +164,7 @@ class Maintainer {
     func updateDatabase() {
         let label = "Managuide Maintainer"
         let dateStart = startActivity(label: label)
-        var completion = {
+        let completion = {
             do {
                 if FileManager.default.fileExists(atPath: self.bulkDataLocalPath) {
                     try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
@@ -206,22 +203,7 @@ class Maintainer {
         milestoneLocalPath = "\(cachePath)/\(milestoneFileName)"
         readMilestone()
 
-        if let _ = setName {
-            completion = {
-                do {
-                    if FileManager.default.fileExists(atPath: self.bulkDataLocalPath) {
-                        try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
-                    }
-                    if FileManager.default.fileExists(atPath: self.milestoneLocalPath) {
-                        try FileManager.default.removeItem(atPath: self.milestoneLocalPath)
-                    }
-                } catch {
-                    print(error)
-                }
-                self.endActivity(label: label, from: dateStart)
-                exit(EXIT_SUCCESS)
-            }
-            
+        if isFullUpdate {
             // downloads
             promises.append({
                 self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath)
@@ -230,75 +212,57 @@ class Maintainer {
                 self.createBulkData()
             })
             promises.append({
+                self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath)
+            })
+            promises.append({
+                self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath)
+            })
+            promises.append({
                 self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath)
+            })
+            promises.append({
+                self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath)
+            })
+            promises.append({
+                self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath)
             })
             
             // updates
             promises.append({
                 self.fetchCardImages()
             })
-        } else {
-            if isFullUpdate {
-                // downloads
-                promises.append({
-                    self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath)
-                })
-                promises.append({
-                    self.createBulkData()
-                })
-                promises.append({
-                    self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath)
-                })
-                promises.append({
-                    self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath)
-                })
-                promises.append({
-                    self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath)
-                })
-                promises.append({
-                    self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath)
-                })
-                promises.append({
-                    self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath)
-                })
-                
-                // updates
-                promises.append({
-                    self.fetchCardImages()
-                })
-                promises.append({
-                    self.processSetsData()
-                })
-                promises.append({
-                    self.processCardsData(type: .misc)
-                })
-                promises.append({
-                    self.processCardsData(type: .cards)
-                })
-                promises.append({
-                    self.processCardsData(type: .partsAndFaces)
-                })
-                promises.append({
-                    self.processRulingsData()
-                })
-                promises.append({
-                    self.processComprehensiveRulesData()
-                })
-                promises.append({
-                    self.processOtherCardsData()
-                })
-            }
-            
             promises.append({
-                self.processPricingData()
+                self.processSetsData()
             })
             promises.append({
-                self.processServerUpdatePromise()
+                self.processCardsData(type: .misc)
             })
             promises.append({
-                self.processServerVacuumPromise()
+                self.processCardsData(type: .cards)
+            })
+            promises.append({
+                self.processCardsData(type: .partsAndFaces)
+            })
+            promises.append({
+                self.processRulingsData()
+            })
+            promises.append({
+                self.processComprehensiveRulesData()
+            })
+            promises.append({
+                self.processOtherCardsData()
             })
         }
+        
+        promises.append({
+            self.processPricingData()
+        })
+        promises.append({
+            self.processServerUpdatePromise()
+        })
+        promises.append({
+            self.processServerVacuumPromise()
+        })
 
         execInSequence(label: label,
                        promises: promises,
@@ -409,7 +373,7 @@ class Maintainer {
 
         let animation = PercentProgressAnimation(stream: stdoutStream,
                                                  header: "\(label)")
-        
+
         for next in promises {
             promise = promise.then { n -> Promise<Void> in
                 countIndex += 1

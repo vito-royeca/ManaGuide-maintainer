@@ -26,7 +26,8 @@ let package = Package(
                            "PostgresClientKit",
                            .product(name: "PromiseKit", package: "PromiseKit"),
                            .product(name: "PMKFoundation", package: "PromiseKit"),
-                           .product(name: "SwiftToolsSupport", package: "swift-tools-support-core")]
+                           .product(name: "SwiftToolsSupport", package: "swift-tools-support-core")],
+            resources: [ .process("keyrune-updates.plist")]
         ),
         .testTarget(
             name: "ManaGuide-maintainerTests",

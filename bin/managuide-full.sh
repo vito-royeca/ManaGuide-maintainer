@@ -14,4 +14,4 @@ while [ $? -ne 0 ]; do
 done
 
 # delete temp files
-rm /tmp/managuide-*
+find /tmp -name "managuide-*" -exec rm -fv {} \;

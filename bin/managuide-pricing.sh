@@ -8,4 +8,4 @@
   --images-path /path/to/managuide_images/cards
 
 # delete temp files
-rm /tmp/managuide-*
+find /tmp -name "managuide-*" -exec rm -fv {} \;

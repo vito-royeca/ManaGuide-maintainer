@@ -13,6 +13,7 @@ extension Maintainer {
         let query = "SELECT createOrUpdateServerUpdate($1)"
         let parameters = [isFullUpdate]
         
+        print("processServerUpdatePromise()...")
         return createPromise(with: query,
                              parameters: parameters)
     }
@@ -20,6 +21,7 @@ extension Maintainer {
     func processServerVacuumPromise() -> Promise<Void> {
         let query = "VACUUM FULL ANALYZE"
         
+        print("processServerVacuumPromise()...")
         return createPromise(with: query,
                              parameters: nil)
     }

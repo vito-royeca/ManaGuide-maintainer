@@ -517,34 +517,8 @@ extension Maintainer {
             return array
         }
         
-        for color in colors {
-
-            let symbol = color
-            var name = "NULL"
-
-            switch symbol {
-            case "B":
-                name = "Black"
-            case "G":
-                name = "Green"
-            case "R":
-                name = "Red"
-            case "U":
-                name = "Blue"
-            case "W":
-                name = "White"
-            default:
-                ()
-            }
-            array.append([
-                "symbol": symbol,
-                "name": name,
-                "is_mana_color": true
-            ])
-        }
-        
-//        array = colors.compactMap({
-//            let symbol = $0
+//        for color in colors {
+//            let symbol = color
 //            var name = "NULL"
 //
 //            switch symbol {
@@ -561,13 +535,38 @@ extension Maintainer {
 //            default:
 //                ()
 //            }
-//
-//            return [
+//            array.append([
 //                "symbol": symbol,
 //                "name": name,
 //                "is_mana_color": true
-//            ]
-//        })
+//            ])
+//        }
+        
+        array = colors.compactMap({
+            let symbol = $0
+            var name = "NULL"
+
+            switch symbol {
+            case "B":
+                name = "Black"
+            case "G":
+                name = "Green"
+            case "R":
+                name = "Red"
+            case "U":
+                name = "Blue"
+            case "W":
+                name = "White"
+            default:
+                ()
+            }
+
+            return [
+                "symbol": symbol,
+                "name": name,
+                "is_mana_color": true
+            ]
+        })
         
         return array
     }

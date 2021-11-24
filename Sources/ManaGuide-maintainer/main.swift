@@ -25,11 +25,8 @@ struct Managuide: ParsableCommand {
     @Option(help: "Card images path")
     var imagesPath: String
 
-    @Option(help: "Set name to redownload images")
-    var setName: String?
-    
     func run() throws {
-        ManaKit.sharedInstance.configure(apiURL: "http://192.168.1.182:1993",
+        ManaKit.sharedInstance.configure(apiURL: "http://\(host):1993",
                                                  partnerKey: "ManaGuide",
                                                  publicKey: ManaKit.Constants.TcgPlayerPublicKey,
                                                  privateKey: ManaKit.Constants.TcgPlayerPrivateKey)
@@ -40,8 +37,7 @@ struct Managuide: ParsableCommand {
                                     user: user,
                                     password: password,
                                     isFullUpdate: fullUpdate,
-                                    imagesPath: imagesPath,
-                                    setName: setName)
+                                    imagesPath: imagesPath)
         maintainer.updateDatabase()
     }
 }
@@ -51,6 +47,7 @@ Managuide.main()
 
 // wait until all threads are done before exiting
 RunLoop.current.run()
+
 
 
 

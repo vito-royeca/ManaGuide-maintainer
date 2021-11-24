@@ -20,7 +20,6 @@ extension Maintainer {
             promises.append(contentsOf: self.filterSetBlocks(array: setsArray))
             promises.append(contentsOf: self.filterSetTypes(array: setsArray))
             promises.append(contentsOf: self.filterSets(array: setsArray))
-            promises.append(contentsOf: self.createKeyrunePromises(array: setsArray))
 
             let completion = {
                 self.endActivity(label: label, from: date)
@@ -82,9 +81,17 @@ extension Maintainer {
     }
     
     func filterSets(array: [[String: Any]]) -> [()->Promise<Void>] {
-        let filteredData = array.sorted(by: {
+        let keyruneCodes = updatedKeyruneCodes()
+        
+        var filteredData = array.sorted(by: {
             $0["parent_set_code"] as? String ?? "" < $1["parent_set_code"] as? String ?? ""
         })
+        for row in filteredData.indices {
+            if let keyrune = keyruneCodes.filter({ $0["code"] == filteredData[row]["code"] as? String}).first {
+                filteredData[row]["keyrune_unicode"] = keyrune["keyrune_unicode"]
+                filteredData[row]["keyrune_class"] = keyrune["keyrune_class"]
+            }
+        }
         
         let promises: [()->Promise<Void>] = filteredData.map { dict in
             return {

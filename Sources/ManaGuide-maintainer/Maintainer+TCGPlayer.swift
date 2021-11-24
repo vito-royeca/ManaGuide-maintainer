@@ -105,7 +105,7 @@ extension Maintainer {
     
     func createStorePromise(name: String) -> Promise<Void> {
         let nameSection = self.sectionFor(name: name) ?? "NULL"
-        
+
         let query = "SELECT createOrUpdateStore($1,$2)"
         let parameters = [name,
                           nameSection]
@@ -158,10 +158,8 @@ extension Maintainer {
                 var promises = [()->Promise<Void>]()
                 
                 for result in results {
-                    
                     promises.append({
                         return self.createCardPricingPromise(price: result)
-                        
                     })
                 }
                 seal.fulfill(promises)
