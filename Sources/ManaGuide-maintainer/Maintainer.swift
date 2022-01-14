@@ -228,30 +228,30 @@ class Maintainer {
             })
             
             // updates
-            promises.append({
-                self.fetchCardImages()
-            })
+//            promises.append({
+//                self.fetchCardImages()
+//            })
             promises.append({
                 self.processSetsData()
             })
-            promises.append({
-                self.processCardsData(type: .misc)
-            })
-            promises.append({
-                self.processCardsData(type: .cards)
-            })
-            promises.append({
-                self.processCardsData(type: .partsAndFaces)
-            })
-            promises.append({
-                self.processRulingsData()
-            })
-            promises.append({
-                self.processComprehensiveRulesData()
-            })
-            promises.append({
-                self.processOtherCardsData()
-            })
+//            promises.append({
+//                self.processCardsData(type: .misc)
+//            })
+//            promises.append({
+//                self.processCardsData(type: .cards)
+//            })
+//            promises.append({
+//                self.processCardsData(type: .partsAndFaces)
+//            })
+//            promises.append({
+//                self.processRulingsData()
+//            })
+//            promises.append({
+//                self.processComprehensiveRulesData()
+//            })
+//            promises.append({
+//                self.processOtherCardsData()
+//            })
         }
         
         promises.append({

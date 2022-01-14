@@ -82,8 +82,8 @@ extension Maintainer {
     
     func filterSets(array: [[String: Any]]) -> [()->Promise<Void>] {
         let keyruneCodes = updatedKeyruneCodes()
-        let defaultKeyruneClass = "pmei"
-        let defaultKeyruneUnicode = "e687"
+        let defaultKeyruneClass = "pmtg1"
+        let defaultKeyruneUnicode = "e684"
         
         var filteredData = array.sorted(by: {
             $0["parent_set_code"] as? String ?? "" < $1["parent_set_code"] as? String ?? ""
