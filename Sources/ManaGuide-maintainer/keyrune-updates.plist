@@ -124,7 +124,7 @@
 	<key>cei</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>xcie</string>
+		<string>xice</string>
 		<key>keyrune_unicode</key>
 		<string>e927</string>
 	</dict>
@@ -388,6 +388,13 @@
 		<string>e688</string>
 	</dict>
 	<key>g10</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>parl</string>
+		<key>keyrune_unicode</key>
+		<string>e688</string>
+	</dict>
+	<key>g11</key>
 	<dict>
 		<key>keyrune_class</key>
 		<string>parl</string>
@@ -814,6 +821,13 @@
 		<key>keyrune_unicode</key>
 		<string>e92a</string>
 	</dict>
+	<key>pana</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>parl3</string>
+		<key>keyrune_unicode</key>
+		<string>e943</string>
+	</dict>
 	<key>parc</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -821,12 +835,19 @@
 		<key>keyrune_unicode</key>
 		<string>e688</string>
 	</dict>
-	<key>pvan</key>
+	<key>parl</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>van</string>
+		<string>parl</string>
 		<key>keyrune_unicode</key>
-		<string>e655</string>
+		<string>e688</string>
+	</dict>
+	<key>past</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>past</string>
+		<key>keyrune_unicode</key>
+		<string>e68b</string>
 	</dict>
 	<key>pbok</key>
 	<dict>
@@ -869,6 +890,13 @@
 		<string>m10</string>
 		<key>keyrune_unicode</key>
 		<string>e611</string>
+	</dict>
+	<key>pdrc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pdrc</string>
+		<key>keyrune_unicode</key>
+		<string>e932</string>
 	</dict>
 	<key>pdtp</key>
 	<dict>
@@ -996,6 +1024,13 @@
 		<key>keyrune_unicode</key>
 		<string>e688</string>
 	</dict>
+	<key>pjjt</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>parl</string>
+		<key>keyrune_unicode</key>
+		<string>e688</string>
+	</dict>
 	<key>pjse</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -1073,6 +1108,13 @@
 		<key>keyrune_unicode</key>
 		<string>e97b</string>
 	</dict>
+	<key>pmic</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>past</string>
+		<key>keyrune_unicode</key>
+		<string>e68b</string>
+	</dict>
 	<key>pmid</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -1086,6 +1128,13 @@
 		<string>pmodo</string>
 		<key>keyrune_unicode</key>
 		<string>e91b</string>
+	</dict>
+	<key>pmps</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>rav</string>
+		<key>keyrune_unicode</key>
+		<string>e637</string>
 	</dict>
 	<key>pmps06</key>
 	<dict>
@@ -1199,6 +1248,13 @@
 		<key>keyrune_unicode</key>
 		<string>e909</string>
 	</dict>
+	<key>psdg</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>psega</string>
+		<key>keyrune_unicode</key>
+		<string>e93b</string>
+	</dict>
 	<key>psld</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -1212,6 +1268,13 @@
 		<string>stx</string>
 		<key>keyrune_unicode</key>
 		<string>e975</string>
+	</dict>
+	<key>psum</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>10e</string>
+		<key>keyrune_unicode</key>
+		<string>e60b</string>
 	</dict>
 	<key>psus</key>
 	<dict>
@@ -1241,6 +1304,20 @@
 		<key>keyrune_unicode</key>
 		<string>e687</string>
 	</dict>
+	<key>pvan</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>van</string>
+		<key>keyrune_unicode</key>
+		<string>e655</string>
+	</dict>
+	<key>pw22</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+	</dict>
 	<key>pwar</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -1255,14 +1332,14 @@
 		<key>keyrune_unicode</key>
 		<string>e687</string>
 	</dict>
-	<key>pwp09</key>
+	<key>pw09</key>
 	<dict>
 		<key>keyrune_class</key>
 		<string>parl</string>
 		<key>keyrune_unicode</key>
 		<string>e688</string>
 	</dict>
-	<key>pwp10</key>
+	<key>pw10</key>
 	<dict>
 		<key>keyrune_class</key>
 		<string>parl</string>

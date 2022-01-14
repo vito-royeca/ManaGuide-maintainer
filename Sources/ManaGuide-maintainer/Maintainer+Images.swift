@@ -86,9 +86,12 @@ extension Maintainer {
             return promises
         }
         
+        let cleanNumber = number.replacingOccurrences(of: "★", with: "star")
+                                .replacingOccurrences(of: "†", with: "cross")
+        
         if let imageStatus = dict["image_status"] as? String,
             let imageUrisDict = dict["image_uris"] as? [String: String] {
-            let imageUrisDict = createImageUris(number: number.replacingOccurrences(of: "★", with: "star"),
+            let imageUrisDict = createImageUris(number: cleanNumber,
                                                 set: set,
                                                 language: language,
                                                 imageStatus: imageStatus,
@@ -102,7 +105,7 @@ extension Maintainer {
                 
                 if let imageStatus = dict["image_status"] as? String,
                     let imageUrisDict = face["image_uris"] as? [String: String] {
-                    let faceImageUrisDict = createImageUris(number: "\(number.replacingOccurrences(of: "★", with: "star"))_\(i)",
+                    let faceImageUrisDict = createImageUris(number: "\(cleanNumber)_\(i)",
                                                             set: set,
                                                             language: language,
                                                             imageStatus: imageStatus,

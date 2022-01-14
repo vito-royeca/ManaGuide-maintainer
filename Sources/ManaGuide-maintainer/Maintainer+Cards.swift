@@ -603,7 +603,9 @@ extension Maintainer {
             return nil
         }
         
-        let newId = "\(set)_\(language)_\(collectorNumber.replacingOccurrences(of: "★", with: "star"))"
+        let cleanCollectorNumber = collectorNumber.replacingOccurrences(of: "★", with: "star")
+                                                  .replacingOccurrences(of: "†", with: "cross")
+        let newId = "\(set)_\(language)_\(cleanCollectorNumber)"
         var array = [[String: Any]]()
         
         for i in 0...parts.count-1 {
@@ -628,7 +630,9 @@ extension Maintainer {
             return nil
         }
         
-        let newId = "\(set)_\(language)_\(collectorNumber.replacingOccurrences(of: "★", with: "star"))"
+        let cleanCollectorNumber = collectorNumber.replacingOccurrences(of: "★", with: "star")
+                                                  .replacingOccurrences(of: "†", with: "cross")
+        let newId = "\(set)_\(language)_\(cleanCollectorNumber)"
         var array = [[String: Any]]()
         
         
