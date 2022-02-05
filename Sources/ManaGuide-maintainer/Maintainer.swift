@@ -38,8 +38,8 @@ class Maintainer {
     var rulingsRemotePath  = ""
     let setsRemotePath     = "https://api.scryfall.com/sets"
     let keyruneRemotePath  = "https://keyrune.andrewgioia.com/cheatsheet.html"
-    let rulesRemotePath    = "https://media.wizards.com/2021/downloads/MagicCompRules 202109224.txt"
-    
+    let rulesRemotePath    = "https://media.wizards.com/2021/downloads/MagicCompRules 20211115.txt"
+
     // local file names
     var bulkDataLocalPath  = ""
     var cardsLocalPath     = ""
@@ -195,15 +195,23 @@ class Maintainer {
         }
         var promises = [()->Promise<Void>]()
 
-        filePrefix = "managuide-\(Date().timeIntervalSince1970)"
-        bulkDataLocalPath  = "\(cachePath)/\(filePrefix)_\(bulkDataFileName)"
-        setsLocalPath      = "\(cachePath)/\(filePrefix)_\(setsFileName)"
-        keyruneLocalPath   = "\(cachePath)/\(filePrefix)_\(keyruneFileName)"
-        rulesLocalPath     = "\(cachePath)/\(filePrefix)_\(rulesFileName)"
-        milestoneLocalPath = "\(cachePath)/\(milestoneFileName)"
-        readMilestone()
-
+        promises.append({
+            return Promise { seal in
+                print("Managuide starting...")
+                seal.fulfill(())
+            }
+        })
+        
         if isFullUpdate {
+            filePrefix = "managuide-\(Date().timeIntervalSince1970)"
+            bulkDataLocalPath  = "\(cachePath)/\(filePrefix)_\(bulkDataFileName)"
+            setsLocalPath      = "\(cachePath)/\(filePrefix)_\(setsFileName)"
+            keyruneLocalPath   = "\(cachePath)/\(filePrefix)_\(keyruneFileName)"
+            rulesLocalPath     = "\(cachePath)/\(filePrefix)_\(rulesFileName)"
+            milestoneLocalPath = "\(cachePath)/\(milestoneFileName)"
+            
+            readMilestone()
+            
             // downloads
             promises.append({
                 self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath)
@@ -228,30 +236,30 @@ class Maintainer {
             })
             
             // updates
-//            promises.append({
-//                self.fetchCardImages()
-//            })
+            promises.append({
+                self.fetchCardImages()
+            })
             promises.append({
                 self.processSetsData()
             })
-//            promises.append({
-//                self.processCardsData(type: .misc)
-//            })
-//            promises.append({
-//                self.processCardsData(type: .cards)
-//            })
-//            promises.append({
-//                self.processCardsData(type: .partsAndFaces)
-//            })
-//            promises.append({
-//                self.processRulingsData()
-//            })
-//            promises.append({
-//                self.processComprehensiveRulesData()
-//            })
-//            promises.append({
-//                self.processOtherCardsData()
-//            })
+            promises.append({
+                self.processCardsData(type: .misc)
+            })
+            promises.append({
+                self.processCardsData(type: .cards)
+            })
+            promises.append({
+                self.processCardsData(type: .partsAndFaces)
+            })
+            promises.append({
+                self.processRulingsData()
+            })
+            promises.append({
+                self.processOtherCardsData()
+            })
+            promises.append({
+                self.processComprehensiveRulesData()
+            })
         }
         
         promises.append({

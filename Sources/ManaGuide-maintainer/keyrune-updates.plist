@@ -1199,6 +1199,13 @@
 		<key>keyrune_unicode</key>
 		<string>e65c</string>
 	</dict>
+	<key>pcsp</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>csp</string>
+		<key>keyrune_unicode</key>
+		<string>e61b</string>
+	</dict>
 	<key>pcon</key>
 	<dict>
 		<key>keyrune_class</key>
