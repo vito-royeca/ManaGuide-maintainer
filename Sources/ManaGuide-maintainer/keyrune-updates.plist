@@ -1577,6 +1577,13 @@
 		<key>keyrune_unicode</key>
 		<string>e96a</string>
 	</dict>
+	<key>pl22</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+	</dict>
 	<key>plg20</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -1821,6 +1828,13 @@
 		<string>nem</string>
 		<key>keyrune_unicode</key>
 		<string>e626</string>
+	</dict>
+	<key>pneo</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>neo</string>
+		<key>keyrune_unicode</key>
+		<string>e98c</string>
 	</dict>
 	<key>pnph</key>
 	<dict>
@@ -3151,6 +3165,13 @@
 		<string>mor</string>
 		<key>keyrune_unicode</key>
 		<string>e63e</string>
+	</dict>
+	<key>tneo</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>neo</string>
+		<key>keyrune_unicode</key>
+		<string>e98c</string>
 	</dict>
 	<key>tnph</key>
 	<dict>
