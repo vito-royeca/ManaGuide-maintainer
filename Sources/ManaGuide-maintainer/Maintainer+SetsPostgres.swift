@@ -42,13 +42,13 @@ extension Maintainer {
         let mtgoCode = dict["mtgo_code"] as? String ?? "NULL"
         let keyruneUnicode = dict["keyrune_unicode"] as? String ?? "NULL"
         let keyruneClass = dict["keyrune_class"] as? String ?? "NULL"
-        var myNameSection = "NULL"
+        var nameSection = "NULL"
         if let name = dict["name"] as? String {
-            myNameSection = sectionFor(name: name) ?? "NULL"
+            nameSection = sectionFor(name: name) ?? "NULL"
         }
-        var myYearSection = "Undated"
+        var yearSection = "Undated"
         if let releaseDate = dict["released_at"] as? String {
-            myYearSection = String(releaseDate.prefix(4))
+            yearSection = String(releaseDate.prefix(4))
         }
         let name = dict["name"] as? String ?? "NULL"
         let releaseDate = dict["released_at"] as? String ?? "NULL"
@@ -68,8 +68,8 @@ extension Maintainer {
                           mtgoCode,
                           keyruneUnicode,
                           keyruneClass,
-                          myNameSection,
-                          myYearSection,
+                          nameSection,
+                          yearSection,
                           name,
                           releaseDate,
                           tcgplayerId,

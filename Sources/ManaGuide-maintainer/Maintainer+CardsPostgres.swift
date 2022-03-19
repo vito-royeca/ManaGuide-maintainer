@@ -246,14 +246,14 @@ extension Maintainer {
                 .replacingOccurrences(of: "]", with: "}")
         }
         
-        var myNameSection = "NULL"
+        var nameSection = "NULL"
         if let name = card["name"] as? String {
-            myNameSection = sectionFor(name: name) ?? "NULL"
+            nameSection = sectionFor(name: name) ?? "NULL"
         }
         
-        var myNumberOrder = Double(0)
+        var numberOrder = Double(0)
         if collectorNumber != "NULL" {
-            myNumberOrder = order(of: collectorNumber)
+            numberOrder = order(of: collectorNumber)
         }
         
         let name = card["name"] as? String ?? "NULL"
@@ -372,8 +372,8 @@ extension Maintainer {
                           loyalty,
                           manaCost,
                           multiverseIds,
-                          myNameSection,
-                          myNumberOrder,
+                          nameSection,
+                          numberOrder,
                           name,
                           oracleText,
                           power,

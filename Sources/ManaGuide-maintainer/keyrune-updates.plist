@@ -86,6 +86,13 @@
 		<key>keyrune_unicode</key>
 		<string>e943</string>
 	</dict>
+	<key>aneo</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>neo</string>
+		<key>keyrune_unicode</key>
+		<string>e98c</string>
+	</dict>
 	<key>astx</key>
 	<dict>
 		<key>keyrune_class</key>
