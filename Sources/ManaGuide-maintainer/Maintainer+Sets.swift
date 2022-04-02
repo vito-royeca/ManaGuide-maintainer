@@ -84,6 +84,7 @@ extension Maintainer {
         let keyruneCodes = updatedKeyruneCodes()
         let defaultKeyruneClass = "pmtg1"
         let defaultKeyruneUnicode = "e684"
+        let defaultLogoCode = "null"
         
         var filteredData = array.sorted(by: {
             $0["parent_set_code"] as? String ?? "" < $1["parent_set_code"] as? String ?? ""
@@ -92,6 +93,7 @@ extension Maintainer {
             if let keyrune = keyruneCodes.filter({ $0["code"] == filteredData[row]["code"] as? String}).first {
                 filteredData[row]["keyrune_unicode"] = keyrune["keyrune_unicode"]
                 filteredData[row]["keyrune_class"] = keyrune["keyrune_class"]
+                filteredData[row]["logo_code"] = keyrune["logo_code"]
             }
         }
         for row in filteredData.indices {
@@ -100,6 +102,9 @@ extension Maintainer {
             }
             if filteredData[row]["keyrune_unicode"] == nil {
                 filteredData[row]["keyrune_unicode"] = defaultKeyruneUnicode
+            }
+            if filteredData[row]["logo_code"] == nil {
+                filteredData[row]["logo_code"] = defaultLogoCode
             }
         }
         

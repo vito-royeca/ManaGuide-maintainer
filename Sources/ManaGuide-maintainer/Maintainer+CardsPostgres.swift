@@ -235,6 +235,7 @@ extension Maintainer {
         let isOversized = card["oversized"] as? Bool ?? false
         let isReserved = card["reserved"] as? Bool ?? false
         let isStorySpotlight = card["story_spotlight"] as? Bool ?? false
+        let language = card["lang"] as? String ?? "NULL"
         let loyalty = card["loyalty"] as? String ?? "NULL"
         let manaCost = card["mana_cost"] as? String ?? "NULL"
         
@@ -247,10 +248,16 @@ extension Maintainer {
         }
         
         var nameSection = "NULL"
-        if let name = card["name"] as? String {
-            nameSection = sectionFor(name: name) ?? "NULL"
+        if language == "en" {
+            if let name = card["name"] as? String {
+                nameSection = sectionFor(name: name) ?? "NULL"
+            }
+        } else {
+            if let name = card["printed_name"] as? String {
+                nameSection = sectionFor(name: name) ?? "NULL"
+            }
         }
-        
+
         var numberOrder = Double(0)
         if collectorNumber != "NULL" {
             numberOrder = order(of: collectorNumber)
@@ -277,7 +284,6 @@ extension Maintainer {
         let artist = card["artist"] as? String ?? "NULL"
         let set = card["set"] as? String ?? "NULL"
         let rarity = capitalize(string: card["rarity"] as? String ?? "NULL")
-        let language = card["lang"] as? String ?? "NULL"
         let layout = capitalize(string: displayFor(name: card["layout"] as? String ?? "NULL"))
         let watermark = capitalize(string: card["watermark"] as? String ?? "NULL")
         let frame = capitalize(string: card["frame"] as? String ?? "NULL")

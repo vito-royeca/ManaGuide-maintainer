@@ -39,6 +39,7 @@ extension Maintainer {
         let code = dict["code"] as? String ?? "NULL"
         let isFoilOnly = dict["foil_only"] as? Bool ?? false
         let isOnlineOnly = dict["digital"] as? Bool ?? false
+        let logoCode = dict["logo_code"] as? String ?? "NULL"
         let mtgoCode = dict["mtgo_code"] as? String ?? "NULL"
         let keyruneUnicode = dict["keyrune_unicode"] as? String ?? "NULL"
         let keyruneClass = dict["keyrune_class"] as? String ?? "NULL"
@@ -60,11 +61,12 @@ extension Maintainer {
         }
         let setParent = dict["parent_set_code"] as? String ?? "NULL"
         
-        let query = "SELECT createOrUpdateSet($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)"
+        let query = "SELECT createOrUpdateSet($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)"
         let parameters = [cardCount,
                           code,
                           isFoilOnly,
                           isOnlineOnly,
+                          logoCode,
                           mtgoCode,
                           keyruneUnicode,
                           keyruneClass,
@@ -105,7 +107,8 @@ extension Maintainer {
         return keyrunes.map({
             ["code": $0.key,
              "keyrune_unicode": $0.value["keyrune_unicode"] ?? "",
-             "keyrune_class": $0.value["keyrune_class"] ?? ""]
+             "keyrune_class": $0.value["keyrune_class"] ?? "",
+             "logo_code": $0.value["logo_code"] ?? "null"]
         })
     }
     
