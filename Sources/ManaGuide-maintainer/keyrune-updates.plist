@@ -450,6 +450,13 @@
 		<key>logo_code</key>
 		<string>c21</string>
 	</dict>
+	<key>cbl</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>cnl</string>
+		<key>keyrune_unicode</key>
+		<string> e991</string>
+	</dict>
 	<key>cc1</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -1329,6 +1336,15 @@
 		<key>logo_code</key>
 		<string>judgePromos</string>
 	</dict>
+	<key>gdy</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>gameDayPromos</string>
+	</dict>
 	<key>gk1</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -2145,6 +2161,15 @@
 		<string>e963</string>
 		<key>logo_code</key>
 		<string>znr</string>
+	</dict>
+	<key>ncc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>ncc</string>
+		<key>keyrune_unicode</key>
+		<string>e98e</string>
+		<key>logo_code</key>
+		<string>snc</string>
 	</dict>
 	<key>nec</key>
 	<dict>
@@ -4477,6 +4502,15 @@
 		<key>logo_code</key>
 		<string>mid</string>
 	</dict>
+	<key>snc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>snc</string>
+		<key>keyrune_unicode</key>
+		<string>e98b</string>
+		<key>logo_code</key>
+		<string>snc</string>
+	</dict>
 	<key>soi</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -5607,6 +5641,15 @@
 		<string>e63f</string>
 		<key>logo_code</key>
 		<string>shm</string>
+	</dict>
+	<key>tsnc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>snc</string>
+		<key>keyrune_unicode</key>
+		<string>e98b</string>
+		<key>logo_code</key>
+		<string>snc</string>
 	</dict>
 	<key>tsoi</key>
 	<dict>
