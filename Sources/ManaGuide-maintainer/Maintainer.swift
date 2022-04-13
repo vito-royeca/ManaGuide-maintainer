@@ -63,6 +63,15 @@ class Maintainer {
     var typesCache        = [[String: Any]]()
     var componentsCache   = [String]()
     
+    // TCGPlayer
+    public enum TCGPlayer {
+        public static let apiVersion = "v1.36.0"
+        public static let apiLimit   = 300
+        public static let partnerKey = "ManaGuide"
+        public static let publicKey  = "A49D81FB-5A76-4634-9152-E1FB5A657720"
+        public static let privateKey = "C018EF82-2A4D-4F7A-A785-04ADEBF2A8E5"
+    }
+    
     // lazy variables
     var _bulkArray: [[String: Any]]?
     var bulkArray: [[String: Any]] {

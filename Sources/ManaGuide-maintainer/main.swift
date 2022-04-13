@@ -26,11 +26,6 @@ struct Managuide: ParsableCommand {
     var imagesPath: String
 
     func run() throws {
-        ManaKit.sharedInstance.configure(apiURL: "http://\(host):1993",
-                                                 partnerKey: "ManaGuide",
-                                                 publicKey: ManaKit.Constants.TcgPlayerPublicKey,
-                                                 privateKey: ManaKit.Constants.TcgPlayerPrivateKey)
-
         let maintainer = Maintainer(host: host,
                                     port: port,
                                     database: database,

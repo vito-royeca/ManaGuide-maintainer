@@ -48,7 +48,8 @@ extension Maintainer {
                 let url = URL(string: urlString) else {
                 fatalError("Malformed url")
             }
-            let query = "grant_type=client_credentials&client_id=\(ManaKit.Constants.TcgPlayerPublicKey)&client_secret=\(ManaKit.Constants.TcgPlayerPrivateKey)"
+            
+            let query = "grant_type=client_credentials&client_id=\(TCGPlayer.publicKey)&client_secret=\(TCGPlayer.privateKey)"
             
             var rq = URLRequest(url: url)
             rq.httpMethod = "POST"
@@ -76,9 +77,9 @@ extension Maintainer {
     func fetchSets() -> Promise<[Int32]> {
         return Promise { seal in
             firstly {
-                ManaKit.sharedInstance.createNodePromise(apiPath: "/sets?json=true",
-                                                        httpMethod: "GET",
-                                                        httpBody: nil)
+                createNodePromise(apiPath: "/sets?json=true",
+                                  httpMethod: "GET",
+                                  httpBody: nil)
             }.compactMap { (data, result) in
                 try JSONSerialization.jsonObject(with: data) as? [[String: Any]]
             }.done { data in
@@ -101,6 +102,25 @@ extension Maintainer {
                 seal.reject(error)
             }
         }
+    }
+    
+    func createNodePromise(apiPath: String, httpMethod: String, httpBody: String?) -> Promise<(data: Data, response: URLResponse)> {
+        // TODO: remove hardcoded url
+        let urlString = "http://managuideapp.com\(apiPath)"
+        
+        guard let cleanURL = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+            let url = URL(string: cleanURL) else {
+            fatalError("Malformed url")
+        }
+        
+        var rq = URLRequest(url: url)
+        rq.httpMethod = httpMethod.uppercased()
+        rq.setValue("application/json", forHTTPHeaderField: "Accept")
+        if let httpBody = httpBody {
+            rq.httpBody = httpBody.replacingOccurrences(of: "\n", with: "").data(using: .utf8)
+        }
+    
+        return URLSession.shared.dataTask(.promise, with: rq)
     }
     
     func createStorePromise(name: String) -> Promise<Void> {
@@ -137,7 +157,7 @@ extension Maintainer {
     
     func fetchCardPricingBy(groupId: Int32) -> Promise<[()->Promise<Void>]> {
         return Promise { seal in
-            guard let urlString = "https://api.tcgplayer.com/\(ManaKit.Constants.TcgPlayerApiVersion)/pricing/group/\(groupId)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+            guard let urlString = "https://api.tcgplayer.com/\(TCGPlayer.apiVersion)/pricing/group/\(groupId)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
                 let url = URL(string: urlString) else {
                 fatalError("Malformed url")
             }
