@@ -635,16 +635,15 @@ extension Maintainer {
         let newId = "\(set)_\(language)_\(cleanCollectorNumber)"
         var array = [[String: Any]]()
         
-        
         for i in 0...faces.count-1 {
             let face = faces[i]
             let faceId = "\(newId)_\(i)"
             var newFace = [String: Any]()
             
             for (k,v) in face {
-                if k == "image_uris" {
-                    continue
-                }
+//                if k == "image_uris" {
+//                    continue
+//                }
                 newFace[k] = v
             }
             

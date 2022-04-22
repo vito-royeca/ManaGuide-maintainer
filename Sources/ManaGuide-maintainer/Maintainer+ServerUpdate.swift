@@ -10,7 +10,7 @@ import PromiseKit
 
 extension Maintainer {
     func processServerUpdatePromise() -> Promise<Void> {
-        let query = "SELECT createOrUpdateServerUpdate($1)"
+        let query = "SELECT createServerUpdate($1)"
         let parameters = [isFullUpdate]
         
         print("processServerUpdatePromise()...")

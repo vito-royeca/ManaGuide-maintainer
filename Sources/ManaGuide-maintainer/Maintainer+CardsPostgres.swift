@@ -357,14 +357,33 @@ extension Maintainer {
         let oracle_id = card["oracle_id"] as? String ?? "NULL"
         let id = card["id"] as? String ?? "NULL"
         
-        // unhandled...
-        // border_color
-        // games
-        // promo_types
-        // preview.previewed_at
-        // preview.source_uri
-        // preview.source
-        let query = "SELECT createOrUpdateCard($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43,$44,$45,$46,$47,$48,$49,$50,$51,$52,$53)"
+        var artCropURL = "NULL"
+        var normalURL = "NULL"
+        var pngURL = "NULL"
+        if let _ = card["card_faces"] as? [[String: Any]] {
+            artCropURL = "NULL"
+            normalURL = "NULL"
+            pngURL = "NULL"
+        } else {
+            if let imageURIs = card["image_uris"] as? [String: Any] {
+                if let artCrop = imageURIs["art_crop"] as? String,
+                   let first = artCrop.components(separatedBy: "?").first {
+                    artCropURL = first
+                }
+                
+                if let normal = imageURIs["normal"] as? String,
+                   let first = normal.components(separatedBy: "?").first {
+                    normalURL = first
+                }
+                
+                if let png = imageURIs["png"] as? String,
+                   let first = png.components(separatedBy: "?").first {
+                    pngURL = first
+                }
+            }
+        }
+        
+        let query = "SELECT createOrUpdateCard($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43,$44,$45,$46,$47,$48,$49,$50,$51,$52,$53,$54,$55,$56)"
         let parameters = [collectorNumber,
                           cmc,
                           flavorText,
@@ -417,7 +436,10 @@ extension Maintainer {
                           faceOrder,
                           newId,
                           oracle_id,
-                          id] as [Any]
+                          id,
+                          artCropURL,
+                          normalURL,
+                          pngURL] as [Any]
         return createPromise(with: query,
                              parameters: parameters)
     }

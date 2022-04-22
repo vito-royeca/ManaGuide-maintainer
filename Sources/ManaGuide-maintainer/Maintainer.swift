@@ -24,7 +24,6 @@ class Maintainer {
     let keyruneFileName    = "keyrune.html"
     let rulesFileName      = "MagicCompRules.txt"
     let milestoneFileName  = "milestone.json"
-    let storeName          = "TCGPlayer"
     let cachePath          = "/tmp"
     
     // MARK: - Variables

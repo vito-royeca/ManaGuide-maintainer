@@ -21,8 +21,7 @@ extension Maintainer {
             let date = self.startActivity(label: label)
             
             firstly {
-                self.createStorePromise(name: self.storeName)
-            }.then {
+//                self.createStorePromise(name: self.storeName)
                 self.getTcgPlayerToken()
             }.then {
                 self.fetchSets()
@@ -123,15 +122,15 @@ extension Maintainer {
         return URLSession.shared.dataTask(.promise, with: rq)
     }
     
-    func createStorePromise(name: String) -> Promise<Void> {
-        let nameSection = self.sectionFor(name: name) ?? "NULL"
-
-        let query = "SELECT createOrUpdateStore($1,$2)"
-        let parameters = [name,
-                          nameSection]
-        return createPromise(with: query,
-                             parameters: parameters)
-    }
+//    func createStorePromise(name: String) -> Promise<Void> {
+//        let nameSection = self.sectionFor(name: name) ?? "NULL"
+//
+//        let query = "SELECT createOrUpdateStore($1,$2)"
+//        let parameters = [name,
+//                          nameSection]
+//        return createPromise(with: query,
+//                             parameters: parameters)
+//    }
     
     func fetchTcgPlayerCardPricing(groupIds: [Int32]) -> Promise<[()->Promise<Void>]> {
         return Promise { seal in
@@ -198,10 +197,9 @@ extension Maintainer {
         let market = price["marketPrice"] as? Double ?? 0.0
         let directLow = price["directLowPrice"] as? Double ?? 0.0
         let tcgPlayerId = price["productId"]  as? Int ?? 0
-        let cmstore = self.storeName
         let isFoil = price["subTypeName"] as? String ?? "Foil" == "Foil" ? true : false
         
-        let query = "SELECT createOrUpdateCardPrice($1,$2,$3,$4,$5,$6,$7,$8)"
+        let query = "SELECT createOrUpdateCardPrice($1,$2,$3,$4,$5,$6,$7)"
         let parameters = [
             low,
             median,
@@ -209,7 +207,6 @@ extension Maintainer {
             market,
             directLow,
             tcgPlayerId,
-            cmstore,
             isFoil
             ] as [Any]
         

@@ -288,6 +288,15 @@
 		<key>logo_code</key>
 		<string>arn</string>
 	</dict>
+	<key>asnc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>snc</string>
+		<key>keyrune_unicode</key>
+		<string>e98b</string>
+		<key>logo_code</key>
+		<string>snc</string>
+	</dict>
 	<key>astx</key>
 	<dict>
 		<key>keyrune_class</key>
