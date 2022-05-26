@@ -335,21 +335,19 @@ extension Maintainer {
         let printedTypeLine = card["printed_type_line"] as? String ?? "NULL"
         
         var cardtypeSubtypes = "{}"
-        if let tl = card["type_line"] as? String {
-            let subtypes = extractSubtypesFrom(tl)
+        var cardtypeSupertypes = "{}"
+        if typeLine != "NULL" {
+            let subtypes = extractSubtypesFrom(typeLine)
             cardtypeSubtypes = "\(subtypes)"
                 .replacingOccurrences(of: "[", with: "{")
                 .replacingOccurrences(of: "]", with: "}")
-        }
-        
-        var cardtypeSupertypes = "{}"
-        if let tl = card["type_line"] as? String {
-            let supertypes = extractSupertypesFrom(tl)
+            
+            let supertypes = extractSupertypesFrom(typeLine)
             cardtypeSupertypes = "\(supertypes)"
                 .replacingOccurrences(of: "[", with: "{")
                 .replacingOccurrences(of: "]", with: "}")
         }
-        
+            
         let faceOrder = card["face_order"] as? Int ?? Int(0)
         let cleanCollectorNumber = collectorNumber.replacingOccurrences(of: "★", with: "star")
                                                   .replacingOccurrences(of: "†", with: "cross")
@@ -360,26 +358,20 @@ extension Maintainer {
         var artCropURL = "NULL"
         var normalURL = "NULL"
         var pngURL = "NULL"
-        if let _ = card["card_faces"] as? [[String: Any]] {
-            artCropURL = "NULL"
-            normalURL = "NULL"
-            pngURL = "NULL"
-        } else {
-            if let imageURIs = card["image_uris"] as? [String: Any] {
-                if let artCrop = imageURIs["art_crop"] as? String,
-                   let first = artCrop.components(separatedBy: "?").first {
-                    artCropURL = first
-                }
-                
-                if let normal = imageURIs["normal"] as? String,
-                   let first = normal.components(separatedBy: "?").first {
-                    normalURL = first
-                }
-                
-                if let png = imageURIs["png"] as? String,
-                   let first = png.components(separatedBy: "?").first {
-                    pngURL = first
-                }
+        if let imageURIs = card["image_uris"] as? [String: Any] {
+            if let artCrop = imageURIs["art_crop"] as? String,
+               let first = artCrop.components(separatedBy: "?").first {
+                artCropURL = first
+            }
+            
+            if let normal = imageURIs["normal"] as? String,
+               let first = normal.components(separatedBy: "?").first {
+                normalURL = first
+            }
+            
+            if let png = imageURIs["png"] as? String,
+               let first = png.components(separatedBy: "?").first {
+                pngURL = first
             }
         }
         

@@ -25,6 +25,7 @@ class Maintainer {
     let rulesFileName      = "MagicCompRules.txt"
     let milestoneFileName  = "milestone.json"
     let cachePath          = "/tmp"
+    let emdash             = "\u{2014}"
     
     // MARK: - Variables
     var tcgplayerAPIToken  = ""

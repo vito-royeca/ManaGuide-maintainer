@@ -11,6 +11,13 @@
 		<key>logo_code</key>
 		<string>10e</string>
 	</dict>
+	<key>2x2</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>2x2</string>
+		<key>keyrune_unicode</key>
+		<string>e99c</string>
+	</dict>
 	<key>2xm</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -37,6 +44,13 @@
 		<string>e603</string>
 		<key>logo_code</key>
 		<string>3ed</string>
+	</dict>
+	<key>40k</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>40k</string>
+		<key>keyrune_unicode</key>
+		<string>e998</string>
 	</dict>
 	<key>4bb</key>
 	<dict>
@@ -512,7 +526,7 @@
 	<key>clb</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>cbl</string>
+		<string>clb</string>
 		<key>keyrune_unicode</key>
 		<string>e991</string>
 	</dict>
@@ -2174,7 +2188,7 @@
 	<key>ncc</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>nnc</string>
+		<string>ncc</string>
 		<key>keyrune_unicode</key>
 		<string>e98e</string>
 		<key>logo_code</key>
@@ -3381,6 +3395,15 @@
 		<key>keyrune_unicode</key>
 		<string>e687</string>
 	</dict>
+	<key>plg22</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>gameDayPromos</string>
+	</dict>
 	<key>plgm</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3649,6 +3672,15 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+	</dict>
+	<key>pncc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>ncc</string>
+		<key>keyrune_unicode</key>
+		<string>e98e</string>
+		<key>logo_code</key>
+		<string>snc</string>
 	</dict>
 	<key>pnem</key>
 	<dict>
@@ -3983,6 +4015,15 @@
 		<string>e63f</string>
 		<key>logo_code</key>
 		<string>shm</string>
+	</dict>
+	<key>psnc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>snc</string>
+		<key>keyrune_unicode</key>
+		<string>e98b</string>
+		<key>logo_code</key>
+		<string>snc</string>
 	</dict>
 	<key>psoi</key>
 	<dict>
@@ -4484,6 +4525,15 @@
 		<key>logo_code</key>
 		<string>scg</string>
 	</dict>
+	<key>sch</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>gameDayPromos</string>
+	</dict>
 	<key>shm</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -4665,6 +4715,13 @@
 		<key>logo_code</key>
 		<string>2xm</string>
 	</dict>
+	<key>t40k</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>40k</string>
+		<key>keyrune_unicode</key>
+		<string>e998</string>
+	</dict>
 	<key>ta25</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -4844,6 +4901,13 @@
 		<string>e97e</string>
 		<key>logo_code</key>
 		<string>c21</string>
+	</dict>
+	<key>tclb</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>clb</string>
+		<key>keyrune_unicode</key>
+		<string>e991</string>
 	</dict>
 	<key>tcm2</key>
 	<dict>
@@ -5554,6 +5618,15 @@
 		<string>e61f</string>
 		<key>logo_code</key>
 		<string>tmp</string>
+	</dict>
+	<key>tncc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>ncc</string>
+		<key>keyrune_unicode</key>
+		<string>e98e</string>
+		<key>logo_code</key>
+		<string>snc</string>
 	</dict>
 	<key>tnec</key>
 	<dict>

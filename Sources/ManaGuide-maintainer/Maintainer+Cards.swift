@@ -517,31 +517,6 @@ extension Maintainer {
             return array
         }
         
-//        for color in colors {
-//            let symbol = color
-//            var name = "NULL"
-//
-//            switch symbol {
-//            case "B":
-//                name = "Black"
-//            case "G":
-//                name = "Green"
-//            case "R":
-//                name = "Red"
-//            case "U":
-//                name = "Blue"
-//            case "W":
-//                name = "White"
-//            default:
-//                ()
-//            }
-//            array.append([
-//                "symbol": symbol,
-//                "name": name,
-//                "is_mana_color": true
-//            ])
-//        }
-        
         array = colors.compactMap({
             let symbol = $0
             var name = "NULL"
@@ -639,18 +614,15 @@ extension Maintainer {
             let face = faces[i]
             let faceId = "\(newId)_\(i)"
             var newFace = [String: Any]()
-            
+
             for (k,v) in face {
-//                if k == "image_uris" {
-//                    continue
-//                }
                 newFace[k] = v
             }
-            
+
             newFace["face_order"] = i
             newFace["cmcard"] = newId
             newFace["new_id"] = faceId
-            
+
             array.append(newFace)
         }
         
@@ -659,136 +631,150 @@ extension Maintainer {
     
     func extractTypesFrom(_ typeLine: String) -> [[String: String]]  {
         var filteredTypes = [[String: String]]()
-        let emdash = "\u{2014}"
-        var types = Set<String>()
         
         if typeLine.contains("//") {
             for type in typeLine.components(separatedBy: "//") {
-                let s = type.components(separatedBy: emdash)
-                
-                if let first = s.first,
-                    let last = s.last {
-                    
-                    for f in first.components(separatedBy: " ") {
-                        if !f.isEmpty && f != emdash {
-                            let trimmed = f.trimmingCharacters(in: .whitespacesAndNewlines)
-                            types.insert(trimmed)
-                        }
-                    }
-                    
-                    let trimmed = last.trimmingCharacters(in: .whitespacesAndNewlines)
-                    types.insert(trimmed)
-                }
+                filteredTypes.append(contentsOf: extractTypesFrom(type))
             }
         } else if typeLine.contains(emdash) {
             let s = typeLine.components(separatedBy: emdash)
             
             if let first = s.first,
-                let last = s.last {
+               let last = s.last {
+
+                let cleanFirst = clean(type: first)
+                let cleanLast = clean(type: last)
                 
-                for f in first.components(separatedBy: " ") {
-                    if !f.isEmpty && f != emdash {
-                        let trimmed = f.trimmingCharacters(in: .whitespacesAndNewlines)
-                        types.insert(trimmed)
+                if !cleanFirst.isEmpty,
+                   !cleanLast.isEmpty,
+                   filteredTypes.filter({ $0["name"] == cleanLast }).isEmpty {
+                    filteredTypes.append([
+                        "name": cleanLast,
+                        "parent": cleanFirst
+                    ])
+                }
+            
+                if !cleanFirst.isEmpty,
+                   filteredTypes.filter({ $0["name"] == cleanFirst }).isEmpty {
+                    filteredTypes.append([
+                        "name": cleanFirst,
+                        "parent": "NULL"
+                    ])
+                }
+                for type in cleanFirst.components(separatedBy: " ") {
+                    if !type.isEmpty,
+                       filteredTypes.filter({ $0["name"] == type }).isEmpty {
+                        filteredTypes.append([
+                            "name": type,
+                            "parent": "NULL"
+                        ])
                     }
                 }
                 
-                let trimmed = last.trimmingCharacters(in: .whitespacesAndNewlines)
-                types.insert(trimmed)
+                for type in cleanLast.components(separatedBy: " ") {
+                    if !type.isEmpty,
+                       filteredTypes.filter({ $0["name"] == type }).isEmpty {
+                        filteredTypes.append([
+                            "name": type,
+                            "parent": "NULL"
+                        ])
+                    }
+                }
             }
         } else {
-            types.insert(typeLine)
-        }
-        
-        let arrayTypes = types.reversed()
-        for i in 0...arrayTypes.count-1 {
-            let type = arrayTypes[i]
-            var parent = "NULL"
-            var isFound = false
+            let cleanTypeline = clean(type: typeLine)
             
-            if type.isEmpty {
-                continue
-            }
-            for filteredType in filteredTypes {
-                if let name = filteredType["name"] {
-                    isFound = name == type
-                }
-            }
-            if !isFound {
-                if i+1 <= types.count-1 {
-                    parent = arrayTypes[i+1]
-                }
-                
+            if !cleanTypeline.isEmpty,
+               filteredTypes.filter({ $0["name"] == cleanTypeline }).isEmpty {
                 filteredTypes.append([
-                    "name": type,
-                    "parent": parent
+                    "name": cleanTypeline,
+                    "parent": "NULL"
                 ])
+            }
+            
+            for type in cleanTypeline.components(separatedBy: " ") {
+                if !type.isEmpty,
+                   filteredTypes.filter({ $0["name"] == type }).isEmpty {
+                    filteredTypes.append([
+                        "name": type,
+                        "parent": "NULL"
+                    ])
+                }
             }
         }
         
         return filteredTypes
     }
-    
+
     func extractSupertypesFrom(_ typeLine: String) -> Set<String>  {
-        let emdash = "\u{2014}"
         var types = Set<String>()
-        
+
         if typeLine.contains("//") {
             for type in typeLine.components(separatedBy: "//") {
-                let s = type.components(separatedBy: emdash)
-                
-                if let first = s.first {
-                    for f in first.components(separatedBy: " ") {
-                        if !f.isEmpty && f != emdash {
-                            let trimmed = f.trimmingCharacters(in: .whitespacesAndNewlines)
-                            types.insert(trimmed)
-                        }
-                    }
+                for s in extractSupertypesFrom(type) {
+                    types.insert(s)
                 }
             }
         } else if typeLine.contains(emdash) {
             let s = typeLine.components(separatedBy: emdash)
-            
+
             if let first = s.first {
-                for f in first.components(separatedBy: " ") {
-                    if !f.isEmpty && f != emdash {
-                        let trimmed = f.trimmingCharacters(in: .whitespacesAndNewlines)
-                        types.insert(trimmed)
-                    }
+                for string in filterTypesFrom(first) {
+                    types.insert(string)
                 }
             }
         } else {
-            types.insert(typeLine)
+            for string in filterTypesFrom(typeLine) {
+                types.insert(string)
+            }
+        }
+
+        return types
+    }
+
+    func extractSubtypesFrom(_ typeLine: String) -> Set<String>  {
+        var types = Set<String>()
+
+        if typeLine.contains("//") {
+            for type in typeLine.components(separatedBy: "//") {
+                for s in extractSubtypesFrom(type) {
+                    types.insert(s)
+                }
+            }
+        } else if typeLine.contains(emdash) {
+            let s = typeLine.components(separatedBy: emdash)
+
+            if let last = s.last {
+                for string in filterTypesFrom(last) {
+                    types.insert(string)
+                }
+            }
+        } else {
+            for string in filterTypesFrom(typeLine) {
+                types.insert(string)
+            }
+        }
+
+        return types
+    }
+
+    private func filterTypesFrom(_ string: String) -> Set<String>  {
+        var types = Set<String>()
+        
+        for f in string.components(separatedBy: " ") {
+            let cleanTypeline = clean(type: f)
+            
+            if !cleanTypeline.isEmpty {
+                types.insert(cleanTypeline)
+            }
         }
         
         return types
     }
-    
-    func extractSubtypesFrom(_ typeLine: String) -> Set<String>  {
-        let emdash = "\u{2014}"
-        var types = Set<String>()
-        
-        if typeLine.contains("//") {
-            for type in typeLine.components(separatedBy: "//") {
-                let s = type.components(separatedBy: emdash)
-                
-                if let last = s.last {
-                    let trimmed = last.trimmingCharacters(in: .whitespacesAndNewlines)
-                    types.insert(trimmed)
-                }
-            }
-        } else if typeLine.contains(emdash) {
-            let s = typeLine.components(separatedBy: emdash)
-            
-            if let last = s.last {
-                let trimmed = last.trimmingCharacters(in: .whitespacesAndNewlines)
-                types.insert(trimmed)
-            }
-        } else {
-            types.insert(typeLine)
-        }
-        
-        return types
+
+    private func clean(type: String) -> String  {
+        return type.replacingOccurrences(of: emdash, with: "")
+                   .trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
 //
