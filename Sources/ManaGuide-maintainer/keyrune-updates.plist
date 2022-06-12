@@ -140,6 +140,13 @@
 		<key>logo_code</key>
 		<string>afr</string>
 	</dict>
+	<key>aclb</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>clb</string>
+		<key>keyrune_unicode</key>
+		<string>e991</string>
+	</dict>
 	<key>aer</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -2859,6 +2866,13 @@
 		<string>e634</string>
 		<key>logo_code</key>
 		<string>chk</string>
+	</dict>
+	<key>pclb</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>clb</string>
+		<key>keyrune_unicode</key>
+		<string>e991</string>
 	</dict>
 	<key>pcmd</key>
 	<dict>
@@ -6246,6 +6260,15 @@
 		<string>e989</string>
 		<key>logo_code</key>
 		<string>neo</string>
+	</dict>
+	<key>ysnc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>y22</string>
+		<key>keyrune_unicode</key>
+		<string>e989</string>
+		<key>logo_code</key>
+		<string>snc</string>
 	</dict>
 	<key>xana</key>
 	<dict>
