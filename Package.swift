@@ -27,7 +27,8 @@ let package = Package(
                            .product(name: "PromiseKit", package: "PromiseKit"),
                            .product(name: "PMKFoundation", package: "PromiseKit"),
                            .product(name: "SwiftToolsSupport", package: "swift-tools-support-core")],
-            resources: [ .process("keyrune-updates.plist")]
+            resources: [ .process("keyrune-updates.plist"),
+                         .process("mtgpics.json")]
         ),
         .testTarget(
             name: "ManaGuide-maintainerTests",

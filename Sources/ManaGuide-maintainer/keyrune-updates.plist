@@ -1393,6 +1393,13 @@
 		<key>logo_code</key>
 		<string>rna</string>
 	</dict>
+	<key>gn3</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>gn2</string>
+		<key>keyrune_unicode</key>
+		<string>e964</string>
+	</dict>
 	<key>gpt</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -1490,6 +1497,13 @@
 		<string>ha1</string>
 		<key>keyrune_unicode</key>
 		<string>e96b</string>
+	</dict>
+	<key>hbg</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>y22</string>
+		<key>keyrune_unicode</key>
+		<string>e989</string>
 	</dict>
 	<key>hho</key>
 	<dict>
@@ -4719,6 +4733,13 @@
 		<string>e60b</string>
 		<key>logo_code</key>
 		<string>10e</string>
+	</dict>
+	<key>t2x2</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>2x2</string>
+		<key>keyrune_unicode</key>
+		<string>e99c</string>
 	</dict>
 	<key>t2xm</key>
 	<dict>

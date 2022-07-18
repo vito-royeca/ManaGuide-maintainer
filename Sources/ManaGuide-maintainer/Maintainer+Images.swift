@@ -212,7 +212,7 @@ extension Maintainer {
         return newDict
     }
     
-    private func downloadImagePromise(url: String, destinationFile: String) -> Promise<Void> {
+    func downloadImagePromise(url: String, destinationFile: String) -> Promise<Void> {
         return Promise { seal in
             firstly {
                 URLSession.shared.dataTask(.promise, with: URL(string: url)!)
