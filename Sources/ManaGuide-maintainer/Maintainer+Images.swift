@@ -220,7 +220,6 @@ extension Maintainer {
                 do {
                     self.prepare(destinationFile: destinationFile)
                     try response.data.write(to: URL(fileURLWithPath: destinationFile))
-//                    print("Downloaded \(destinationFile)")
                     seal.fulfill(())
                 } catch {
                     print("Unable to write to: \(destinationFile)")
@@ -239,7 +238,6 @@ extension Maintainer {
                 prepare(destinationFile: destinationFile)
                 try FileManager.default.copyItem(at: URL(fileURLWithPath: sourceFile),
                                                  to: URL(fileURLWithPath: destinationFile))
-//                print("Copied \(destinationFile)")
                 seal.fulfill(())
             } catch {
                 print("Unable to write to: \(destinationFile)")

@@ -38,7 +38,7 @@ class Maintainer {
     var rulingsRemotePath  = ""
     let setsRemotePath     = "https://api.scryfall.com/sets"
     let keyruneRemotePath  = "https://keyrune.andrewgioia.com/cheatsheet.html"
-    let rulesRemotePath    = "https://media.wizards.com/2021/downloads/MagicCompRules 20211115.txt"
+    let rulesRemotePath    = "https://media.wizards.com/2022/downloads/MagicCompRules 20220708.txt"
 
     // local file names
     var bulkDataLocalPath  = ""
@@ -222,67 +222,67 @@ class Maintainer {
             readMilestone()
             
             // downloads
-//            promises.append({
-//                self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath)
-//            })
-//            promises.append({
-//                self.createBulkData()
-//            })
-//            promises.append({
-//                self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath)
-//            })
-//            promises.append({
-//                self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath)
-//            })
-//            promises.append({
-//                self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath)
-//            })
-//            promises.append({
-//                self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath)
-//            })
-//            promises.append({
-//                self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath)
-//            })
+            promises.append({
+                self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath)
+            })
+            promises.append({
+                self.createBulkData()
+            })
+            promises.append({
+                self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath)
+            })
+            promises.append({
+                self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath)
+            })
+            promises.append({
+                self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath)
+            })
+            promises.append({
+                self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath)
+            })
+            promises.append({
+                self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath)
+            })
             promises.append({
                 self.downloadSetLogos()
             })
             
 //             updates
-//            promises.append({
-//                self.fetchCardImages()
-//            })
-//            promises.append({
-//                self.processSetsData()
-//            })
-//            promises.append({
-//                self.processCardsData(type: .misc)
-//            })
-//            promises.append({
-//                self.processCardsData(type: .cards)
-//            })
-//            promises.append({
-//                self.processCardsData(type: .partsAndFaces)
-//            })
-//            promises.append({
-//                self.processRulingsData()
-//            })
-//            promises.append({
-//                self.processOtherCardsData()
-//            })
-//            promises.append({
-//                self.processComprehensiveRulesData()
-//            })
+            promises.append({
+                self.fetchCardImages()
+            })
+            promises.append({
+                self.processSetsData()
+            })
+            promises.append({
+                self.processCardsData(type: .misc)
+            })
+            promises.append({
+                self.processCardsData(type: .cards)
+            })
+            promises.append({
+                self.processCardsData(type: .partsAndFaces)
+            })
+            promises.append({
+                self.processRulingsData()
+            })
+            promises.append({
+                self.processOtherCardsData()
+            })
+            promises.append({
+                self.processComprehensiveRulesData()
+            })
         }
         
-//        promises.append({
-//            self.processPricingData()
-//        })
-//        promises.append({
-//            self.processServerUpdatePromise()
-//        })
-//        promises.append({
-//            self.processServerVacuumPromise()
-//        })
+        promises.append({
+            self.processPricingData()
+        })
+        promises.append({
+            self.processServerUpdatePromise()
+        })
+        promises.append({
+            self.processServerVacuumPromise()
+        })
 
         execInSequence(label: label,
                        promises: promises,
@@ -387,6 +387,11 @@ class Maintainer {
     }
     
     func execInSequence(label: String, promises: [()->Promise<Void>], completion: @escaping () -> Void) {
+        guard !promises.isEmpty else {
+            completion()
+            return
+        }
+
         var promise = promises.first!()
         let countTotal = promises.count
         var countIndex = 0

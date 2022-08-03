@@ -31,20 +31,20 @@ extension Maintainer {
                 
                 for code in array {
                     let sourceSmall = "https://www.mtgpics.com/graph/sets/logos/" + code + ".png"
-                    let destSmall = "\(setsPath)/small/\(code).png"
+                    let destSmall = "\(setsPath)/\(code)_small.png"
                     if !FileManager.default.fileExists(atPath: destSmall) {
                         print(destSmall)
                         promises.append({ return self.downloadImagePromise(url: sourceSmall, destinationFile: destSmall) })
                     }
                     
                     let sourceBig = "https://www.mtgpics.com/graph/sets/logos_big/" + code + ".png"
-                    let destBig = "\(setsPath)/big/\(code).png"
+                    let destBig = "\(setsPath)/\(code)_big.png"
                     if !FileManager.default.fileExists(atPath: destBig) {
                         print(destBig)
                         promises.append({ return self.downloadImagePromise(url: sourceBig, destinationFile: destBig) })
                     }
                 }
-            
+
                 self.execInSequence(label: label,
                                     promises: promises,
                                     completion: completion)
