@@ -446,9 +446,9 @@
 	<key>bot</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>pmtg1</string>
+		<string>bot</string>
 		<key>keyrune_unicode</key>
-		<string>e684</string>
+		<string>e99e</string>
 		<key>logo_code</key>
 		<string>bot</string>
 	</dict>
@@ -464,27 +464,27 @@
 	<key>brc</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>pmtg1</string>
+		<string>brc</string>
 		<key>keyrune_unicode</key>
-		<string>e684</string>
+		<string>e99f</string>
 		<key>logo_code</key>
 		<string>brc</string>
 	</dict>
 	<key>bro</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>pmtg1</string>
+		<string>bro</string>
 		<key>keyrune_unicode</key>
-		<string>e684</string>
+		<string>e99d</string>
 		<key>logo_code</key>
 		<string>tbw</string>
 	</dict>
 	<key>brr</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>pmtg1</string>
+		<string>brr</string>
 		<key>keyrune_unicode</key>
-		<string>e684</string>
+		<string>e9a0</string>
 		<key>logo_code</key>
 		<string>brr</string>
 	</dict>
@@ -1015,6 +1015,15 @@
 		<key>logo_code</key>
 		<string>dmc</string>
 	</dict>
+	<key>dmr</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmtg1</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>dmr</string>
+	</dict>
 	<key>dmu</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -1113,6 +1122,15 @@
 		<string>e943</string>
 		<key>logo_code</key>
 		<string>ea1</string>
+	</dict>
+	<key>ea2</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>parl3</string>
+		<key>keyrune_unicode</key>
+		<string>e943</string>
+		<key>logo_code</key>
+		<string>ea2</string>
 	</dict>
 	<key>eld</key>
 	<dict>
@@ -1354,6 +1372,15 @@
 		<string>e617</string>
 		<key>logo_code</key>
 		<string>fal</string>
+	</dict>
+	<key>fj22</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>jmp</string>
+		<key>keyrune_unicode</key>
+		<string>e96f</string>
+		<key>logo_code</key>
+		<string>j22</string>
 	</dict>
 	<key>fjmp</key>
 	<dict>
@@ -1923,6 +1950,15 @@
 		<string>e983</string>
 		<key>logo_code</key>
 		<string>j21</string>
+	</dict>
+	<key>j22</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>jmp</string>
+		<key>keyrune_unicode</key>
+		<string>e96f</string>
+		<key>logo_code</key>
+		<string>j22</string>
 	</dict>
 	<key>jgp</key>
 	<dict>
@@ -2824,6 +2860,15 @@
 		<key>logo_code</key>
 		<string>dci</string>
 	</dict>
+	<key>p23</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>j20</string>
+		<key>keyrune_unicode</key>
+		<string>e96a</string>
+		<key>logo_code</key>
+		<string>dci</string>
+	</dict>
 	<key>p30a</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3099,6 +3144,15 @@
 		<key>logo_code</key>
 		<string>pmo</string>
 	</dict>
+	<key>pbro</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>bro</string>
+		<key>keyrune_unicode</key>
+		<string>e99d</string>
+		<key>logo_code</key>
+		<string>tbw</string>
+	</dict>
 	<key>pc2</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3330,6 +3384,15 @@
 		<key>keyrune_unicode</key>
 		<string>e915</string>
 	</dict>
+	<key>pdwa</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>dmu</string>
+	</dict>
 	<key>peld</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3365,6 +3428,13 @@
 		<string>e640</string>
 		<key>logo_code</key>
 		<string>eve</string>
+	</dict>
+	<key>pewk</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
 	</dict>
 	<key>pexo</key>
 	<dict>
@@ -4174,8 +4244,6 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
-		<key>logo_code</key>
-		<string>q06</string>
 	</dict>
 	<key>prav</key>
 	<dict>
@@ -5260,11 +5328,29 @@
 	<key>tbot</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>pmtg1</string>
+		<string>bot</string>
 		<key>keyrune_unicode</key>
-		<string>e684</string>
+		<string>e99e</string>
 		<key>logo_code</key>
 		<string>bot</string>
+	</dict>
+	<key>tbrc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>brc</string>
+		<key>keyrune_unicode</key>
+		<string>e99f</string>
+		<key>logo_code</key>
+		<string>brc</string>
+	</dict>
+	<key>tbro</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>bro</string>
+		<key>keyrune_unicode</key>
+		<string>e99d</string>
+		<key>logo_code</key>
+		<string>tbw</string>
 	</dict>
 	<key>tbth</key>
 	<dict>
@@ -5731,6 +5817,15 @@
 		<string>e964</string>
 		<key>logo_code</key>
 		<string>gn2</string>
+	</dict>
+	<key>tgn3</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>gn2</string>
+		<key>keyrune_unicode</key>
+		<string>e964</string>
+		<key>logo_code</key>
+		<string>gn3</string>
 	</dict>
 	<key>tgrn</key>
 	<dict>
@@ -6494,6 +6589,15 @@
 		<string>e692</string>
 		<key>logo_code</key>
 		<string>unh</string>
+	</dict>
+	<key>uplist</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>mb1</string>
+		<key>keyrune_unicode</key>
+		<string>e971</string>
+		<key>logo_code</key>
+		<string>tli</string>
 	</dict>
 	<key>usg</key>
 	<dict>
