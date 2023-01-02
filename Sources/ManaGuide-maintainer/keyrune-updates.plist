@@ -155,6 +155,15 @@
 		<key>logo_code</key>
 		<string>as6</string>
 	</dict>
+	<key>abro</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>bro</string>
+		<key>keyrune_unicode</key>
+		<string>e99d</string>
+		<key>logo_code</key>
+		<string>a13</string>
+	</dict>
 	<key>aclb</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -5018,6 +5027,13 @@
 		<string>e687</string>
 		<key>logo_code</key>
 		<string>sld</string>
+	</dict>
+	<key>slp</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
 	</dict>
 	<key>slu</key>
 	<dict>
