@@ -4736,6 +4736,13 @@
 		<key>keyrune_unicode</key>
 		<string>e687</string>
 	</dict>
+	<key>pw23</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+	</dict>
 	<key>pwar</key>
 	<dict>
 		<key>keyrune_class</key>
