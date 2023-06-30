@@ -15,6 +15,7 @@ import TSCUtility
 import PostgresClientKit
 import PromiseKit
 import PMKFoundation
+import SSLService
 
 class Maintainer {
     // MARK: - Constants
@@ -158,12 +159,12 @@ class Maintainer {
         configuration.port = port
         configuration.database = database
         configuration.user = user
-        configuration.credential = .cleartextPassword(password: password)
+        configuration.credential = .md5Password(password: password) //.cleartextPassword(password: password)
         configuration.ssl = false
+        configuration.sslServiceConfiguration = SSLService.Configuration()
         
         do {
             let connection = try PostgresClientKit.Connection(configuration: configuration)
-        
             return connection
         } catch {
             fatalError("\(error)")
@@ -382,7 +383,7 @@ class Maintainer {
             
             statement.close()
         } catch {
-            print(error)
+            fatalError(error.localizedDescription)
         }
     }
     

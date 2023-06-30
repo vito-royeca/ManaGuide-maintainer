@@ -10,7 +10,7 @@ if [ "$answer" != "${answer#[Yy]}" ] ;then
 fi
 
 read -d '' command << EOF
-/usr/local/bin/ManaGuide-maintainer \
+/usr/local/bin/managuide \
   --host host \
   --port 5432 \
   --database database \

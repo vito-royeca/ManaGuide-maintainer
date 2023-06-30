@@ -226,7 +226,7 @@ extension Maintainer {
                     seal.fulfill()
                 }
             }.catch { error in
-                print("\(error): \(destinationFile)")
+                print("\(error): \(url)")
                 seal.fulfill(())
             }
         }

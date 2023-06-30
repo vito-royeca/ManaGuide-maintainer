@@ -1,4 +1,4 @@
-/usr/local/bin/ManaGuide-maintainer \
+/usr/local/bin/managuide \
   --host host \
   --port 5432 \
   --database database \
