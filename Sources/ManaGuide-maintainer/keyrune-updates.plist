@@ -1177,6 +1177,15 @@
 		<key>logo_code</key>
 		<string>ea2</string>
 	</dict>
+	<key>ea3</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>parl3</string>
+		<key>keyrune_unicode</key>
+		<string>e943</string>
+		<key>logo_code</key>
+		<string>ea3</string>
+	</dict>
 	<key>eld</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -1820,6 +1829,15 @@
 		<string>e96b</string>
 		<key>logo_code</key>
 		<string>ha6</string>
+	</dict>
+	<key>ha7</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>ha1</string>
+		<key>keyrune_unicode</key>
+		<string>e96b</string>
+		<key>logo_code</key>
+		<string>ha7</string>
 	</dict>
 	<key>hbg</key>
 	<dict>
