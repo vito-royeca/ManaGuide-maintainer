@@ -3118,6 +3118,15 @@
 		<key>logo_code</key>
 		<string>30e</string>
 	</dict>
+	<key>p30t</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>30e</string>
+	</dict>
 	<key>p2hg</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3703,8 +3712,6 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
-		<key>logo_code</key>
-		<string>sld</string>
 	</dict>
 	<key>pfrf</key>
 	<dict>
@@ -5811,6 +5818,15 @@
 		<key>logo_code</key>
 		<string>can</string>
 	</dict>
+	<key>tcmm</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>cmm</string>
+		<key>keyrune_unicode</key>
+		<string>e9b5</string>
+		<key>logo_code</key>
+		<string>cmm</string>
+	</dict>
 	<key>tcmr</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -6900,6 +6916,15 @@
 		<string>e95a</string>
 		<key>logo_code</key>
 		<string>war</string>
+	</dict>
+	<key>twho</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>who</string>
+		<key>keyrune_unicode</key>
+		<string>e9b0</string>
+		<key>logo_code</key>
+		<string>who</string>
 	</dict>
 	<key>txln</key>
 	<dict>
