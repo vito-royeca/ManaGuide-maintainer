@@ -66,7 +66,7 @@ class Maintainer {
     
     // TCGPlayer
     public enum TCGPlayer {
-        public static let apiVersion = "v1.36.0"
+        public static let apiVersion = "v1.39.0"
         public static let apiLimit   = 300
         public static let partnerKey = "ManaGuide"
         public static let publicKey  = "A49D81FB-5A76-4634-9152-E1FB5A657720"

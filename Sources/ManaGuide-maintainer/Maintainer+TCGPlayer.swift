@@ -167,7 +167,7 @@ extension Maintainer {
             rq.setValue("Bearer \(tcgplayerAPIToken)", forHTTPHeaderField: "Authorization")
             
             firstly {
-                URLSession.shared.dataTask(.promise, with:rq)
+                URLSession.shared.dataTask(.promise, with: rq)
             }.compactMap {
                 try JSONSerialization.jsonObject(with: $0.data) as? [String: Any]
             }.done { json in

@@ -173,6 +173,15 @@
 		<key>logo_code</key>
 		<string>a11</string>
 	</dict>
+	<key>acmm</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>cmm</string>
+		<key>keyrune_unicode</key>
+		<string>e9b5</string>
+		<key>logo_code</key>
+		<string>cmm</string>
+	</dict>
 	<key>admu</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3461,15 +3470,6 @@
 		<key>logo_code</key>
 		<string>cns</string>
 	</dict>
-	<key>pcsp</key>
-	<dict>
-		<key>keyrune_class</key>
-		<string>csp</string>
-		<key>keyrune_unicode</key>
-		<string>e61b</string>
-		<key>logo_code</key>
-		<string>col</string>
-	</dict>
 	<key>pcon</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3478,6 +3478,22 @@
 		<string>e642</string>
 		<key>logo_code</key>
 		<string>con</string>
+	</dict>
+	<key>pctb</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>mb1</string>
+		<key>keyrune_unicode</key>
+		<string>e971</string>
+	</dict>
+	<key>pcsp</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>csp</string>
+		<key>keyrune_unicode</key>
+		<string>e61b</string>
+		<key>logo_code</key>
+		<string>col</string>
 	</dict>
 	<key>pcy</key>
 	<dict>
@@ -4189,6 +4205,13 @@
 		<string>e648</string>
 		<key>logo_code</key>
 		<string>mbs</string>
+	</dict>
+	<key>pmda</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
 	</dict>
 	<key>pmei</key>
 	<dict>
@@ -6599,6 +6622,10 @@
 	</dict>
 	<key>tmul</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>mul</string>
+		<key>keyrune_unicode</key>
+		<string>e9ba</string>
 		<key>logo_code</key>
 		<string>mul</string>
 	</dict>
@@ -6925,6 +6952,24 @@
 		<string>e9b0</string>
 		<key>logo_code</key>
 		<string>who</string>
+	</dict>
+	<key>twoc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>woc</string>
+		<key>keyrune_unicode</key>
+		<string>e9b9</string>
+		<key>logo_code</key>
+		<string>woc</string>
+	</dict>
+	<key>twoe</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>woe</string>
+		<key>keyrune_unicode</key>
+		<string>e9ae</string>
+		<key>logo_code</key>
+		<string>woe</string>
 	</dict>
 	<key>txln</key>
 	<dict>
@@ -7296,6 +7341,24 @@
 		<string>e9a2</string>
 		<key>logo_code</key>
 		<string>mom</string>
+	</dict>
+	<key>woc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>woc</string>
+		<key>keyrune_unicode</key>
+		<string>e9b9</string>
+		<key>logo_code</key>
+		<string>woc</string>
+	</dict>
+	<key>woe</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>woe</string>
+		<key>keyrune_unicode</key>
+		<string>e9ae</string>
+		<key>logo_code</key>
+		<string>woe</string>
 	</dict>
 	<key>wone</key>
 	<dict>
