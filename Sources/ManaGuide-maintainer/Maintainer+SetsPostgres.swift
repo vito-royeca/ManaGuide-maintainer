@@ -102,9 +102,9 @@ extension Maintainer {
         }
         
         let keyruneUpdates = keyruneUpdates()
-        keyrunes = keyrunes.merging(keyruneUpdates) { (_, new) in new }
+        let combinedKeyrunes = keyrunes.merging(keyruneUpdates) { (_, new) in new }
         
-        return keyrunes.map({
+        return combinedKeyrunes.map({
             ["code": $0.key,
              "keyrune_unicode": $0.value["keyrune_unicode"] ?? "",
              "keyrune_class": $0.value["keyrune_class"] ?? "",

@@ -159,7 +159,7 @@ class Maintainer {
         configuration.port = port
         configuration.database = database
         configuration.user = user
-        configuration.credential = .md5Password(password: password) //.cleartextPassword(password: password)
+        configuration.credential = .md5Password(password: password) // .cleartextPassword(password: password)
         configuration.ssl = false
         configuration.sslServiceConfiguration = SSLService.Configuration()
         
@@ -537,7 +537,7 @@ class Maintainer {
     
     func startActivity(label: String) -> Date {
         let date = Date()
-        print("\(label) started on... \(date)")
+        print("\(label) started on: \(date)")
         return date
     }
     
@@ -545,7 +545,7 @@ class Maintainer {
         let endDate = Date()
         let timeDifference = endDate.timeIntervalSince(from)
         
-        print("\(label) ended on: \(endDate)")
+        print("\(label)   ended on: \(endDate)")
         print("Elapsed time: \(format(timeDifference))")
         print("")
     }

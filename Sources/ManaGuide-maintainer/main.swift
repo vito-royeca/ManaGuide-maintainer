@@ -37,6 +37,16 @@ struct Managuide: ParsableCommand {
     }
 }
 
+// For debugging
+//let maintainer = Maintainer(host: "host",
+//                            port: 5432,
+//                            database: "database",
+//                            user: "user",
+//                            password: "password",
+//                            isFullUpdate: true,
+//                            imagesPath: "/path/to/images/cards")
+//maintainer.updateDatabase()
+
 // Run the parser.
 Managuide.main()
 
