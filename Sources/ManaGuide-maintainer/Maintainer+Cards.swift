@@ -661,25 +661,6 @@ extension Maintainer {
                         "parent": "NULL"
                     ])
                 }
-                for type in cleanFirst.components(separatedBy: " ") {
-                    if !type.isEmpty,
-                       filteredTypes.filter({ $0["name"] == type }).isEmpty {
-                        filteredTypes.append([
-                            "name": type,
-                            "parent": "NULL"
-                        ])
-                    }
-                }
-                
-                for type in cleanLast.components(separatedBy: " ") {
-                    if !type.isEmpty,
-                       filteredTypes.filter({ $0["name"] == type }).isEmpty {
-                        filteredTypes.append([
-                            "name": type,
-                            "parent": "NULL"
-                        ])
-                    }
-                }
             }
         } else {
             let cleanTypeline = clean(type: typeLine)
@@ -690,16 +671,6 @@ extension Maintainer {
                     "name": cleanTypeline,
                     "parent": "NULL"
                 ])
-            }
-            
-            for type in cleanTypeline.components(separatedBy: " ") {
-                if !type.isEmpty,
-                   filteredTypes.filter({ $0["name"] == type }).isEmpty {
-                    filteredTypes.append([
-                        "name": type,
-                        "parent": "NULL"
-                    ])
-                }
             }
         }
         
@@ -761,20 +732,19 @@ extension Maintainer {
     private func filterTypesFrom(_ string: String) -> Set<String>  {
         var types = Set<String>()
         
-        for f in string.components(separatedBy: " ") {
-            let cleanTypeline = clean(type: f)
-            
-            if !cleanTypeline.isEmpty {
-                types.insert(cleanTypeline)
-            }
+        let cleanTypeline = clean(type: string)
+        
+        if !cleanTypeline.isEmpty {
+            types.insert(cleanTypeline)
         }
         
         return types
     }
 
     private func clean(type: String) -> String  {
-        return type.replacingOccurrences(of: emdash, with: "")
-                   .trimmingCharacters(in: .whitespacesAndNewlines)
+        return type
+                .replacingOccurrences(of: emdash, with: "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
 //
