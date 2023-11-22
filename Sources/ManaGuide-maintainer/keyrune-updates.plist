@@ -265,6 +265,10 @@
 	</dict>
 	<key>alci</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>lci</string>
+		<key>keyrune_unicode</key>
+		<string>e9c2</string>
 		<key>logo_code</key>
 		<string>lci</string>
 	</dict>
@@ -2236,11 +2240,19 @@
 	</dict>
 	<key>lcc</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>lcc</string>
+		<key>keyrune_unicode</key>
+		<string>e9c7</string>
 		<key>logo_code</key>
 		<string>lcc</string>
 	</dict>
 	<key>lci</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>lci</string>
+		<key>keyrune_unicode</key>
+		<string>e9c2</string>
 		<key>logo_code</key>
 		<string>lci</string>
 	</dict>
@@ -3958,6 +3970,10 @@
 	</dict>
 	<key>pip</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>pip</string>
+		<key>keyrune_unicode</key>
+		<string>e9c3</string>
 		<key>logo_code</key>
 		<string>pip</string>
 	</dict>
@@ -3994,6 +4010,8 @@
 		<string>parl</string>
 		<key>keyrune_unicode</key>
 		<string>e688</string>
+		<key>logo_code</key>
+		<string>jss</string>
 	</dict>
 	<key>pjou</key>
 	<dict>
@@ -5298,6 +5316,10 @@
 	</dict>
 	<key>rex</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>rex</string>
+		<key>keyrune_unicode</key>
+		<string>e9c4</string>
 		<key>logo_code</key>
 		<string>rex</string>
 	</dict>
@@ -5461,6 +5483,10 @@
 	</dict>
 	<key>slci</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>lci</string>
+		<key>keyrune_unicode</key>
+		<string>e9c2</string>
 		<key>logo_code</key>
 		<string>lci</string>
 	</dict>
@@ -5565,6 +5591,10 @@
 	</dict>
 	<key>spg</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>spg</string>
+		<key>keyrune_unicode</key>
+		<string>e9c8</string>
 		<key>logo_code</key>
 		<string>spg</string>
 	</dict>
@@ -6495,11 +6525,19 @@
 	</dict>
 	<key>tlcc</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>lcc</string>
+		<key>keyrune_unicode</key>
+		<string>e9c7</string>
 		<key>logo_code</key>
 		<string>lcc</string>
 	</dict>
 	<key>tlci</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>lci</string>
+		<key>keyrune_unicode</key>
+		<string>e9c2</string>
 		<key>logo_code</key>
 		<string>lci</string>
 	</dict>
@@ -6838,6 +6876,10 @@
 	</dict>
 	<key>tpip</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>pip</string>
+		<key>keyrune_unicode</key>
+		<string>e9c3</string>
 		<key>logo_code</key>
 		<string>pip</string>
 	</dict>
@@ -6852,6 +6894,10 @@
 	</dict>
 	<key>trex</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>rex</string>
+		<key>keyrune_unicode</key>
+		<string>e9c4</string>
 		<key>logo_code</key>
 		<string>rex</string>
 	</dict>
