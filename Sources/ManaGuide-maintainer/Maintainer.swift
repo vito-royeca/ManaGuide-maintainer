@@ -51,7 +51,7 @@ class Maintainer {
     var milestoneLocalPath = ""
     
     // caches
-    var artistsCache      = [String]()
+    var artistsCache      = [String: [String]]()
     var raritiesCache     = [String]()
     var languagesCache    = [[String: String]]()
     var watermarksCache   = [String]()
@@ -63,6 +63,8 @@ class Maintainer {
     var legalitiesCache   = [String]()
     var typesCache        = [[String: Any]]()
     var componentsCache   = [String]()
+    var gamesCache        = [String]()
+    var keywordsCache     = [String]()
     
     // TCGPlayer
     public enum TCGPlayer {

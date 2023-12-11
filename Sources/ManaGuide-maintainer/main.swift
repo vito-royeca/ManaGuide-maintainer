@@ -37,18 +37,18 @@ struct Managuide: ParsableCommand {
     }
 }
 
-// For debugging
+//#if DEBUG
 //let maintainer = Maintainer(host: "host",
 //                            port: 5432,
 //                            database: "database",
 //                            user: "user",
 //                            password: "password",
 //                            isFullUpdate: true,
-//                            imagesPath: "/path/to/images/cards")
+//                            imagesPath: "/path/to/images")
 //maintainer.updateDatabase()
-
-// Run the parser.
+//#else
 Managuide.main()
+//#endif
 
 // wait until all threads are done before exiting
 RunLoop.current.run()

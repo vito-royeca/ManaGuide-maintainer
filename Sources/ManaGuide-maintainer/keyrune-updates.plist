@@ -709,6 +709,11 @@
 		<key>logo_code</key>
 		<string>clb</string>
 	</dict>
+	<key>clu</key>
+	<dict>
+		<key>logo_code</key>
+		<string>clu</string>
+	</dict>
 	<key>cm1</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -2576,6 +2581,11 @@
 		<key>logo_code</key>
 		<string>khm</string>
 	</dict>
+	<key>mkm</key>
+	<dict>
+		<key>logo_code</key>
+		<string>mkm</string>
+	</dict>
 	<key>mm2</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3808,6 +3818,13 @@
 		<key>keyrune_unicode</key>
 		<string>e687</string>
 	</dict>
+	<key>pf24</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+	</dict>
 	<key>pfrf</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -4096,6 +4113,15 @@
 		<string>e63b</string>
 		<key>logo_code</key>
 		<string>plc</string>
+	</dict>
+	<key>plci</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>lci</string>
+		<key>keyrune_unicode</key>
+		<string>e9c2</string>
+		<key>logo_code</key>
+		<string>lci</string>
 	</dict>
 	<key>plg20</key>
 	<dict>
@@ -7613,6 +7639,15 @@
 		<string>e9a7</string>
 		<key>logo_code</key>
 		<string>a22</string>
+	</dict>
+	<key>ylci</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>y24</string>
+		<key>keyrune_unicode</key>
+		<string>e9bd</string>
+		<key>logo_code</key>
+		<string>lci</string>
 	</dict>
 	<key>ymid</key>
 	<dict>

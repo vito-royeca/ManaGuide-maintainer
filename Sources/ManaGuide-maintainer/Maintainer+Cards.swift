@@ -84,12 +84,18 @@ extension Maintainer {
         var promises = [()->Promise<Void>]()
         
         if let artist = dict["artist"] as? String {
-            if !artistsCache.contains(artist) {
-                artistsCache.append(artist)
-                
-                promises.append({
-                    return self.create(artist: artist)
-                })
+            for person in artist.components(separatedBy: "&").map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) }) {
+                if !person.isEmpty {
+                    let array = filter(artist: person)
+                    
+                    if artistsCache[array[0]] == nil {
+                        artistsCache[array[0]] = array
+                        
+                        promises.append({
+                            return self.create(artist: person)
+                        })
+                    }
+                }
             }
         }
         
@@ -213,6 +219,30 @@ extension Maintainer {
             }
         }
         
+        if let games = dict["games"] as? [String] {
+            for game in games {
+                if !gamesCache.contains(game) {
+                    gamesCache.append(game)
+                    
+                    promises.append({
+                        return self.create(game: game)
+                    })
+                }
+            }
+        }
+        
+        if let keywords = dict["keywords"] as? [String] {
+            for keyword in keywords {
+                if !keywordsCache.contains(keyword) {
+                    keywordsCache.append(keyword)
+                    
+                    promises.append({
+                        return self.create(keyword: keyword)
+                    })
+                }
+            }
+        }
+            
         return promises
     }
     
@@ -546,6 +576,126 @@ extension Maintainer {
         return array
     }
     
+    func filter(artist: String) -> [String] {
+        var name = "NULL"
+        var firstName = "NULL"
+        var lastName = "NULL"
+        var nameSection = "NULL"
+        var info = "NULL"
+        
+        var names = [String]()
+        var tempName = ""
+        var suffix = ""
+
+        if artist.lowercased().hasSuffix("inc.") {
+            return [artist,
+                    firstName,
+                    lastName,
+                    sectionFor(name: artist) ?? "NULL",
+                    info]
+        }
+
+        if artist.contains(",") {
+            let array = artist.components(separatedBy: ",")
+
+            if let last = array.last {
+                if last.lowercased().hasSuffix("jr.") ||
+                    last.lowercased().hasSuffix("sr.") {
+                    suffix = last.trimmingCharacters(in: .whitespacesAndNewlines)
+                } else {
+                    info = last.trimmingCharacters(in: .whitespacesAndNewlines)
+                }
+            }
+            if let first = array.first {
+                tempName = first.trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+        } else {
+            tempName = artist
+        }
+
+        if tempName.contains("(") {
+            if let slice = artist.slice(from: "(",
+                                        to: ")") {
+                
+                info = slice.trimmingCharacters(in: .whitespacesAndNewlines)
+                tempName = tempName.replacing(slice.trimmingCharacters(in: .whitespacesAndNewlines),
+                                              with: "")
+                    .replacing("(",
+                               with: "")
+                    .replacing(")",
+                               with: "")
+                    .replacing("--",
+                               with: "")
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+        }
+        
+        if tempName.contains("“") {
+            tempName = tempName.replacing("“",
+                                          with: "\"")
+                               .replacing("”",
+                                          with: "\"")
+            
+            if let slice = tempName.slice(from: "\"",
+                                           to: "\"") {
+                
+                if info == "NULL" {
+                    info = slice.trimmingCharacters(in: .whitespacesAndNewlines)
+                } else {
+                    info.append("; \(slice)")
+                }
+                
+                tempName = tempName.replacing(slice.trimmingCharacters(in: .whitespacesAndNewlines),
+                                              with: "")
+                    .replacing("\"",
+                               with: "")
+                    .replacing("--",
+                               with: "")
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+        }
+        
+        names = tempName.components(separatedBy: " ")
+        
+        if names.count > 1 {
+            if let last = names.last {
+                lastName = last.trimmingCharacters(in: .whitespacesAndNewlines)
+                nameSection = lastName
+            }
+            
+            firstName = ""
+            for i in 0...names.count - 2 {
+                firstName.append("\(names[i])")
+                if i != names.count - 2 && names.count >= 3 {
+                    firstName.append(" ")
+                }
+            }
+            firstName = firstName.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+        } else {
+            if let first = names.first {
+                firstName = first.trimmingCharacters(in: .whitespacesAndNewlines)
+                nameSection = firstName
+            }
+        }
+        
+        if let section =  sectionFor(name: nameSection) {
+            nameSection = section
+        }
+        
+        name = "\(firstName == "NULL" ? "" : firstName) \(lastName == "NULL" ? "" : lastName)\(!suffix.isEmpty ? ", \(suffix)" : "")"
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        if !suffix.isEmpty {
+            firstName.append(" \(suffix)")
+        }
+        
+        return [name,
+                firstName,
+                lastName,
+                nameSection,
+                info]
+    }
+
     private func filterTypes(dict: [String: Any]) -> [[String: Any]] {
         guard let typeLine = dict["type_line"] as? String else {
             return [[String: Any]]()

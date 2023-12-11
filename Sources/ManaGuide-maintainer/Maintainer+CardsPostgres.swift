@@ -31,37 +31,9 @@ extension Maintainer {
     }
     
     func create(artist: String) -> Promise<Void> {
-        let names = artist.components(separatedBy: " ")
-        var firstName = ""
-        var lastName = ""
-        var nameSection = ""
-        
-        if names.count > 1 {
-            if let last = names.last {
-                lastName = last
-                nameSection = lastName
-            }
-            
-            for i in 0...names.count - 2 {
-                firstName.append("\(names[i])")
-                if i != names.count - 2 && names.count >= 3 {
-                    firstName.append(" ")
-                }
-            }
-            
-        } else {
-            firstName = names.first ?? "NULL"
-            nameSection = firstName
-        }
-        nameSection = sectionFor(name: nameSection) ?? "NULL"
-        
-        let query = "SELECT createOrUpdateArtist($1,$2,$3,$4)"
-        let parameters = [artist,
-                          firstName,
-                          lastName,
-                          nameSection]
+        let query = "SELECT createOrUpdateArtist($1,$2,$3,$4,$5)"
         return createPromise(with: query,
-                             parameters: parameters)
+                             parameters: filter(artist: artist))
     }
     
     func create(rarity: String) -> Promise<Void> {
@@ -224,6 +196,28 @@ extension Maintainer {
                              parameters: nil)
     }
     
+    func create(game: String) -> Promise<Void> {
+        let capName = capitalize(string: displayFor(name: game))
+        let nameSection = sectionFor(name: game) ?? "NULL"
+        
+        let query = "SELECT createOrUpdateGame($1,$2)"
+        let parameters = [capName,
+                          nameSection]
+        return createPromise(with: query,
+                             parameters: parameters)
+    }
+    
+    func create(keyword: String) -> Promise<Void> {
+        let capName = capitalize(string: displayFor(name: keyword))
+        let nameSection = sectionFor(name: keyword) ?? "NULL"
+        
+        let query = "SELECT createOrUpdateKeyword($1,$2)"
+        let parameters = [capName,
+                          nameSection]
+        return createPromise(with: query,
+                             parameters: parameters)
+    }
+    
     func create(card: [String: Any]) -> Promise<Void> {
         let collectorNumber = card["collector_number"] as? String ?? "NULL"
         let cmc = card["cmc"] as? Double ?? Double(0)
@@ -281,12 +275,32 @@ extension Maintainer {
         let isTextless = card["textless"] as? Bool ?? false
         let mtgoFoilId = card["mtgo_foil_id"] as? String ?? "NULL"
         let isReprint = card["reprint"] as? Bool ?? false
-        let artist = card["artist"] as? String ?? "NULL"
         let set = card["set"] as? String ?? "NULL"
         let rarity = capitalize(string: card["rarity"] as? String ?? "NULL")
         let layout = capitalize(string: displayFor(name: card["layout"] as? String ?? "NULL"))
         let watermark = capitalize(string: card["watermark"] as? String ?? "NULL")
         let frame = capitalize(string: card["frame"] as? String ?? "NULL")
+        
+        var artists = "{}"
+        if let a = card["artist"] as? String,
+            !a.isEmpty {
+            var array = [String]()
+            
+            for person in a.components(separatedBy: "&").map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) }) {
+                if !person.isEmpty {
+                    let personArray = filter(artist: person)
+                    if let first = personArray.first {
+                        array.append(first)
+                    }
+                }
+            }
+            
+            artists = "\(array)"
+                .replacingOccurrences(of: "[", with: "{")
+                .replacingOccurrences(of: "]", with: "}")
+        }
+
+        
         
         var frameEffects = "{}"
         if let a = card["frame_effects"] as? [String],
@@ -375,7 +389,25 @@ extension Maintainer {
             }
         }
         
-        let query = "SELECT createOrUpdateCard($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43,$44,$45,$46,$47,$48,$49,$50,$51,$52,$53,$54,$55,$56)"
+        var games = "{}"
+        if let a = card["games"] as? [String],
+            !a.isEmpty {
+            let array = a.map { capitalize(string: displayFor(name: $0)) }
+            games = "\(array)"
+                .replacingOccurrences(of: "[", with: "{")
+                .replacingOccurrences(of: "]", with: "}")
+        }
+        
+        var keywords = "{}"
+        if let a = card["keywords"] as? [String],
+            !a.isEmpty {
+            let array = a.map { capitalize(string: displayFor(name: $0)) }
+            keywords = "\(array)"
+                .replacingOccurrences(of: "[", with: "{")
+                .replacingOccurrences(of: "]", with: "}")
+        }
+        
+        let query = "SELECT createOrUpdateCard($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43,$44,$45,$46,$47,$48,$49,$50,$51,$52,$53,$54,$55,$56,$57,$58)"
         let parameters = [collectorNumber,
                           cmc,
                           flavorText,
@@ -409,7 +441,7 @@ extension Maintainer {
                           isTextless,
                           mtgoFoilId,
                           isReprint,
-                          artist,
+                          artists,
                           set,
                           rarity,
                           language,
@@ -431,7 +463,9 @@ extension Maintainer {
                           id,
                           artCropURL,
                           normalURL,
-                          pngURL] as [Any]
+                          pngURL,
+                          games,
+                          keywords] as [Any]
         return createPromise(with: query,
                              parameters: parameters)
     }
