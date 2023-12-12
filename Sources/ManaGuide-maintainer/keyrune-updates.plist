@@ -3609,6 +3609,15 @@
 		<key>logo_code</key>
 		<string>gra</string>
 	</dict>
+	<key>pdci</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>parl</string>
+		<key>keyrune_unicode</key>
+		<string>e688</string>
+		<key>logo_code</key>
+		<string>dci</string>
+	</dict>
 	<key>pdgm</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3660,6 +3669,8 @@
 		<string>dpa</string>
 		<key>keyrune_unicode</key>
 		<string>e689</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>pdp12</key>
 	<dict>
@@ -3667,6 +3678,8 @@
 		<string>pmtg1</string>
 		<key>keyrune_unicode</key>
 		<string>e684</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>pdp13</key>
 	<dict>
@@ -3728,6 +3741,8 @@
 		<string>pxbox</string>
 		<key>keyrune_unicode</key>
 		<string>e915</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>pdwa</key>
 	<dict>
@@ -3780,6 +3795,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>pexo</key>
 	<dict>
@@ -3796,6 +3813,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>pf20</key>
 	<dict>
@@ -3803,6 +3822,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>pf21</key>
 	<dict>
@@ -3817,6 +3838,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>pf24</key>
 	<dict>
@@ -3824,6 +3847,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>pfrf</key>
 	<dict>
@@ -4090,6 +4115,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>pl22</key>
 	<dict>
@@ -4097,6 +4124,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>pl23</key>
 	<dict>
@@ -4104,6 +4133,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>plc</key>
 	<dict>
@@ -4129,6 +4160,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>plg21</key>
 	<dict>
@@ -4136,6 +4169,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>plg22</key>
 	<dict>
@@ -4143,6 +4178,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>plgm</key>
 	<dict>
@@ -4177,6 +4214,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>plrw</key>
 	<dict>
@@ -4301,6 +4340,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>pmei</key>
 	<dict>
@@ -4648,6 +4689,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>prav</key>
 	<dict>
@@ -4664,6 +4707,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>pred</key>
 	<dict>
@@ -4698,6 +4743,8 @@
 		<string>pmodo</string>
 		<key>keyrune_unicode</key>
 		<string>e91b</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>prna</key>
 	<dict>
@@ -4759,13 +4806,17 @@
 		<string>pmtg1</string>
 		<key>keyrune_unicode</key>
 		<string>e684</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>ps15</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>pmtg1</string>
+		<string>ori</string>
 		<key>keyrune_unicode</key>
-		<string>e684</string>
+		<string>e697</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>ps16</key>
 	<dict>
@@ -4773,6 +4824,8 @@
 		<string>pmtg1</string>
 		<key>keyrune_unicode</key>
 		<string>e684</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>ps17</key>
 	<dict>
@@ -4780,20 +4833,26 @@
 		<string>pmtg1</string>
 		<key>keyrune_unicode</key>
 		<string>e684</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>ps18</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>pmtg1</string>
+		<string>pmei</string>
 		<key>keyrune_unicode</key>
-		<string>e684</string>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>ps19</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>pmtg1</string>
+		<string>war</string>
 		<key>keyrune_unicode</key>
-		<string>e684</string>
+		<string>e95a</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>psal</key>
 	<dict>
@@ -4819,6 +4878,8 @@
 		<string>pmtg1</string>
 		<key>keyrune_unicode</key>
 		<string>e684</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>psdg</key>
 	<dict>
@@ -4941,6 +5002,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>ptbro</key>
 	<dict>
@@ -5192,12 +5255,14 @@
 		<key>logo_code</key>
 		<string>war</string>
 	</dict>
-	<key>pwcq</key>
+	<key>pwcs</key>
 	<dict>
 		<key>keyrune_class</key>
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pst</string>
 	</dict>
 	<key>pwoe</key>
 	<dict>
@@ -5223,6 +5288,8 @@
 		<string>pmtg1</string>
 		<key>keyrune_unicode</key>
 		<string>e684</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>pwp11</key>
 	<dict>
@@ -5461,6 +5528,8 @@
 		<string>pmei</string>
 		<key>keyrune_unicode</key>
 		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>shm</key>
 	<dict>
@@ -7531,6 +7600,15 @@
 		<string>e9b0</string>
 		<key>logo_code</key>
 		<string>who</string>
+	</dict>
+	<key>wmc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>wmom</key>
 	<dict>
