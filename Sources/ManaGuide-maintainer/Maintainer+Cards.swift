@@ -892,9 +892,15 @@ extension Maintainer {
     }
 
     private func clean(type: String) -> String  {
-        return type
+        var cleanType = type
                 .replacingOccurrences(of: emdash, with: "")
                 .trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if !cleanType.contains(" ") {
+            cleanType = cleanType.capitalized
+        }
+        
+        return cleanType
     }
     
 //
