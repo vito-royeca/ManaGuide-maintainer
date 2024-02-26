@@ -461,12 +461,13 @@ class Maintainer {
         if name.count == 0 {
             return nil
         } else {
-            let letters = CharacterSet.letters
-            var prefix = String(name.prefix(1))
-            if prefix.rangeOfCharacter(from: letters) == nil {
+            let letters = ["ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
+            var prefix = String(name.prefix(1)).uppercased()
+            
+            if !letters.contains(prefix) {
                 prefix = "#"
             }
-            return prefix.uppercased().folding(options: .diacriticInsensitive, locale: .current)
+            return prefix
         }
     }
     

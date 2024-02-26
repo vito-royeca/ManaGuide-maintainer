@@ -242,14 +242,8 @@ extension Maintainer {
         }
         
         var nameSection = "NULL"
-        if language == "en" {
-            if let name = card["name"] as? String {
-                nameSection = sectionFor(name: name) ?? "NULL"
-            }
-        } else {
-            if let name = card["printed_name"] as? String {
-                nameSection = sectionFor(name: name) ?? "NULL"
-            }
+        if let name = card["name"] as? String {
+            nameSection = sectionFor(name: name) ?? "NULL"
         }
 
         var numberOrder = Double(0)

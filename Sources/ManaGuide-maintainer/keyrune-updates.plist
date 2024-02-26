@@ -182,6 +182,11 @@
 		<key>logo_code</key>
 		<string>a17</string>
 	</dict>
+	<key>acr</key>
+	<dict>
+		<key>logo_code</key>
+		<string>acr</string>
+	</dict>
 	<key>admu</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -316,6 +321,11 @@
 		<string>e978</string>
 		<key>logo_code</key>
 		<string>as7</string>
+	</dict>
+	<key>amkm</key>
+	<dict>
+		<key>logo_code</key>
+		<string>a20</string>
 	</dict>
 	<key>amom</key>
 	<dict>
@@ -496,6 +506,16 @@
 		<string>e699</string>
 		<key>logo_code</key>
 		<string>bfz</string>
+	</dict>
+	<key>big</key>
+	<dict>
+		<key>logo_code</key>
+		<string>big</string>
+	</dict>
+	<key>blb</key>
+	<dict>
+		<key>logo_code</key>
+		<string>blb</string>
 	</dict>
 	<key>bng</key>
 	<dict>
@@ -2533,6 +2553,11 @@
 		<key>logo_code</key>
 		<string>mh2</string>
 	</dict>
+	<key>mh3</key>
+	<dict>
+		<key>logo_code</key>
+		<string>mh3</string>
+	</dict>
 	<key>mic</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3056,6 +3081,16 @@
 		<key>logo_code</key>
 		<string>ori</string>
 	</dict>
+	<key>otj</key>
+	<dict>
+		<key>logo_code</key>
+		<string>otj</string>
+	</dict>
+	<key>otp</key>
+	<dict>
+		<key>logo_code</key>
+		<string>otp</string>
+	</dict>
 	<key>ovnt</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3203,9 +3238,9 @@
 	<key>p30a</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>30a</string>
+		<string>pmei</string>
 		<key>keyrune_unicode</key>
-		<string>e9aa</string>
+		<string>e687</string>
 		<key>logo_code</key>
 		<string>30a</string>
 	</dict>
@@ -3221,9 +3256,9 @@
 	<key>p30m</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>30a</string>
+		<string>pmei</string>
 		<key>keyrune_unicode</key>
-		<string>e9aa</string>
+		<string>e687</string>
 		<key>logo_code</key>
 		<string>30a</string>
 	</dict>
@@ -4898,9 +4933,9 @@
 	<key>ps17</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>pmtg1</string>
+		<string>dpa</string>
 		<key>keyrune_unicode</key>
-		<string>e684</string>
+		<string>e689</string>
 		<key>logo_code</key>
 		<string>pmo</string>
 	</dict>
@@ -6022,6 +6057,11 @@
 		<string>e699</string>
 		<key>logo_code</key>
 		<string>bfz</string>
+	</dict>
+	<key>tblb</key>
+	<dict>
+		<key>logo_code</key>
+		<string>blb</string>
 	</dict>
 	<key>tbng</key>
 	<dict>
