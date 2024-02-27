@@ -39,7 +39,7 @@ class Maintainer {
     var rulingsRemotePath  = ""
     let setsRemotePath     = "https://api.scryfall.com/sets"
     let keyruneRemotePath  = "https://keyrune.andrewgioia.com/cheatsheet.html"
-    let rulesRemotePath    = "https://media.wizards.com/2023/downloads/MagicCompRules20230616.txt"
+    let rulesRemotePath    = "https://media.wizards.com/2024/downloads/MagicCompRules%2020240206.txt"
 
     // local file names
     var bulkDataLocalPath  = ""
@@ -464,7 +464,7 @@ class Maintainer {
             let letters = ["ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
             var prefix = String(name.prefix(1)).uppercased()
             
-            if !letters.contains(prefix) {
+            if letters.contains(prefix) {
                 prefix = "#"
             }
             return prefix
