@@ -3117,6 +3117,11 @@
 		<key>logo_code</key>
 		<string>ori</string>
 	</dict>
+	<key>otc</key>
+	<dict>
+		<key>logo_code</key>
+		<string>otc</string>
+	</dict>
 	<key>otj</key>
 	<dict>
 		<key>keyrune_class</key>
