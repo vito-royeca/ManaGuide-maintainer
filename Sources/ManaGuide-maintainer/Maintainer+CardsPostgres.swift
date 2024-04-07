@@ -346,8 +346,13 @@ extension Maintainer {
         let oracle_id = card["oracle_id"] as? String ?? "NULL"
         let id = card["id"] as? String ?? "NULL"
 
-        let typeLine = card["type_line"] as? String ?? "NULL"
-        let printedTypeLine = card["printed_type_line"] as? String ?? "NULL"
+        let typeLine = (card["type_line"] as? String ?? "NULL")
+            .replacingOccurrences(of: "[", with: "")
+            .replacingOccurrences(of: "]", with: "")
+
+        let printedTypeLine = (card["printed_type_line"] as? String ?? "NULL")
+            .replacingOccurrences(of: "[", with: "")
+            .replacingOccurrences(of: "]", with: "")
         
         var cardtypeSubtypes = "{}"
         var cardtypeSupertypes = "{}"

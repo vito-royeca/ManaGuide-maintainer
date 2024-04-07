@@ -3644,6 +3644,15 @@
 		<key>logo_code</key>
 		<string>pmo</string>
 	</dict>
+	<key>pcmr</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>cmr</string>
+		<key>keyrune_unicode</key>
+		<string>e966</string>
+		<key>logo_code</key>
+		<string>cmr</string>
+	</dict>
 	<key>pcns</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -4793,15 +4802,6 @@
 		<string>e629</string>
 		<key>logo_code</key>
 		<string>pla</string>
-	</dict>
-	<key>ppod</key>
-	<dict>
-		<key>keyrune_class</key>
-		<string>por</string>
-		<key>keyrune_unicode</key>
-		<string>e664</string>
-		<key>logo_code</key>
-		<string>por</string>
 	</dict>
 	<key>ppp1</key>
 	<dict>
@@ -6111,6 +6111,15 @@
 		<key>logo_code</key>
 		<string>bfz</string>
 	</dict>
+	<key>tbig</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>big</string>
+		<key>keyrune_unicode</key>
+		<string>e9d6</string>
+		<key>logo_code</key>
+		<string>big</string>
+	</dict>
 	<key>tblb</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -7170,6 +7179,29 @@
 		<string>e697</string>
 		<key>logo_code</key>
 		<string>ori</string>
+	</dict>
+	<key>totc</key>
+	<dict>
+		<key>logo_code</key>
+		<string>otc</string>
+	</dict>
+	<key>totp</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>otp</string>
+		<key>keyrune_unicode</key>
+		<string>e9d5</string>
+		<key>logo_code</key>
+		<string>otp</string>
+	</dict>
+	<key>totj</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>otc</string>
+		<key>keyrune_unicode</key>
+		<string>e9d2</string>
+		<key>logo_code</key>
+		<string>otj</string>
 	</dict>
 	<key>tpca</key>
 	<dict>

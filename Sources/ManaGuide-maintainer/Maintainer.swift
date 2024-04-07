@@ -385,6 +385,10 @@ class Maintainer {
             
             statement.close()
         } catch {
+            print(query)
+            if let parameters = parameters {
+                print(parameters)
+            }
             fatalError(error.localizedDescription)
         }
     }
