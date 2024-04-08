@@ -72,14 +72,17 @@ extension Maintainer {
         }
         
         // Rules
-        rules.append(contentsOf: parseRules(fromLines: lines, startId: id))
+        rules.append(contentsOf: parseRules(fromLines: lines,
+                                            startId: id))
         
         // Glossary
         id = rules.count + 2
         rules.append(["term": "Glossary",
                       "order": 10000.0,
                       "id": id])
-        rules.append(contentsOf: parseGlossary(fromLines: lines, startId: id, parent: id))
+        rules.append(contentsOf: parseGlossary(fromLines: lines,
+                                               startId: id,
+                                               parent: id))
         
         // Credits
         id = rules.count + 2
