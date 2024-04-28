@@ -3599,6 +3599,13 @@
 		<key>logo_code</key>
 		<string>pad</string>
 	</dict>
+	<key>pcbb</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+	</dict>
 	<key>pcel</key>
 	<dict>
 		<key>keyrune_class</key>
