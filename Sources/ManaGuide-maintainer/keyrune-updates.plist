@@ -2442,6 +2442,15 @@
 		<key>logo_code</key>
 		<string>m21</string>
 	</dict>
+	<key>m3c</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>dpa</string>
+		<key>keyrune_unicode</key>
+		<string>e689</string>
+		<key>logo_code</key>
+		<string>m3c</string>
+	</dict>
 	<key>mafr</key>
 	<dict>
 		<key>keyrune_class</key>
