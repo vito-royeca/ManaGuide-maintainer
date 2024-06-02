@@ -326,6 +326,15 @@
 		<key>logo_code</key>
 		<string>as7</string>
 	</dict>
+	<key>amh3</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>mh3</string>
+		<key>keyrune_unicode</key>
+		<string>e9cf</string>
+		<key>logo_code</key>
+		<string>mh3</string>
+	</dict>
 	<key>amkm</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -379,6 +388,15 @@
 		<string>e9a1</string>
 		<key>logo_code</key>
 		<string>a14</string>
+	</dict>
+	<key>aotj</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>otj</string>
+		<key>keyrune_unicode</key>
+		<string>e9cc</string>
+		<key>logo_code</key>
+		<string>otj</string>
 	</dict>
 	<key>apc</key>
 	<dict>
@@ -532,6 +550,15 @@
 		<string>e9cd</string>
 		<key>logo_code</key>
 		<string>blb</string>
+	</dict>
+	<key>blc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>blc</string>
+		<key>keyrune_unicode</key>
+		<string>e9d4</string>
+		<key>logo_code</key>
+		<string>blc</string>
 	</dict>
 	<key>bng</key>
 	<dict>
@@ -1877,6 +1904,15 @@
 		<key>logo_code</key>
 		<string>mo1</string>
 	</dict>
+	<key>h2r</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>mh2</string>
+		<key>keyrune_unicode</key>
+		<string>e97b</string>
+		<key>logo_code</key>
+		<string>mh3</string>
+	</dict>
 	<key>ha1</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3128,15 +3164,19 @@
 	</dict>
 	<key>otc</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>otc</string>
+		<key>keyrune_unicode</key>
+		<string>e9d2</string>
 		<key>logo_code</key>
 		<string>otc</string>
 	</dict>
 	<key>otj</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>otc</string>
+		<string>otj</string>
 		<key>keyrune_unicode</key>
-		<string>e9d2</string>
+		<string>e9cc</string>
 		<key>logo_code</key>
 		<string>otj</string>
 	</dict>
@@ -4782,6 +4822,15 @@
 		<string>e697</string>
 		<key>logo_code</key>
 		<string>ori</string>
+	</dict>
+	<key>potj</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>otj</string>
+		<key>keyrune_unicode</key>
+		<string>e9cc</string>
+		<key>logo_code</key>
+		<string>otj</string>
 	</dict>
 	<key>ppc1</key>
 	<dict>
@@ -7007,6 +7056,15 @@
 		<key>logo_code</key>
 		<string>mh2</string>
 	</dict>
+	<key>tmh3</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>mh3</string>
+		<key>keyrune_unicode</key>
+		<string>e9cf</string>
+		<key>logo_code</key>
+		<string>mh3</string>
+	</dict>
 	<key>tmic</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -7198,6 +7256,10 @@
 	</dict>
 	<key>totc</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>otc</string>
+		<key>keyrune_unicode</key>
+		<string>e9d2</string>
 		<key>logo_code</key>
 		<string>otc</string>
 	</dict>
@@ -7213,9 +7275,9 @@
 	<key>totj</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>otc</string>
+		<string>otj</string>
 		<key>keyrune_unicode</key>
-		<string>e9d2</string>
+		<string>e9cc</string>
 		<key>logo_code</key>
 		<string>otj</string>
 	</dict>
@@ -8055,6 +8117,15 @@
 		<string>e9a7</string>
 		<key>logo_code</key>
 		<string>one</string>
+	</dict>
+	<key>yotj</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>y24</string>
+		<key>keyrune_unicode</key>
+		<string>e9bd</string>
+		<key>logo_code</key>
+		<string>otj</string>
 	</dict>
 	<key>ysnc</key>
 	<dict>
