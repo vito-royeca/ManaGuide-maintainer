@@ -6095,6 +6095,15 @@
 		<key>logo_code</key>
 		<string>25m</string>
 	</dict>
+	<key>tacr</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>acr</string>
+		<key>keyrune_unicode</key>
+		<string>e9ce</string>
+		<key>logo_code</key>
+		<string>acr</string>
+	</dict>
 	<key>taer</key>
 	<dict>
 		<key>keyrune_class</key>
