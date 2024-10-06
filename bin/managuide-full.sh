@@ -1,6 +1,6 @@
 #/bin/sh
 
-source ./bin/variables.txt
+source $WORKSPACE/bin/variables.txt
 
 .build/release/managuide \
   --host $host \
