@@ -1,4 +1,6 @@
-source ./variables.txt
+#/bin/sh
+
+source ./bin/variables.txt
 
 .build/release/managuide \
   --host $host \
