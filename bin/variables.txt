@@ -1,0 +1,7 @@
+host='host'
+port=5432
+database='database'
+user='user'
+password='password'
+fullUpdate='true'
+imagesPath='/path/to/directory'

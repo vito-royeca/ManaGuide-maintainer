@@ -1,12 +1,4 @@
-for ARGUMENT in "$@"
-do
-   KEY=$(echo $ARGUMENT | cut -f1 -d=)
-
-   KEY_LENGTH=${#KEY}
-   VALUE="${ARGUMENT:$KEY_LENGTH+1}"
-
-   export "$KEY"="$VALUE"
-done
+source variables.txt
 
 .build/release/managuide \
   --host $host \
@@ -19,4 +11,3 @@ done
 
 # delete temp files
 find /tmp -name "managuide-*" -exec rm -fv {} \;
-find /tmp -name "*.json" -exec rm -fv {} \;
