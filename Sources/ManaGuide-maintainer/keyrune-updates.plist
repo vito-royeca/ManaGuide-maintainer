@@ -1243,10 +1243,14 @@
 	<key>dsc</key>
 	<dict>
 		<key>logo_code</key>
-		<string>dsk</string>
+		<string>dsc</string>
 	</dict>
 	<key>dsk</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>dsk</string>
+		<key>keyrune_unicode</key>
+		<string>e9d7</string>
 		<key>logo_code</key>
 		<string>dsk</string>
 	</dict>
@@ -1583,6 +1587,10 @@
 	</dict>
 	<key>fdn</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>fdn</string>
+		<key>keyrune_unicode</key>
+		<string>e9d8</string>
 		<key>logo_code</key>
 		<string>fdn</string>
 	</dict>
@@ -1594,6 +1602,15 @@
 		<string>e617</string>
 		<key>logo_code</key>
 		<string>fal</string>
+	</dict>
+	<key>ffdn</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>fdn</string>
+		<key>keyrune_unicode</key>
+		<string>e9d8</string>
+		<key>logo_code</key>
+		<string>fdn</string>
 	</dict>
 	<key>fj22</key>
 	<dict>
@@ -2514,9 +2531,9 @@
 	<key>m3c</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>dpa</string>
+		<string>m3c</string>
 		<key>keyrune_unicode</key>
-		<string>e689</string>
+		<string>e9d0</string>
 		<key>logo_code</key>
 		<string>m3c</string>
 	</dict>
@@ -2537,6 +2554,11 @@
 		<string>e9a3</string>
 		<key>logo_code</key>
 		<string>mat</string>
+	</dict>
+	<key>mb2</key>
+	<dict>
+		<key>logo_code</key>
+		<string>ms2</string>
 	</dict>
 	<key>mbs</key>
 	<dict>
@@ -3627,6 +3649,15 @@
 		<key>logo_code</key>
 		<string>bfz</string>
 	</dict>
+	<key>pblb</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>blb</string>
+		<key>keyrune_unicode</key>
+		<string>e9cd</string>
+		<key>logo_code</key>
+		<string>blb</string>
+	</dict>
 	<key>pbng</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3903,6 +3934,15 @@
 		<string>e932</string>
 		<key>logo_code</key>
 		<string>pmo</string>
+	</dict>
+	<key>pdsk</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>dsk</string>
+		<key>keyrune_unicode</key>
+		<string>e9d7</string>
+		<key>logo_code</key>
+		<string>dsk</string>
 	</dict>
 	<key>pdst</key>
 	<dict>
@@ -5928,6 +5968,15 @@
 		<key>logo_code</key>
 		<string>slx</string>
 	</dict>
+	<key>smh3</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>mh3</string>
+		<key>keyrune_unicode</key>
+		<string>e9cf</string>
+		<key>logo_code</key>
+		<string>mh3</string>
+	</dict>
 	<key>smid</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -6673,6 +6722,15 @@
 		<key>logo_code</key>
 		<string>dmu</string>
 	</dict>
+	<key>tdsk</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>dsk</string>
+		<key>keyrune_unicode</key>
+		<string>e9d7</string>
+		<key>logo_code</key>
+		<string>dsk</string>
+	</dict>
 	<key>tdtk</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -7086,6 +7144,15 @@
 		<string>e960</string>
 		<key>logo_code</key>
 		<string>m21</string>
+	</dict>
+	<key>tm3c</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>m3c</string>
+		<key>keyrune_unicode</key>
+		<string>e9d0</string>
+		<key>logo_code</key>
+		<string>m3c</string>
 	</dict>
 	<key>tmbs</key>
 	<dict>
