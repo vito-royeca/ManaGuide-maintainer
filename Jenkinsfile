@@ -24,6 +24,7 @@ pipeline {
             }
             steps {
                 echo 'Testing..'
+                sh 'printenv'
                 sh 'echo "APP_ENV is located at $APP_ENV"'
                 sh 'echo "host=$host"'
                 sh 'echo "port=$port"'
