@@ -335,7 +335,7 @@ class Maintainer {
             }
 
             let (localURL, _) = try await URLSession.shared.asyncDownload(from: url)
-            try FileManager.default.moveItem(atPath: localURL.path(percentEncoded: true), toPath: localPath)
+            try FileManager.default.moveItem(atPath: localURL.path, toPath: localPath)
         }
     }
     
