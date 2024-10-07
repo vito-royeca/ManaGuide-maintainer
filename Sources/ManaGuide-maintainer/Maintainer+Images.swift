@@ -163,10 +163,12 @@ extension Maintainer {
             }
         }
 
-        try await execInSequence(label: "Downloading... \(set)/\(language)/\(number)",
-                                 processes: processes)
-        print("Downloaded \(set)/\(language)/\(number)")
-        writeStatus(directoryPath: path, status: imageStatus)
+        if !processes.isEmpty {
+            try await execInSequence(label: "Downloading... \(set)/\(language)/\(number)",
+                                     processes: processes)
+            print("Downloaded \(set)/\(language)/\(number)")
+            writeStatus(directoryPath: path, status: imageStatus)
+        }
     }
     
     private func createImageUris(number: String, set: String, language: String, imageStatus: String, imageUrisDict: [String: String]) -> [String: Any] {
