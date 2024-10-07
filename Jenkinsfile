@@ -7,8 +7,10 @@ pipeline {
 
     stages {
         stage('Preparation') { // for display purposes
-            // Get some code from a GitHub repository
-            git 'https://github.com/vito-royeca/ManaGuide-maintainer.git'
+            steps {
+                // Get some code from a GitHub repository
+                git 'https://github.com/vito-royeca/ManaGuide-maintainer.git'
+            }
         }
         stage('Build') {
             steps {
