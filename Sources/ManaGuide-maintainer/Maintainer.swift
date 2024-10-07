@@ -1,9 +1,8 @@
 //
 //  Maintainer.swift
-//  ManaKit_Example
+//  ManaGuide-maintainer
 //
-//  Created by Jovito Royeca on 23/10/2018.
-//  Copyright © 2018 CocoaPods. All rights reserved.
+//  Created by Vito Royeca on 23/10/2018.
 //
 
 import Foundation
@@ -13,8 +12,6 @@ import TSCUtility
     import FoundationNetworking
 #endif
 import PostgresClientKit
-import PromiseKit
-import PMKFoundation
 import SSLService
 
 class Maintainer {
@@ -39,7 +36,7 @@ class Maintainer {
     var rulingsRemotePath  = ""
     let setsRemotePath     = "https://api.scryfall.com/sets"
     let keyruneRemotePath  = "https://keyrune.andrewgioia.com/cheatsheet.html"
-    let rulesRemotePath    = "https://media.wizards.com/2024/downloads/MagicCompRules 20240308.txt"
+    let rulesRemotePath    = "https://media.wizards.com/2024/downloads/MagicCompRules20240917.txt"
 
     // local file names
     var bulkDataLocalPath  = ""
@@ -174,7 +171,7 @@ class Maintainer {
     }
     
     func updateDatabase() {
-        let label = "Managuide Maintainer"
+        let label = "updateDatabase"
         let dateStart = startActivity(label: label)
         let completion = {
             do {
@@ -205,14 +202,8 @@ class Maintainer {
             self.endActivity(label: label, from: dateStart)
             exit(EXIT_SUCCESS)
         }
-        var promises = [()->Promise<Void>]()
-
-        promises.append({
-            return Promise { seal in
-                print("Managuide starting...")
-                seal.fulfill(())
-            }
-        })
+        
+        var processes = [() async throws -> Void]()
         
         if isFullUpdate {
             filePrefix         = "managuide-\(Date().timeIntervalSince1970)"
@@ -225,79 +216,79 @@ class Maintainer {
             readMilestone()
             
             // downloads
-            promises.append({
-                self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath)
+            processes.append({
+                try await self.fetchData(from: self.bulkDataRemotePath, saveTo: self.bulkDataLocalPath)
             })
-            promises.append({
-                self.createBulkData()
+            processes.append({
+                try await self.createBulkData()
             })
-            promises.append({
-                self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath)
+            processes.append({
+                try await self.fetchData(from: self.setsRemotePath, saveTo: self.setsLocalPath)
             })
-            promises.append({
-                self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath)
+            processes.append({
+                try await self.fetchData(from: self.keyruneRemotePath, saveTo: self.keyruneLocalPath)
             })
-            promises.append({
-                self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath)
+            processes.append({
+                try await self.fetchData(from: self.cardsRemotePath, saveTo: self.cardsLocalPath)
             })
-            promises.append({
-                self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath)
+            processes.append({
+                try await self.fetchData(from: self.rulingsRemotePath, saveTo: self.rulingsLocalPath)
             })
-            promises.append({
-                self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath)
+            processes.append({
+                try await self.fetchData(from: self.rulesRemotePath, saveTo: self.rulesLocalPath)
             })
-            promises.append({
-                self.downloadSetLogos()
+            processes.append({
+                try await self.downloadSetLogos()
             })
             
 //             updates
-            promises.append({
-                self.fetchCardImages()
+            processes.append({
+                try await self.fetchCardImages()
             })
-            promises.append({
-                self.processSetsData()
+            processes.append({
+                try await self.processSetsData()
             })
-            promises.append({
-                self.processCardsData(type: .misc)
+            processes.append({
+                try await self.processCardsData(type: .misc)
             })
-            promises.append({
-                self.processCardsData(type: .cards)
+            processes.append({
+                try await self.processCardsData(type: .cards)
             })
-            promises.append({
-                self.processCardsData(type: .partsAndFaces)
+            processes.append({
+                try await self.processCardsData(type: .partsAndFaces)
             })
-            promises.append({
-                self.processRulingsData()
+            processes.append({
+                try await self.processRulingsData()
             })
-            promises.append({
-                self.processOtherCardsData()
+            processes.append({
+                try await self.processOtherCardsData()
             })
-            promises.append({
-                self.processComprehensiveRulesData()
+            processes.append({
+                try await self.processComprehensiveRulesData()
             })
         }
         
-        promises.append({
-            self.processPricingData()
+        processes.append({
+            try await self.processPricingData()
         })
-        promises.append({
-            self.processServerUpdatePromise()
+        processes.append({
+            try await self.processServerUpdate()
         })
-        promises.append({
-            self.processServerVacuumPromise()
+        processes.append({
+            try await self.processServerVacuum()
         })
 
-        execInSequence(label: label,
-                       promises: promises,
-                       completion: completion)
+        Task {
+            try await execInSequence(label: label,
+                                     processes: processes)
+            completion()
+        }
     }
 
     // MARK: - Bulk Data methods
-    func createBulkData() -> Promise<Void> {
-        return Promise { seal in
-            let _ = bulkArray
-            seal.fulfill(())
-        }
+
+    func createBulkData() async throws {
+        let _ = bulkArray
     }
     
     func bulkData() -> [[String: Any]] {
@@ -331,45 +322,23 @@ class Maintainer {
         return array
     }
     
-    // MARK: - Promise methods
+    // MARK: - Other methods
     
-    func fetchData(from remotePath: String, saveTo localPath: String) -> Promise<Void> {
-        return Promise { seal in
-            let willFetch = !FileManager.default.fileExists(atPath: localPath)
-                
-            if willFetch {
-                guard let urlString = remotePath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                    let url = URL(string: urlString) else {
-                    fatalError("Malformed url")
-                }
-
-                var rq = URLRequest(url: url)
-                rq.httpMethod = "GET"
-                
-                firstly {
-                    URLSession.shared.downloadTask(.promise,
-                                                   with: rq,
-                                                   to: URL(fileURLWithPath: localPath))
-                }.done { _ in
-                    seal.fulfill(())
-                }.catch { error in
-                    seal.reject(error)
-                }
-            } else {
-                seal.fulfill(())
+    func fetchData(from remotePath: String, saveTo localPath: String) async throws {
+        let willFetch = !FileManager.default.fileExists(atPath: localPath)
+            
+        if willFetch {
+            guard let urlString = remotePath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+                let url = URL(string: urlString) else {
+                fatalError("Malformed url")
             }
+
+            let (localURL, _) = try await URLSession.shared.download(from: url)
+            try FileManager.default.moveItem(atPath: localURL.path(), toPath: localPath)
         }
     }
     
-    func createPromise(with query: String, parameters: [Any]?) -> Promise<Void> {
-        return Promise { seal in
-            execPG(query: query,
-                   parameters: parameters)
-            seal.fulfill(())
-        }
-    }
-    
-    func execPG(query: String, parameters: [Any]?) {
+    func exec(query: String, with parameters: [Any]? = nil) async throws {
         do {
             let statement = try connection.prepareStatement(text: query)
             
@@ -393,155 +362,38 @@ class Maintainer {
         }
     }
     
-    func execInSequence(label: String, promises: [()->Promise<Void>], completion: @escaping () -> Void) {
-        guard !promises.isEmpty else {
-            completion()
-            return
-        }
-
-        var promise = promises.first!()
-        let countTotal = promises.count
+    func execInSequence(label: String, processes: [() async throws -> Void]) async throws {
+        let countTotal = processes.count
         var countIndex = 0
 
         let animation = PercentProgressAnimation(stream: stdoutStream,
                                                  header: "\(label)")
 
-        for next in promises {
-            promise = promise.then { n -> Promise<Void> in
+        do {
+            for process in processes {
+                try await process()
+                
                 countIndex += 1
 
-                if countIndex == countTotal {
-                    animation.update(step: countIndex,
-                                     total: countTotal,
-                                     text: "Done")
-                } else {
-                    if countIndex % 2 == 0 {
-                        animation.update(step: countIndex,
-                                         total: countTotal,
-                                         text: "Exec...")
-                    }
-                }
-                return next()
+//                if countIndex == countTotal {
+//                    animation.update(step: countIndex,
+//                                     total: countTotal,
+//                                     text: "Done")
+//                } else {
+//                    if countIndex % 2 == 0 {
+//                        animation.update(step: countIndex,
+//                                         total: countTotal,
+//                                         text: "Exec...")
+//                    }
+//                }
             }
-        }
-        promise.done {_ in
+            
             animation.complete(success: true)
-            completion()
-        }.catch { error in
-            print(error)
+        } catch {
+            throw error
         }
     }
 
-    // MARK: - Utility methods
-    
-    func readFileData(fileReader: StreamingFileReader, lines: Int) -> [[String: Any]] {
-        var array = [[String: Any]]()
-        
-        while let line = fileReader.readLine() {
-            var cleanLine = String(line)
-            
-            if cleanLine.hasSuffix("}},") {
-                cleanLine.removeLast()
-            }
-            
-            guard cleanLine.hasPrefix("{\""),
-                let data = cleanLine.data(using: .utf16),
-                let dict = try! JSONSerialization.jsonObject(with: data,
-                                                             options: .mutableContainers) as? [String: Any] else {
-                continue
-            }
-            
-            array.append(dict)
-            
-            if array.count == lines {
-                break
-            }
-        }
-        
-        return array
-    }
-    
-    func sectionFor(name: String) -> String? {
-        if name.count == 0 {
-            return nil
-        } else {
-            let letters = ["ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
-            var prefix = String(name.prefix(1)).uppercased()
-            
-            if letters.contains(prefix) {
-                prefix = "#"
-            }
-            return prefix
-        }
-    }
-    
-    func displayFor(name: String) -> String {
-        var display = ""
-        let components = name.components(separatedBy: "_")
-        
-        if components.count > 1 {
-            for e in components {
-                var cap = e
-                
-                if e != "the" || e != "a" || e != "an" || e != "and" {
-                    cap = e.prefix(1).uppercased() + e.dropFirst()
-                }
-                if display.count > 0 {
-                    display.append(" ")
-                }
-                display.append(cap)
-            }
-        } else {
-            display = name
-        }
-        
-        return display
-    }
-    
-    func capitalize(string: String) -> String {
-        if string.count == 0 {
-            return string
-        } else {
-            return (string.prefix(1).uppercased() + string.dropFirst()).replacingOccurrences(of: "_", with: " ")
-        }
-    }
-    
-    /*
-     * Converts @param string into double equivalents i.e. 100.1a = 100.197
-     * Useful for ordering in NSSortDescriptor.
-     */
-    func order(of string: String) -> Double {
-        var termOrder = Double(0)
-        
-        if let num = Double(string) {
-            termOrder = num
-        } else {
-            let digits = NSCharacterSet.decimalDigits
-            var numString = ""
-            var charString = ""
-            
-            for c in string.unicodeScalars {
-                if c == "." || digits.contains(c) {
-                    numString.append(String(c))
-                } else {
-                    charString.append(String(c))
-                }
-            }
-            
-            if let num = Double(numString) {
-                termOrder = num
-            }
-            
-            if charString.count > 0 {
-                for c in charString.unicodeScalars {
-                    let s = String(c).unicodeScalars
-                    termOrder += Double(s[s.startIndex].value) / 100
-                }
-            }
-        }
-        return termOrder
-    }
-    
     func startActivity(label: String) -> Date {
         let date = Date()
         print("\(label) started on: \(date)")
@@ -552,20 +404,8 @@ class Maintainer {
         let endDate = Date()
         let timeDifference = endDate.timeIntervalSince(from)
         
-        print("\(label)   ended on: \(endDate)")
-        print("Elapsed time: \(format(timeDifference))")
-        print("")
-    }
-
-    func format(_ interval: TimeInterval) -> String {
-        if interval == 0 {
-            return "HH:mm:ss"
-        }
-        
-        let seconds = interval.truncatingRemainder(dividingBy: 60)
-        let minutes = (interval / 60).truncatingRemainder(dividingBy: 60)
-        let hours = (interval / 3600)
-        return String(format: "%.2d:%.2d:%.2d", Int(hours), Int(minutes), Int(seconds))
+        print("\(label) ended   on: \(endDate)")
+        print("Elapsed time: \(format(timeDifference))\n")
     }
 }
 

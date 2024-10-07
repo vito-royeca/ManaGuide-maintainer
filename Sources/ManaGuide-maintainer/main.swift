@@ -1,5 +1,4 @@
 import Foundation
-import PromiseKit
 import ArgumentParser
 
 // Define our parser.
@@ -38,16 +37,16 @@ struct Managuide: ParsableCommand {
 }
 
 //#if DEBUG
-//let maintainer = Maintainer(host: "host",
-//                            port: 5432,
-//                            database: "database",
-//                            user: "user",
-//                            password: "password",
-//                            isFullUpdate: true,
-//                            imagesPath: "/path/to/images")
-//maintainer.updateDatabase()
+let maintainer = Maintainer(host: "postgres.macarena",
+                            port: 5432,
+                            database: "managuide_dev3",
+                            user: "managuide_dev",
+                            password: "f1c6796717576d06c311c8bdffbbf9a1",
+                            isFullUpdate: true,
+                            imagesPath: "/Users/vitoroyeca/workspace/ManaGuide/tmp/managuide-images/cards")
+maintainer.updateDatabase()
 //#else
-Managuide.main()
+//Managuide.main()
 //#endif
 
 // wait until all threads are done before exiting

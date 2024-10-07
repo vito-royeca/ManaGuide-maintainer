@@ -1,39 +1,32 @@
 //
 //  Maintainer+Rulings.swift
-//  ManaKit_Example
+//  ManaGuide-maintainer
 //
-//  Created by Jovito Royeca on 14/07/2019.
-//  Copyright © 2019 CocoaPods. All rights reserved.
+//  Created by Vito Royeca on 14/07/2019.
 //
 
 import Foundation
-import PromiseKit
 
 extension Maintainer {
-    func processRulingsData() -> Promise<Void> {
-        return Promise { seal in
-            let label = "processRulingsData"
-            let date = self.startActivity(label: label)
-            var promises = [()->Promise<Void>]()
+    func processRulingsData() async throws {
+        let label = "processRulingsData"
+        let date = startActivity(label: label)
+        var processes = [() async throws -> Void]()
 
-            promises.append({
-                return self.createDeleteRulingsPromise()
+        processes.append({
+            try await self.createDeleteRulings()
+
+        })
+        for dict in rulingsArray {
+            processes.append({
+                try await self.createRuling(dict: dict)
 
             })
-            promises.append(contentsOf: rulingsArray.map { dict in
-                return {
-                    return self.createRulingPromise(dict: dict)
-                }
-            })
-
-            let completion = {
-                self.endActivity(label: label, from: date)
-                seal.fulfill(())
-            }
-            self.execInSequence(label: label,
-                                promises: promises,
-                                completion: completion)
         }
+        
+        try await execInSequence(label: label,
+                                 processes: processes)
+        endActivity(label: label, from: date)
     }
     
     func rulingsData() -> [[String: Any]] {

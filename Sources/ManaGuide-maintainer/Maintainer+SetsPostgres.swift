@@ -1,40 +1,36 @@
 //
 //  Maintainer+SetsPostgres.swift
-//  ManaKit_Example
+//  ManaGuide-maintainer
 //
 //  Created by Vito Royeca on 10/26/19.
-//  Copyright © 2019 CocoaPods. All rights reserved.
 //
 
 import Foundation
 import Kanna
 import PostgresClientKit
-import PromiseKit
 
 extension Maintainer {
-    func createSetBlockPromise(blockCode: String, block: String) -> Promise<Void> {
+    func createSetBlock(blockCode: String, block: String) async throws {
         let nameSection = self.sectionFor(name: block) ?? "NULL"
         
         let query = "SELECT createOrUpdateSetBlock($1,$2,$3)"
         let parameters = [blockCode,
                           block,
                           nameSection]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
 
-    func createSetTypePromise(setType: String) -> Promise<Void> {
+    func createSetType(setType: String) async throws {
         let capName = capitalize(string: self.displayFor(name: setType))
         let nameSection = self.sectionFor(name: setType) ?? "NULL"
         
         let query = "SELECT createOrUpdateSetType($1,$2)"
         let parameters = [capName,
                           nameSection]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func createSetPromise(dict: [String: Any]) -> Promise<Void> {
+    func createSet(dict: [String: Any]) async throws {
         let cardCount = dict["card_count"] as? Int ?? Int(0)
         let code = dict["code"] as? String ?? "NULL"
         let isFoilOnly = dict["foil_only"] as? Bool ?? false
@@ -78,8 +74,7 @@ extension Maintainer {
                           cmsetblock,
                           setTypeCap,
                           setParent] as [Any]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
     func updatedKeyruneCodes() -> [[String: String]] {

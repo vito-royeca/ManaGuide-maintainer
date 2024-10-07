@@ -1,9 +1,8 @@
 //
 //  Maintainer+TCGPlayer.swift
-//  ManaKit_Example
+//  ManaGuide-maintainer
 //
-//  Created by Jovito Royeca on 23/10/2018.
-//  Copyright © 2018 CocoaPods. All rights reserved.
+//  Created by Vito Royeca on 23/10/2018.
 //
 
 import Foundation
@@ -11,186 +10,108 @@ import Foundation
     import FoundationNetworking
 #endif
 import PostgresClientKit
-import PromiseKit
-import PMKFoundation
 
 extension Maintainer {
-    func processPricingData() -> Promise<Void> {
-        return Promise { seal in
-            let label = "processPricingData"
-            let date = self.startActivity(label: label)
-            
-            firstly {
-//                self.createStorePromise(name: self.storeName)
-                self.getTcgPlayerToken()
-            }.then {
-                self.fetchSets()
-            }.then { groupIds in
-                self.fetchTcgPlayerCardPricing(groupIds: groupIds)
-            }.done { promises in
-                let completion = {
-                    self.endActivity(label: label, from: date)
-                    seal.fulfill(())
-                }
-                self.execInSequence(label: label,
-                                    promises: promises,
-                                    completion: completion)
-            }.catch { error in
-                seal.reject(error)
-            }
-        }
-    }
-
-    func getTcgPlayerToken() -> Promise<Void> {
-        return Promise { seal  in
-            guard let urlString = "https://api.tcgplayer.com/token".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                let url = URL(string: urlString) else {
-                fatalError("Malformed url")
-            }
-            
-            let query = "grant_type=client_credentials&client_id=\(TCGPlayer.publicKey)&client_secret=\(TCGPlayer.privateKey)"
-            
-            var rq = URLRequest(url: url)
-            rq.httpMethod = "POST"
-            rq.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            rq.httpBody = query.data(using: .utf8)
-            
-            firstly {
-                URLSession.shared.dataTask(.promise, with: rq)
-            }.compactMap {
-                try JSONSerialization.jsonObject(with: $0.data) as? [String: Any]
-            }.done { json in
-                guard let token = json["access_token"] as? String else {
-                    fatalError("access_token is nil")
-                }
-                
-                self.tcgplayerAPIToken = token
-                seal.fulfill(())
-            }.catch { error in
-                print("\(error)")
-                seal.reject(error)
-            }
-        }
-    }
-    
-    func fetchSets() -> Promise<[Int32]> {
-        return Promise { seal in
-            firstly {
-                createNodePromise(apiPath: "/sets?json=true",
-                                  httpMethod: "GET",
-                                  httpBody: nil)
-            }.compactMap { (data, result) in
-                try JSONSerialization.jsonObject(with: data) as? [[String: Any]]
-            }.done { data in
-                var tcgPlayerIds = [Int32]()
-
-                for d in data {
-                    for (k,v) in d {
-                        if k == "tcgplayer_id" {
-                            if let tcgPlayerId = v as? Int32 {
-                                if tcgPlayerId > 0 {
-                                    tcgPlayerIds.append(tcgPlayerId)
-                                }    
-                            }
-                        }
-                    }
-                }
-
-                seal.fulfill(tcgPlayerIds)
-            }.catch { error in
-                seal.reject(error)
-            }
-        }
-    }
-    
-    func createNodePromise(apiPath: String, httpMethod: String, httpBody: String?) -> Promise<(data: Data, response: URLResponse)> {
-        // TODO: remove hardcoded url
-        let urlString = "http://managuideapp.com\(apiPath)"
+    func processPricingData() async throws {
+        let label = "processPricingData"
+        let date = startActivity(label: label)
+        var processes = [() async throws -> Void]()
         
-        guard let cleanURL = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-            let url = URL(string: cleanURL) else {
+        try await getTcgPlayerToken()
+        let groupIds = try await fetchSets()
+        for groupId in groupIds {
+            let array = try await fetchCardPricingBy(groupId: groupId)
+            processes.append(contentsOf: array)
+        }
+        try await execInSequence(label: label, processes: processes)
+        
+        endActivity(label: label, from: date)
+    }
+
+    func getTcgPlayerToken() async throws {
+        let urlString = "https://api.tcgplayer.com/token"
+        
+        guard let cleanUrl = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+           let url = URL(string: cleanUrl) else {
             fatalError("Malformed url")
         }
         
-        var rq = URLRequest(url: url)
-        rq.httpMethod = httpMethod.uppercased()
-        rq.setValue("application/json", forHTTPHeaderField: "Accept")
-        if let httpBody = httpBody {
-            rq.httpBody = httpBody.replacingOccurrences(of: "\n", with: "").data(using: .utf8)
-        }
-    
-        return URLSession.shared.dataTask(.promise, with: rq)
-    }
-    
-//    func createStorePromise(name: String) -> Promise<Void> {
-//        let nameSection = self.sectionFor(name: name) ?? "NULL"
-//
-//        let query = "SELECT createOrUpdateStore($1,$2)"
-//        let parameters = [name,
-//                          nameSection]
-//        return createPromise(with: query,
-//                             parameters: parameters)
-//    }
-    
-    func fetchTcgPlayerCardPricing(groupIds: [Int32]) -> Promise<[()->Promise<Void>]> {
-        return Promise { seal in
-            var array = [Promise<[()->Promise<Void>]>]()
-            var promises = [()->Promise<Void>]()
-            
-            for groupId in groupIds {
-                array.append(fetchCardPricingBy(groupId: groupId))
-            }
-            
-            firstly {
-                when(fulfilled: array)
-            }.done { results in
-                for result in results {
-                    promises.append(contentsOf: result)
-                }
-                seal.fulfill(promises)
-            }.catch { error in
-                seal.reject(error)
-            }
+        let query = "grant_type=client_credentials&client_id=\(TCGPlayer.publicKey)&client_secret=\(TCGPlayer.privateKey)"
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = query.data(using: .utf8)
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
+
+        if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let token = json["access_token"] as? String {
+            tcgplayerAPIToken = token
+        } else {
+            fatalError("access_token is nil")
         }
     }
     
-    func fetchCardPricingBy(groupId: Int32) -> Promise<[()->Promise<Void>]> {
-        return Promise { seal in
-            guard let urlString = "https://api.tcgplayer.com/\(TCGPlayer.apiVersion)/pricing/group/\(groupId)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                let url = URL(string: urlString) else {
-                fatalError("Malformed url")
-            }
-            
-            var rq = URLRequest(url: url)
-            rq.httpMethod = "GET"
-            rq.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            rq.setValue("Bearer \(tcgplayerAPIToken)", forHTTPHeaderField: "Authorization")
-            
-            firstly {
-                URLSession.shared.dataTask(.promise, with: rq)
-            }.compactMap {
-                try JSONSerialization.jsonObject(with: $0.data) as? [String: Any]
-            }.done { json in
-                guard let results = json["results"] as? [[String: Any]] else {
-                    fatalError("results is nil")
+    func fetchSets() async throws -> [Int32] {
+        let urlString = "http://managuideapp.com/sets?json=true"
+        
+        guard let cleanURL = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+           let url = URL(string: cleanURL) else {
+            fatalError("Malformed url")
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
+        var tcgPlayerIds = [Int32]()
+        
+        if let array = try JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
+            for dict in array {
+                for (key,value) in dict {
+                    if key == "tcgplayer_id",
+                       let tcgPlayerId = value as? Int32,
+                       tcgPlayerId > 0 {
+                        tcgPlayerIds.append(tcgPlayerId)
+                    }
                 }
-                var promises = [()->Promise<Void>]()
-                
-                for result in results {
-                    promises.append({
-                        return self.createCardPricingPromise(price: result)
-                    })
-                }
-                seal.fulfill(promises)
-                
-            }.catch { error in
-                print(error)
-                seal.reject(error)
             }
         }
+        
+        return tcgPlayerIds
     }
     
-    func createCardPricingPromise(price: [String: Any]) -> Promise<Void> {
+    func fetchCardPricingBy(groupId: Int32) async throws -> [() async throws -> Void] {
+        let urlString = "https://api.tcgplayer.com/\(TCGPlayer.apiVersion)/pricing/group/\(groupId)"
+
+        guard let cleanUrl = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+           let url = URL(string: cleanUrl) else {
+            fatalError("Malformed url")
+        }
+            
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(tcgplayerAPIToken)", forHTTPHeaderField: "Authorization")
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
+        var processes = [() async throws -> Void]()
+        
+        if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let results = json["results"] as? [[String: Any]] {
+            for result in results {
+                processes.append({
+                    try await self.createCardPricing(price: result)
+                })
+            }
+        }
+        
+        return processes
+    }
+    
+    func createCardPricing(price: [String: Any]) async throws {
         let low = price["lowPrice"] as? Double ?? 0.0
         let median = price["midPrice"] as? Double ?? 0.0
         let high = price["highPrice"] as? Double ?? 0.0
@@ -209,8 +130,6 @@ extension Maintainer {
             tcgPlayerId,
             isFoil
             ] as [Any]
-        
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
 }

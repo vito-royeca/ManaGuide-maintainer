@@ -1,36 +1,27 @@
 //
 //  Maintainer+Rules.swift
-//  ManaKit_Example
+//  ManaGuide-maintainer
 //
-//  Created by Jovito Royeca on 23/10/2018.
-//  Copyright © 2018 CocoaPods. All rights reserved.
+//  Created by Vito Royeca on 23/10/2018.
 //
 
 import Foundation
 import PostgresClientKit
-import PromiseKit
 
 extension Maintainer {
-    func processComprehensiveRulesData() -> Promise<Void> {
-        return Promise { seal in
-            let label = "processComprehensiveRulesData"
-            let date = self.startActivity(label: label)
-            var promises = [()->Promise<Void>]()
-            
-            promises.append({
-                return self.createDeleteRulesPromise()
+    func processComprehensiveRulesData() async throws {
+        let label = "processComprehensiveRulesData"
+        let date = self.startActivity(label: label)
+        var processes = [() async throws -> Void]()
+        
+        processes.append({
+            try await self.createDeleteRules()
+        })
+        processes.append(contentsOf: filterRules(lines: rulesArray))
 
-            })
-            promises.append(contentsOf: self.filterRules(lines: rulesArray))
-
-            let completion = {
-                self.endActivity(label: label, from: date)
-                seal.fulfill(())
-            }
-            self.execInSequence(label: label,
-                                promises: promises,
-                                completion: completion)
-        }
+        try await execInSequence(label: label,
+                                 processes: processes)
+        endActivity(label: label, from: date)
     }
 
     func rulesData() -> [String] {
@@ -40,7 +31,7 @@ extension Maintainer {
         return lines
     }
     
-    func filterRules(lines: [String]) -> [()->Promise<Void>] {
+    func filterRules(lines: [String]) -> [() async throws -> Void] {
         var rules = [[String: Any]]()
         var id = 0
         
@@ -105,23 +96,21 @@ extension Maintainer {
                           "id": id + 2])
         }
         
-        
-        let promises: [()->Promise<Void>] = rules.map { dict in
-            return {
-                return self.createRulePromise(dict: dict)
-            }
+        var processes = [() async throws -> Void]()
+        for dict in rules {
+            processes.append({
+                try await self.createRule(dict: dict)
+            })
         }
         
-        return promises
+        return processes
     }
     
-    func createDeleteRulesPromise() -> Promise<Void> {
-        let query = "DELETE FROM cmrule"
-        return createPromise(with: query,
-                             parameters: nil)
+    func createDeleteRules() async throws {
+        try await exec(query: "DELETE FROM cmrule")
     }
     
-    func createRulePromise(dict: [String: Any]) -> Promise<Void> {
+    func createRule(dict: [String: Any]) async throws {
         let term = dict["term"] as? String ?? "NULL"
         let termSection = dict["termSection"] as? String ?? "NULL"
         let definition = dict["definition"] as? String ?? "NULL"
@@ -136,11 +125,14 @@ extension Maintainer {
                           parent,
                           id] as [Any]
         
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    private func parseData(fromLines lines: [String], startLine: String, endLine: String, includeStartLine: Bool, includeEndLine: Bool) -> String? {
+    private func parseData(fromLines lines: [String],
+                           startLine: String,
+                           endLine: String,
+                           includeStartLine: Bool,
+                           includeEndLine: Bool) -> String? {
         var text: String?
         var isParsing = false
         

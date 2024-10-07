@@ -1,34 +1,26 @@
 //
 //  Maintainer+Sets.swift
-//  ManaKit_Example
+//  ManaGuide-maintainer
 //
-//  Created by Jovito Royeca on 23/10/2018.
-//  Copyright © 2018 CocoaPods. All rights reserved.
+//  Created by Vito Royeca on 23/10/2018.
 //
 
 import Foundation
 import PostgresClientKit
-import PromiseKit
 
 extension Maintainer {
-    func processSetsData() -> Promise<Void> {
-        return Promise { seal in
-            let label = "processSetsData"
-            let date = self.startActivity(label: label)
-            var promises = [()->Promise<Void>]()
-            
-            promises.append(contentsOf: self.filterSetBlocks(array: setsArray))
-            promises.append(contentsOf: self.filterSetTypes(array: setsArray))
-            promises.append(contentsOf: self.filterSets(array: setsArray))
+    func processSetsData() async throws {
+        let label = "processSetsData"
+        let date = startActivity(label: label)
+        var processes = [() async throws -> Void]()
+        
+        processes.append(contentsOf: filterSetBlocks(array: setsArray))
+        processes.append(contentsOf: filterSetTypes(array: setsArray))
+        processes.append(contentsOf: filterSets(array: setsArray))
 
-            let completion = {
-                self.endActivity(label: label, from: date)
-                seal.fulfill(())
-            }
-            self.execInSequence(label: label,
-                                promises: promises,
-                                completion: completion)
-        }
+        try await execInSequence(label: label,
+                                 processes: processes)
+        endActivity(label: label, from: date)
     }
     
     func setsData() -> [[String: Any]] {
@@ -46,41 +38,37 @@ extension Maintainer {
         return array
     }
 
-    func filterSetBlocks(array: [[String: Any]]) -> [()->Promise<Void>] {
-        var filteredData = [String: String]()
+    func filterSetBlocks(array: [[String: Any]]) -> [() async throws -> Void] {
+        var processes = [() async throws -> Void]()
         
         for dict in array {
             if let blockCode = dict["block_code"] as? String,
-                let block = dict["block"] as? String {
-                filteredData[blockCode] = block
-            }
-        }
-        let promises: [()->Promise<Void>] = filteredData.map { (blockCode, block) in
-            return {
-                return self.createSetBlockPromise(blockCode: blockCode,
+               let block = dict["block"] as? String {
+                processes.append({
+                    try await self.createSetBlock(blockCode: blockCode,
                                                   block: block)
+                })
             }
         }
-        return promises
+
+        return processes
     }
     
-    func filterSetTypes(array: [[String: Any]]) -> [()->Promise<Void>] {
-        var filteredData = Set<String>()
+    func filterSetTypes(array: [[String: Any]]) -> [() async throws -> Void] {
+        var processes = [() async throws -> Void]()
         
         for dict in array {
             if let setType = dict["set_type"] as? String {
-                filteredData.insert(setType)
+                processes.append({
+                    try await self.createSetType(setType: setType)
+                })
             }
         }
-        let promises: [()->Promise<Void>] = filteredData.map { setType in
-            return {
-                return self.createSetTypePromise(setType: setType)
-            }
-        }
-        return promises
+
+        return processes
     }
     
-    func filterSets(array: [[String: Any]]) -> [()->Promise<Void>] {
+    func filterSets(array: [[String: Any]]) -> [() async throws -> Void] {
         let keyruneCodes = updatedKeyruneCodes()
         let defaultKeyruneClass = "dpa"
         let defaultKeyruneUnicode = "e689"
@@ -89,6 +77,7 @@ extension Maintainer {
         var filteredData = array.sorted(by: {
             $0["parent_set_code"] as? String ?? "" < $1["parent_set_code"] as? String ?? ""
         })
+        
         for row in filteredData.indices {
             if let keyrune = keyruneCodes.filter({ $0["code"] == filteredData[row]["code"] as? String}).first {
                 filteredData[row]["keyrune_unicode"] = keyrune["keyrune_unicode"]
@@ -108,12 +97,51 @@ extension Maintainer {
             }
         }
         
-        let promises: [()->Promise<Void>] = filteredData.map { dict in
-            return {
-                return self.createSetPromise(dict: dict)
+        var processes = [() async throws -> Void]()
+        for dict in filteredData {
+            processes.append({
+                try await self.createSet(dict: dict)
+            })
+        }
+        
+        return processes
+    }
+    
+    func downloadSetLogos() async throws {
+        
+        let label = "downloadSetLogos"
+        let date = startActivity(label: label)
+        let setsPath = imagesPath.replacingOccurrences(of: "cards", with: "sets")
+        var processes = [() async throws -> Void]()
+        
+        for keyrune in updatedKeyruneCodes() {
+            if let logoCode = keyrune["logo_code"],
+                logoCode != "null" {
+                
+                let destSmall = "\(setsPath)/\(logoCode)_small.png"
+                if !FileManager.default.fileExists(atPath: destSmall) {
+                    print(destSmall)
+                    let sourceSmall = "https://www.mtgpics.com/graph/sets/logos/" + logoCode + ".png"
+                    self.prepare(destinationFile: destSmall)
+                    processes.append({
+                        try await self.fetchData(from: sourceSmall, saveTo: destSmall)
+                    })
+                }
+                
+                let destBig = "\(setsPath)/\(logoCode)_big.png"
+                if !FileManager.default.fileExists(atPath: destBig) {
+                    print(destBig)
+                    let sourceBig = "https://www.mtgpics.com/graph/sets/logos_big/" + logoCode + ".png"
+                    self.prepare(destinationFile: destBig)
+                    processes.append({
+                        try await self.fetchData(from: sourceBig, saveTo: destBig)
+                    })
+                }
             }
         }
         
-        return promises
+        try await self.execInSequence(label: label,
+                                      processes: processes)
+        endActivity(label: label, from: date)
     }
 }

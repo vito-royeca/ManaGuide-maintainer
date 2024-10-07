@@ -1,9 +1,8 @@
 //
 //  Maintainer+Images.swift
-//  ManaKit
+//  ManaGuide-maintainer
 //
 //  Created by Vito Royeca on 1/12/20.
-//  Copyright © 2020 CocoaPods. All rights reserved.
 //
 
 import Foundation
@@ -11,7 +10,6 @@ import Foundation
     import FoundationNetworking
 #endif
 import PostgresClientKit
-import PromiseKit
 
 struct Milestone : Codable {
     var value: Int
@@ -22,21 +20,16 @@ struct CardStatus : Codable {
 }
 
 extension Maintainer {
-    func fetchCardImages() -> Promise<Void> {
-        return Promise { seal in
-            let label = "fetchCardImages"
-            let date = self.startActivity(label: label)
-            let callback = {
-                self.endActivity(label: label, from: date)
-                seal.fulfill()
-            }
-            
-            let fileReader = StreamingFileReader(path: cardsLocalPath)
-            self.loopReadCards(fileReader: fileReader, start: 0, callback: callback)
-        }
+    func fetchCardImages() async throws {
+        let label = "fetchCardImages"
+        let date = startActivity(label: label)
+        let fileReader = StreamingFileReader(path: cardsLocalPath)
+        
+        try await loopReadCards(fileReader: fileReader, start: 0)
+        endActivity(label: label, from: date)
     }
     
-    private func loopReadCards(fileReader: StreamingFileReader, start: Int, callback: @escaping () -> Void) {
+    private func loopReadCards(fileReader: StreamingFileReader, start: Int) async throws {
         if start + milestone.value <= milestone.value &&
             milestone.fileOffset != 0 {
             print("seeking to milestone: \(milestone.value), offset: \(milestone.fileOffset)")
@@ -44,46 +37,39 @@ extension Maintainer {
         }
         
         let label = "readCardsData"
-        let date = self.startActivity(label: label)
-        let cards = self.readFileData(fileReader: fileReader, lines: self.printMilestone)
+        let date = startActivity(label: label)
+        let cards = readFileData(fileReader: fileReader, lines: self.printMilestone)
         
         if !cards.isEmpty {
             let index = start + cards.count
             let label2 = "downloadCardImages"
-            var promises = [()->Promise<Void>]()
+            var processes = [() async throws -> Void]()
             
             for card in cards {
-                promises.append(contentsOf: self.createImageDownloadPromises(dict: card))
+                processes.append(contentsOf: self.createImageDownloads(dict: card))
             }
             
-            if !promises.isEmpty {
-                self.execInSequence(label: "\(label2): \(milestone.value)",
-                                    promises: promises,
-                                    completion: {
-                                        self.milestone.value += cards.count
-                                        self.milestone.fileOffset = fileReader.offset
-                                        self.writeMilestone()
-                                        self.endActivity(label: "\(label)", from: date)
-                                        self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
-                                        
-                })
-            } else {
-                self.endActivity(label: "\(label)", from: date)
-                self.loopReadCards(fileReader: fileReader, start: index, callback: callback)
+            if !processes.isEmpty {
+                try await execInSequence(label: "\(label2): \(milestone.value)",
+                                         processes: processes)
+                milestone.value += cards.count
+                milestone.fileOffset = fileReader.offset
+                writeMilestone()
             }
-        } else {
-            callback()
+
+            endActivity(label: "\(label)", from: date)
+            try await loopReadCards(fileReader: fileReader, start: index)
         }
     }
     
-    private func createImageDownloadPromises(dict: [String: Any]) -> [()->Promise<Void>] {
-        var promises = [()->Promise<Void>]()
+    private func createImageDownloads(dict: [String: Any]) -> [() async throws -> Void] {
+        var processes = [() async throws -> Void]()
         var filteredData = [[String: Any]]()
         
         guard let number = dict["collector_number"] as? String,
               let language = dict["lang"] as? String,
               let set = dict["set"] as? String else {
-            return promises
+            return processes
         }
         
         let cleanNumber = number.replacingOccurrences(of: "★", with: "star")
@@ -115,83 +101,72 @@ extension Maintainer {
             }
         }
         
-        promises.append(contentsOf: filteredData.map { dict in
-            return {
-                return self.createImageDownloadPromise(dict: dict)
-            }
-        })
+        for dict in filteredData {
+            processes.append({
+                try await self.createImageDownload(dict: dict)
+            })
+        }
 
-        return promises
+        return processes
     }
     
-    private func createImageDownloadPromise(dict: [String: Any]) -> Promise<Void> {
-        return Promise { seal in
-            guard let number = dict["number"] as? String,
-                let language = dict["language"] as? String,
-                let set = dict["set"] as? String,
-                let imageStatus = dict["imageStatus"] as? String,
-                let imageUris = dict["imageUris"] as? [String: String] else {
-                
-                let error = NSError(domain: "Error",
-                                    code: 500,
-                                    userInfo: [NSLocalizedDescriptionKey: "Wrong download keys"])
-                seal.reject(error)
-                return
+    private func createImageDownload(dict: [String: Any]) async throws {
+        
+        guard let number = dict["number"] as? String,
+            let language = dict["language"] as? String,
+            let set = dict["set"] as? String,
+            let imageStatus = dict["imageStatus"] as? String,
+            let imageUris = dict["imageUris"] as? [String: String] else {
+            
+            let error = NSError(domain: "Error",
+                                code: 500,
+                                userInfo: [NSLocalizedDescriptionKey: "Wrong download keys"])
+            throw error
+        }
+        
+        let path   = "\(imagesPath)/\(set)/\(language)/\(number)"
+        var processes = [() async throws -> Void]()
+        
+        for (k,v) in imageUris {
+            if !(k == "art_crop" || k == "normal" || k == "png") ||
+                (v.hasSuffix("soon.jpg") || v.hasSuffix("soon.png")) {
+                continue
             }
             
-            let path   = "\(imagesPath)/\(set)/\(language)/\(number)"
-            var promises = [Promise<Void>]()
+            var imageFile = "\(path)/\(k)"
+            var willDownload = false
             
-            for (k,v) in imageUris {
-                if !(k == "art_crop" || k == "normal" || k == "png") ||
-                    (v.hasSuffix("soon.jpg") || v.hasSuffix("soon.png")) {
-                    continue
-                }
-                
-                var imageFile = "\(path)/\(k)"
-                var willDownload = false
-                
-                if v.lowercased().contains(".png") {
-                    imageFile = "\(imageFile).png"
-                } else if v.lowercased().contains(".jpg") {
-                    imageFile = "\(imageFile).jpg"
-                }
-                
-                if FileManager.default.fileExists(atPath: imageFile) {
-                    if let status = self.readStatus(directoryPath: path) {
-                        if imageStatus != status {
-                            willDownload = true
-                        }
-                    } else {
+            if v.lowercased().contains(".png") {
+                imageFile = "\(imageFile).png"
+            } else if v.lowercased().contains(".jpg") {
+                imageFile = "\(imageFile).jpg"
+            }
+            
+            if FileManager.default.fileExists(atPath: imageFile) {
+                if let status = self.readStatus(directoryPath: path) {
+                    if imageStatus != status {
                         willDownload = true
                     }
                 } else {
                     willDownload = true
                 }
-                
-                if willDownload {
-                    promises.append(downloadImagePromise(url: v,
-                                                         destinationFile: imageFile))
-                }
-            }
-
-            if promises.isEmpty {
-                seal.fulfill(())
             } else {
-                firstly {
-                    when(fulfilled: promises)
-                }.done {
-                    print("Downloaded \(set)/\(language)/\(number)")
-                    self.writeStatus(directoryPath: path, status: imageStatus)
-                    seal.fulfill(())
-                }.catch { error in
-                    print("Error downloading: \(set)/\(language)/\(number)")
-                    print("\(error)")
-                    self.writeStatus(directoryPath: path, status: "")
-                    seal.fulfill(())
-                }
+                willDownload = true
+            }
+            
+            if willDownload {
+                processes.append({
+                    self.prepare(destinationFile: imageFile)
+                    try await self.fetchData(from: v, saveTo: imageFile)
+                })
+                                               
             }
         }
+
+        try await execInSequence(label: "Downloading... \(set)/\(language)/\(number)",
+                                 processes: processes)
+        print("Downloaded \(set)/\(language)/\(number)")
+        writeStatus(directoryPath: path, status: imageStatus)
     }
     
     private func createImageUris(number: String, set: String, language: String, imageStatus: String, imageUrisDict: [String: String]) -> [String: Any] {
@@ -210,40 +185,6 @@ extension Maintainer {
         newDict["imageUris"]   =  newImageUris
         
         return newDict
-    }
-    
-    func downloadImagePromise(url: String, destinationFile: String) -> Promise<Void> {
-        return Promise { seal in
-            firstly {
-                URLSession.shared.dataTask(.promise, with: URL(string: url)!)
-            }.done { response in
-                do {
-                    self.prepare(destinationFile: destinationFile)
-                    try response.data.write(to: URL(fileURLWithPath: destinationFile))
-                    seal.fulfill(())
-                } catch {
-                    print("Unable to write to: \(destinationFile)")
-                    seal.fulfill()
-                }
-            }.catch { error in
-                print("\(error): \(url)")
-                seal.fulfill(())
-            }
-        }
-    }
-    
-    private func copyImagePromise(sourceFile: String, destinationFile: String) -> Promise<Void> {
-        return Promise { seal in
-            do {
-                prepare(destinationFile: destinationFile)
-                try FileManager.default.copyItem(at: URL(fileURLWithPath: sourceFile),
-                                                 to: URL(fileURLWithPath: destinationFile))
-                seal.fulfill(())
-            } catch {
-                print("Unable to write to: \(destinationFile)")
-                seal.fulfill()
-            }
-        }
     }
     
     // MARK: - File methods
@@ -331,7 +272,7 @@ extension Maintainer {
         }
     }
     
-    private func prepare(destinationFile: String) {
+    func prepare(destinationFile: String) {
         do {
             let destinationURL = URL(fileURLWithPath: destinationFile)
             let parentDir = destinationURL.deletingLastPathComponent().path

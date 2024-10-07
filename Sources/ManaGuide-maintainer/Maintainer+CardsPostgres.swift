@@ -1,53 +1,42 @@
 //
 //  Maintainer+CardsPostgres.swift
-//  ManaKit_Example
+//  ManaGuide-maintainer
 //
 //  Created by Vito Royeca on 10/27/19.
-//  Copyright © 2019 CocoaPods. All rights reserved.
 //
 
 import Foundation
 import PostgresClientKit
-import PromiseKit
 
 extension Maintainer {
-    func processOtherCardsData() -> Promise<Void> {
-        return Promise { seal in
-            let label = "processOtherCardsData"
-            let date = self.startActivity(label: label)
-            let promises = [createOtherLanguagesPromise(),
-                            createOtherPrintingsPromise(),
-                            createVariationsPromise()]
+    func processOtherCardsData() async throws {
+        
+        let label = "processOtherCardsData"
+        let date = startActivity(label: label)
             
-            firstly {
-                when(fulfilled: promises)
-            }.done {
-                self.endActivity(label: label, from: date)
-                seal.fulfill(())
-            }.catch { error in
-                seal.reject(error)
-            }
-        }
+        try await createOtherLanguages()
+        try await createOtherPrintings()
+        try await createVariations()
+            
+        endActivity(label: label, from: date)
     }
     
-    func create(artist: String) -> Promise<Void> {
+    func create(artist: String) async throws {
         let query = "SELECT createOrUpdateArtist($1,$2,$3,$4,$5)"
-        return createPromise(with: query,
-                             parameters: filter(artist: artist))
+        try await exec(query: query, with: filter(artist: artist))
     }
     
-    func create(rarity: String) -> Promise<Void> {
+    func create(rarity: String) async throws {
         let capName = capitalize(string: displayFor(name: rarity))
         let nameSection = sectionFor(name: rarity) ?? "NULL"
         
         let query = "SELECT createOrUpdateRarity($1,$2)"
         let parameters = [capName,
                           nameSection]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func createLanguage(code: String, displayCode: String, name: String) -> Promise<Void> {
+    func createLanguage(code: String, displayCode: String, name: String) async throws {
         let nameSection = sectionFor(name: name) ?? "NULL"
         
         let query = "SELECT createOrUpdateLanguage($1,$2,$3,$4)"
@@ -55,11 +44,10 @@ extension Maintainer {
                           displayCode,
                           name,
                           nameSection]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func createLayout(name: String, description_: String) -> Promise<Void> {
+    func createLayout(name: String, description_: String) async throws {
         let capName = capitalize(string: displayFor(name: name))
         let nameSection = sectionFor(name: name) ?? "NULL"
         
@@ -67,22 +55,20 @@ extension Maintainer {
         let parameters = [capName,
                           nameSection,
                           description_]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func create(watermark: String) -> Promise<Void> {
+    func create(watermark: String) async throws {
         let capName = capitalize(string: displayFor(name: watermark))
         let nameSection = sectionFor(name: watermark) ?? "NULL"
         
         let query = "SELECT createOrUpdateWatermark($1,$2)"
         let parameters = [capName,
                           nameSection]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func createFrame(name: String, description_: String) -> Promise<Void> {
+    func createFrame(name: String, description_: String) async throws {
         let capName = capitalize(string: displayFor(name: name))
         let nameSection = sectionFor(name: name) ?? "NULL"
         
@@ -90,11 +76,10 @@ extension Maintainer {
         let parameters = [capName,
                           nameSection,
                           description_]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func createFrameEffect(id: String, name: String, description_: String) -> Promise<Void> {
+    func createFrameEffect(id: String, name: String, description_: String) async throws {
         let nameSection = sectionFor(name: name) ?? "NULL"
         
         let query = "SELECT createOrUpdateFrameEffect($1,$2,$3,$4)"
@@ -102,11 +87,10 @@ extension Maintainer {
                           name,
                           nameSection,
                           description_]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func createColor(symbol: String, name: String, isManaColor: Bool) -> Promise<Void> {
+    func createColor(symbol: String, name: String, isManaColor: Bool) async throws {
         let nameSection = sectionFor(name: name) ?? "NULL"
         
         let query = "SELECT createOrUpdateColor($1,$2,$3,$4)"
@@ -114,111 +98,99 @@ extension Maintainer {
                           name,
                           nameSection,
                           isManaColor] as [Any]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func create(format: String) -> Promise<Void> {
+    func create(format: String) async throws {
         let capName = capitalize(string: displayFor(name: format))
         let nameSection = sectionFor(name: format) ?? "NULL"
         
         let query = "SELECT createOrUpdateFormat($1,$2)"
         let parameters = [capName,
                           nameSection]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func create(legality: String) -> Promise<Void> {
+    func create(legality: String) async throws {
         let capName = capitalize(string: displayFor(name: legality))
         let nameSection = sectionFor(name: legality) ?? "NULL"
         
         let query = "SELECT createOrUpdateLegality($1,$2)"
         let parameters = [capName,
                           nameSection]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func createCardType(name: String, parent: String) -> Promise<Void> {
+    func createCardType(name: String, parent: String) async throws {
         let nameSection = sectionFor(name: name) ?? "NULL"
         
         let query = "SELECT createOrUpdateCardType($1,$2,$3)"
         let parameters = [name,
                           nameSection,
                           parent]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func create(component: String) -> Promise<Void> {
+    func create(component: String) async throws {
         let capName = capitalize(string: displayFor(name: component))
         let nameSection = sectionFor(name: component) ?? "NULL"
         
         let query = "SELECT createOrUpdateComponent($1,$2)"
         let parameters = [capName,
                           nameSection]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func createFace(card: String, cardFace: String) -> Promise<Void> {
+    func createFace(card: String, cardFace: String) async throws {
         let query = "SELECT createOrUpdateCardFaces($1,$2)"
         let parameters = [card,
                           cardFace]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func createPart(card: String, component: String, cardPart: String) -> Promise<Void> {
+    func createPart(card: String, component: String, cardPart: String) async throws {
         let capName = capitalize(string: displayFor(name: component))
         
         let query = "SELECT createOrUpdateCardParts($1,$2,$3)"
         let parameters = [card,
                           capName,
                           cardPart]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
 
-    func createOtherLanguagesPromise() -> Promise<Void> {
-        return createPromise(with: "select createOrUpdateCardOtherLanguages()",
-                             parameters: nil)
+    func createOtherLanguages() async throws {
+        try await exec(query: "select createOrUpdateCardOtherLanguages()")
     }
 
-    func createOtherPrintingsPromise() -> Promise<Void> {
-        return createPromise(with: "select createOrUpdateCardOtherPrintings()",
-                             parameters: nil)
+    func createOtherPrintings() async throws {
+        try await exec(query: "select createOrUpdateCardOtherPrintings()")
     }
     
-    func createVariationsPromise() -> Promise<Void> {
-        return createPromise(with: "select createOrUpdateCardVariations()",
-                             parameters: nil)
+    func createVariations() async throws {
+        try await exec(query: "select createOrUpdateCardVariations()")
     }
     
-    func create(game: String) -> Promise<Void> {
+    func create(game: String) async throws {
         let capName = capitalize(string: displayFor(name: game))
         let nameSection = sectionFor(name: game) ?? "NULL"
         
         let query = "SELECT createOrUpdateGame($1,$2)"
         let parameters = [capName,
                           nameSection]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func create(keyword: String) -> Promise<Void> {
+    func create(keyword: String) async throws {
         let capName = capitalize(string: displayFor(name: keyword))
         let nameSection = sectionFor(name: keyword) ?? "NULL"
         
         let query = "SELECT createOrUpdateKeyword($1,$2)"
         let parameters = [capName,
                           nameSection]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
     
-    func create(card: [String: Any]) -> Promise<Void> {
+    func create(card: [String: Any]) async throws {
         let collectorNumber = card["collector_number"] as? String ?? "NULL"
         let cmc = card["cmc"] as? Double ?? Double(0)
         let flavorText = card["flavor_text"] as? String ?? "NULL"
@@ -465,7 +437,6 @@ extension Maintainer {
                           pngURL,
                           games,
                           keywords] as [Any]
-        return createPromise(with: query,
-                             parameters: parameters)
+        try await exec(query: query, with: parameters)
     }
 }

@@ -1,87 +1,71 @@
 //
 //  Maintainer+Cards.swift
-//  ManaKit
+//  ManaGuide-maintainer
 //
-//  Created by Jovito Royeca on 21.10.18.
-//  Copyright © 2018 CocoaPods. All rights reserved.
+//  Created by Vito Royeca on 21.10.18.
 //
 
 import Foundation
 import PostgresClientKit
-import PromiseKit
 
 enum CardsDataType {
     case misc, cards, partsAndFaces
 }
 
 extension Maintainer {
-    func processCardsData(type: CardsDataType) -> Promise<Void> {
-        return Promise { seal in
-            var label = ""
-            
-            switch type {
-            case .misc:
-                label = "createMiscData"
-            case .cards:
-                label = "createCards"
-            case .partsAndFaces:
-                label = "createCardPartsAndFaces"
-            }
-            
-            let date = self.startActivity(label: label)
-            let callback = {
-                self.endActivity(label: label, from: date)
-                seal.fulfill()
-            }
-            
-            let fileReader = StreamingFileReader(path: cardsLocalPath)
-            self.loopReadCards(fileReader: fileReader, dataType: type, start: 0, callback: callback)
+    func processCardsData(type: CardsDataType) async throws {
+        let label = switch type {
+        case .misc:
+            "createMiscData"
+        case .cards:
+            "createCards"
+        case .partsAndFaces:
+            "createCardPartsAndFaces"
         }
+        
+        let date = startActivity(label: label)
+        let fileReader = StreamingFileReader(path: cardsLocalPath)
+
+        try await loopReadCards(fileReader: fileReader, dataType: type, start: 0)
+        endActivity(label: label, from: date)
     }
     
-    private func loopReadCards(fileReader: StreamingFileReader, dataType: CardsDataType, start: Int, callback: @escaping () -> Void) {
+    private func loopReadCards(fileReader: StreamingFileReader, dataType: CardsDataType, start: Int) async throws {
         let label = "readCardsData"
-        let date = self.startActivity(label: label)
-        let cards = self.readFileData(fileReader: fileReader, lines: self.printMilestone)
+        let date = startActivity(label: label)
+        let cards = readFileData(fileReader: fileReader, lines: self.printMilestone)
         
         if !cards.isEmpty {
             let index = start + cards.count
-            var promises = [()->Promise<Void>]()
+            var processes = [() async throws -> Void]()
             var label2 = ""
             
             for card in cards {
                 switch dataType {
                 case .misc:
                     label2 = "createMiscData"
-                    promises.append(contentsOf: self.createMiscCardPromises(dict: card))
+                    processes.append(contentsOf: createMiscCardProcesses(dict: card))
                 case .cards:
                     label2 = "createCards"
-                    promises.append(contentsOf: self.createCardPromises(dict: card))
+                    processes.append(contentsOf: createCardProcesses(dict: card))
                 case .partsAndFaces:
                     label2 = "createCardPartsAndFaces"
-                    promises.append(contentsOf: self.createCardPartsAndFacesPromises(dict: card))
+                    processes.append(contentsOf: createCardPartsAndFacesProcesses(dict: card))
                 }
             }
             
-            if !promises.isEmpty {
-                self.execInSequence(label: "\(label2): \(index)",
-                                    promises: promises,
-                                    completion: {
-                                        self.endActivity(label: "\(label)", from: date)
-                                        self.loopReadCards(fileReader: fileReader, dataType: dataType, start: index, callback: callback)
-                                        
-                })
-            } else {
-                self.endActivity(label: "\(label)", from: date)
-                self.loopReadCards(fileReader: fileReader, dataType: dataType, start: index, callback: callback)
+            if !processes.isEmpty {
+                try await execInSequence(label: "\(label2): \(index)",
+                                         processes: processes)
             }
-        } else {
-            callback()
+
+            endActivity(label: "\(label)", from: date)
+            try await loopReadCards(fileReader: fileReader, dataType: dataType, start: index)
         }
     }
-    
-    private func createMiscCardPromises(dict: [String: Any]) -> [()->Promise<Void>] {
-        var promises = [()->Promise<Void>]()
+
+    private func createMiscCardProcesses(dict: [String: Any]) -> [() async throws -> Void] {
+        var processes = [() async throws -> Void]()
         
         if let artist = dict["artist"] as? String {
             for person in artist.components(separatedBy: "&").map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) }) {
@@ -91,8 +75,8 @@ extension Maintainer {
                     if artistsCache[array[0]] == nil {
                         artistsCache[array[0]] = array
                         
-                        promises.append({
-                            return self.create(artist: person)
+                        processes.append({
+                            try await self.create(artist: person)
                         })
                     }
                 }
@@ -103,8 +87,8 @@ extension Maintainer {
             if !raritiesCache.contains(rarity) {
                 raritiesCache.append(rarity)
                 
-                promises.append({
-                    return self.create(rarity: rarity)
+                processes.append({
+                    try await self.create(rarity: rarity)
                 })
             }
         }
@@ -113,10 +97,10 @@ extension Maintainer {
             if languagesCache.filter({ $0["code"] == language["code"] }).isEmpty {
                 languagesCache.append(language)
                 
-                promises.append({
-                    return self.createLanguage(code: language["code"] ?? "NULL",
-                                               displayCode: language["display_code"] ?? "NULL",
-                                               name: language["name"] ?? "NULL")
+                processes.append({
+                    try await self.createLanguage(code: language["code"] ?? "NULL",
+                                                  displayCode: language["display_code"] ?? "NULL",
+                                                  name: language["name"] ?? "NULL")
                 })
             }
         }
@@ -125,8 +109,8 @@ extension Maintainer {
             if !watermarksCache.contains(watermark) {
                 watermarksCache.append(watermark)
                 
-                promises.append({
-                    return self.create(watermark: watermark)
+                processes.append({
+                    try await self.create(watermark: watermark)
                 })
             }
         }
@@ -135,9 +119,9 @@ extension Maintainer {
             if layoutsCache.filter({ $0["name"] == layout["name"] }).isEmpty {
                 layoutsCache.append(layout)
                 
-                promises.append({
-                    return self.createLayout(name: layout["name"] ?? "NULL",
-                                             description_: layout["description_"] ?? "NULL")
+                processes.append({
+                    try await self.createLayout(name: layout["name"] ?? "NULL",
+                                                description_: layout["description_"] ?? "NULL")
                 })
             }
         }
@@ -146,9 +130,9 @@ extension Maintainer {
             if framesCache.filter({ $0["name"] == frame["name"] }).isEmpty {
                 framesCache.append(frame)
                 
-                promises.append({
-                    return self.createFrame(name: frame["name"] ?? "NULL",
-                                            description_: frame["description_"] ?? "NULL")
+                processes.append({
+                    try await self.createFrame(name: frame["name"] ?? "NULL",
+                                               description_: frame["description_"] ?? "NULL")
                 })
             }
         }
@@ -157,10 +141,10 @@ extension Maintainer {
             if frameEffectsCache.filter({ $0["id"] == frameEffect["id"] }).isEmpty {
                 frameEffectsCache.append(frameEffect)
                 
-                promises.append({
-                    return self.createFrameEffect(id: frameEffect["id"] ?? "NULL",
-                                                  name: frameEffect["name"] ?? "NULL",
-                                                  description_: frameEffect["description_"] ?? "NULL")
+                processes.append({
+                    try await self.createFrameEffect(id: frameEffect["id"] ?? "NULL",
+                                                     name: frameEffect["name"] ?? "NULL",
+                                                     description_: frameEffect["description_"] ?? "NULL")
                 })
             }
         }
@@ -169,10 +153,10 @@ extension Maintainer {
             if colorsCache.filter({ $0["name"] as? String ?? "NULL" == color["name"] as? String ?? "NULL" }).isEmpty {
                 colorsCache.append(color)
                 
-                promises.append({
-                    return self.createColor(symbol: color["symbol"] as? String ?? "NULL",
-                                            name: color["name"] as? String ?? "NULL",
-                                            isManaColor: color["is_mana_color"] as? Bool ?? false)
+                processes.append({
+                    try await self.createColor(symbol: color["symbol"] as? String ?? "NULL",
+                                               name: color["name"] as? String ?? "NULL",
+                                               isManaColor: color["is_mana_color"] as? Bool ?? false)
                 })
             }
         }
@@ -182,8 +166,8 @@ extension Maintainer {
                 if !formatsCache.contains(key) {
                     formatsCache.append(key)
                     
-                    promises.append({
-                        return self.create(format: key)
+                    processes.append({
+                        try await self.create(format: key)
                     })
                 }
             }
@@ -191,8 +175,8 @@ extension Maintainer {
                 if !legalitiesCache.contains(value) {
                     legalitiesCache.append(value)
                     
-                    promises.append({
-                        return self.create(legality: value)
+                    processes.append({
+                        try await self.create(legality: value)
                     })
                 }
             }
@@ -202,10 +186,10 @@ extension Maintainer {
             if typesCache.filter({ $0["name"] as? String ?? "NULL" == type["name"] as? String ?? "NULL" }).isEmpty {
                 typesCache.append(type)
                 
-                promises.append(({
-                    return self.createCardType(name: type["name"] as? String ?? "NULL",
-                                               parent: type["parent"] as? String ?? "NULL")
-                }))
+                processes.append({
+                    try await self.createCardType(name: type["name"] as? String ?? "NULL",
+                                                  parent: type["parent"] as? String ?? "NULL")
+                })
             }
         }
         
@@ -213,8 +197,8 @@ extension Maintainer {
             if !componentsCache.contains(component) {
                 componentsCache.append(component)
                 
-                promises.append({
-                    return self.create(component: component)
+                processes.append({
+                    try await self.create(component: component)
                 })
             }
         }
@@ -224,8 +208,8 @@ extension Maintainer {
                 if !gamesCache.contains(game) {
                     gamesCache.append(game)
                     
-                    promises.append({
-                        return self.create(game: game)
+                    processes.append({
+                        try await self.create(game: game)
                     })
                 }
             }
@@ -236,57 +220,57 @@ extension Maintainer {
                 if !keywordsCache.contains(keyword) {
                     keywordsCache.append(keyword)
                     
-                    promises.append({
-                        return self.create(keyword: keyword)
+                    processes.append({
+                        try await self.create(keyword: keyword)
                     })
                 }
             }
         }
             
-        return promises
+        return processes
     }
     
-    private func createCardPromises(dict: [String: Any]) -> [()->Promise<Void>] {
-        var promises = [()->Promise<Void>]()
+    private func createCardProcesses(dict: [String: Any]) -> [() async throws -> Void] {
+        var processes = [() async throws -> Void]()
         
-        promises.append({
-            return self.create(card: dict)
+        processes.append({
+            try await self.create(card: dict)
         })
 
-        return promises
+        return processes
     }
     
-    private func createCardPartsAndFacesPromises(dict: [String: Any]) -> [()->Promise<Void>] {
-        var promises = [()->Promise<Void>]()
+    private func createCardPartsAndFacesProcesses(dict: [String: Any]) -> [() async throws -> Void] {
+        var processes = [() async throws -> Void]()
         
         if let parts = self.filterParts(dict: dict) {
             for part in parts {
-                promises.append({
-                    return self.createPart(card: part["cmcard"] as? String ?? "NULL",
-                                           component: part["cmcomponent"] as? String ?? "NULL",
-                                           cardPart: part["cmcard_part"] as? String ?? "NULL")
+                processes.append({
+                    try await self.createPart(card: part["cmcard"] as? String ?? "NULL",
+                                              component: part["cmcomponent"] as? String ?? "NULL",
+                                              cardPart: part["cmcard_part"] as? String ?? "NULL")
                 })
             }
         }
 
         if let faces = self.filterFaces(dict: dict) {
             for face in faces {
-                promises.append(contentsOf: self.createMiscCardPromises(dict: face))
-                promises.append({
-                    return self.create(card: face)
+                processes.append(contentsOf: self.createMiscCardProcesses(dict: face))
+                processes.append({
+                    try await self.create(card: face)
                 })
                 
                 if let card = face["cmcard"] as? String,
                    let cardFace = face["new_id"] as? String {
-                    promises.append({
-                        return self.createFace(card: card,
-                                               cardFace: cardFace)
+                    processes.append({
+                        try await self.createFace(card: card,
+                                                  cardFace: cardFace)
                     })
                 }
             }
         }
         
-        return promises
+        return processes
     }
     
     private func filterLanguage(dict: [String: Any]) -> [String: String]? {
