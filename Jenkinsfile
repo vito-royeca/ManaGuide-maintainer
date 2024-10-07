@@ -29,12 +29,12 @@ pipeline {
             steps {
                 echo 'Testing..'
                 withCredentials([usernamePassword(credentialsId: 'managuide-user', usernameVariable: 'username', passwordVariable: 'password')]) {
-                    sh 'echo $username/$password'
-                    sh 'echo "host=$HOST"'
-                    sh 'echo "port=$POST"'
-                    sh 'echo "database=$DATABASE"'
-                    sh 'echo "fullUpdate=$FULL_UPDATE"'
-                    sh 'echo "imagesPath=$IMAGES_PATH"'  
+                    sh "echo $username/$password"
+                    sh "echo host=$HOST"
+                    sh "echo port=$PORT"
+                    sh "echo database=$DATABASE"
+                    sh "echo fullUpdate=$FULL_UPDATE"
+                    sh "echo imagesPath=$IMAGES_PATH"  
                 }
             }
         }
