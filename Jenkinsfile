@@ -17,7 +17,7 @@ node {
     //             bat(/"%MVN_HOME%\bin\mvn" -Dmaven.test.failure.ignore clean package/)
     //         }
     //     }
-        sh build.sh
+        sh 'swift build -c release'
     }
     // stage('Results') {
     //     junit '**/target/surefire-reports/TEST-*.xml'
