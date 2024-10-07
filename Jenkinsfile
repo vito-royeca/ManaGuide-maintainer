@@ -44,7 +44,7 @@ pipeline {
         stage('Cleanup') {
             steps {
                 echo 'Cleaning..'
-                sh "find /tmp -name "managuide-*" -exec rm -fv {} \;"
+                sh 'find /tmp -name "managuide-*" -exec rm -fv {} +'
             }
         }
     }
