@@ -18,7 +18,7 @@ pipeline {
                 sh '$SWIFT_PATH/swift build -c release'
             }
         }
-        stage('Test') {
+        stage('Run') {
             environment {
                 HOST = credentials('managuide-host')
                 PORT = credentials('managuide-port')
@@ -27,20 +27,17 @@ pipeline {
                 IMAGES_PATH = credentials('managuide-imagesPath')
             }
             steps {
-                echo 'Testing..'
+                echo 'Running..'
                 withCredentials([usernamePassword(credentialsId: 'managuide-user', usernameVariable: 'username', passwordVariable: 'password')]) {
-                    sh "echo $username/$password"
-                    sh "echo host=$HOST"
-                    sh "echo port=$PORT"
-                    sh "echo database=$DATABASE"
-                    sh "echo fullUpdate=$FULL_UPDATE"
-                    sh "echo imagesPath=$IMAGES_PATH"  
+                    sh .build/release/managuide \
+                        --host $HOST \
+                        --port $PORT \
+                        --database $DATABASE \
+                        --user $USER \
+                        --password $PASSWORD \
+                        --full-update $FULL_UPDATE \
+                        --images-path $IMAGES_PATH
                 }
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
             }
         }
     }
