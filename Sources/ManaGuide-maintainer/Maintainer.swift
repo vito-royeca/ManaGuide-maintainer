@@ -9,7 +9,7 @@ import Foundation
 import TSCBasic
 import TSCUtility
 #if canImport(FoundationNetworking)
-    import FoundationNetworking
+import FoundationNetworking
 #endif
 import PostgresClientKit
 import SSLService
@@ -334,7 +334,7 @@ class Maintainer {
                 fatalError("Malformed url")
             }
 
-            let (localURL, _) = try await URLSession.shared.download(from: url)
+            let (localURL, _) = try await URLSession.shared.asyncDownload(from: url)
             try FileManager.default.moveItem(atPath: localURL.path(), toPath: localPath)
         }
     }
@@ -364,7 +364,7 @@ class Maintainer {
     }
     
     func execInSequence(label: String, processes: [() async throws -> Void]) async throws {
-        let countTotal = processes.count
+//        let countTotal = processes.count
         var countIndex = 0
 
         let animation = PercentProgressAnimation(stream: stdoutStream,

@@ -7,7 +7,7 @@
 
 import Foundation
 #if canImport(FoundationNetworking)
-    import FoundationNetworking
+import FoundationNetworking
 #endif
 import PostgresClientKit
 
@@ -43,7 +43,7 @@ extension Maintainer {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = query.data(using: .utf8)
         
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, _) = try await URLSession.shared.asyncData(for: request)
 
         if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
            let token = json["access_token"] as? String {
@@ -65,7 +65,7 @@ extension Maintainer {
         request.httpMethod = "GET"
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, _) = try await URLSession.shared.asyncData(for: request)
         var tcgPlayerIds = [Int32]()
         
         if let array = try JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
@@ -96,7 +96,7 @@ extension Maintainer {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(tcgplayerAPIToken)", forHTTPHeaderField: "Authorization")
         
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, _) = try await URLSession.shared.asyncData(for: request)
         var processes = [() async throws -> Void]()
         
         if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
