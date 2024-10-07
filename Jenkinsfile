@@ -25,19 +25,26 @@ pipeline {
                 DATABASE = credentials('managuide-database')
                 FULL_UPDATE = credentials('managuide-fullUpdate')
                 IMAGES_PATH = credentials('managuide-imagesPath')
+                IMAGES_OWNER = credentials('managuide-imagesOwner')
             }
             steps {
                 echo 'Running..'
                 withCredentials([usernamePassword(credentialsId: 'managuide-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh '.build/release/managuide \
+                    sh '/bin/su -c ".build/release/managuide \
                         --host "$HOST" \
                         --port "$PORT" \
                         --database "$DATABASE" \
                         --user "$USERNAME" \
                         --password "$PASSWORD" \
                         --full-update "$FULL_UPDATE" \
-                        --images-path "$IMAGES_PATH"'
+                        --images-path "$IMAGES_PATH"" -"$IMAGES_OWNER"'
                 }
+            }
+        }
+        stage('Cleanup') {
+            steps {
+                echo 'Cleaning..'
+                sh 'find /tmp -name "managuide-*" -exec rm -fv {} \;'
             }
         }
     }
