@@ -37,7 +37,7 @@ pipeline {
                         --user "$USERNAME" \
                         --password "$PASSWORD" \
                         --full-update "$FULL_UPDATE" \
-                        --images-path "$IMAGES_PATH"" -"$IMAGES_OWNER"'
+                        --images-path "$IMAGES_PATH"" - "$IMAGES_OWNER"'
                 }
             }
         }
