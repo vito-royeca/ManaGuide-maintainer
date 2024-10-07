@@ -28,7 +28,7 @@ pipeline {
             }
             steps {
                 echo 'Testing..'
-                withCredentials([usernamePassword(credentialsId: 'managuide-maintainer-user', usernameVariable: 'username', passwordVariable: 'password')]) {
+                withCredentials([usernamePassword(credentialsId: 'managuide-user', usernameVariable: 'username', passwordVariable: 'password')]) {
                     sh 'echo $username/$password'
                     sh 'echo "host=$HOST"'
                     sh 'echo "port=$POST"'
