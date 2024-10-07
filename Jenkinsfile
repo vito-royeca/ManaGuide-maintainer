@@ -24,15 +24,18 @@ pipeline {
             }
             steps {
                 echo 'Testing..'
-                sh 'printenv'
-                sh 'echo "APP_ENV is located at $APP_ENV"'
-                sh 'echo "host=$host"'
-                sh 'echo "port=$port"'
-                sh 'echo "database=$database"'
-                sh 'echo "user=$user"'
-                sh 'echo "password=$password"'
-                sh 'echo "fullUpdate=$fullUpdate"'
-                sh 'echo "imagesPath=$imagesPath"'
+                withCredentials([usernamePassword(credentialsId: 'managuide-maintainer-user', usernameVariable: 'username', passwordVariable: 'password')]) {
+                    sh 'echo $username/$password'
+  
+                }
+                // sh 'echo "APP_ENV is located at $APP_ENV"'
+                // sh 'echo "host=$host"'
+                // sh 'echo "port=$port"'
+                // sh 'echo "database=$database"'
+                // sh 'echo "user=$user"'
+                // sh 'echo "password=$password"'
+                // sh 'echo "fullUpdate=$fullUpdate"'
+                // sh 'echo "imagesPath=$imagesPath"'
             }
         }
         stage('Deploy') {
