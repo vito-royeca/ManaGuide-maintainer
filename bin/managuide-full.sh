@@ -1,6 +1,4 @@
-#!/bin/bash
-
-source ./bin/variables.txt
+#!/bin/sh
 
 .build/release/managuide \
   --host $host \
