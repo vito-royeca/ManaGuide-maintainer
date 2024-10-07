@@ -126,4 +126,13 @@ extension Maintainer {
         let hours = (interval / 3600)
         return String(format: "%.2d:%.2d:%.2d", Int(hours), Int(minutes), Int(seconds))
     }
+    
+    func localFormat(_ date: Date) -> String {
+        let format = ISO8601DateFormatter()
+        format.formatOptions = [.withInternetDateTime]
+        format.timeZone = TimeZone.current
+
+        let string = format.string(from: date)
+        return string
+    }
 }

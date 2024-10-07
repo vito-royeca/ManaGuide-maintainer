@@ -397,7 +397,7 @@ class Maintainer {
 
     func startActivity(label: String) -> Date {
         let date = Date()
-        print("\(label) started on: \(date)")
+        print("\(label) started on: \(localFormat(date))")
         return date
     }
     
@@ -405,7 +405,7 @@ class Maintainer {
         let endDate = Date()
         let timeDifference = endDate.timeIntervalSince(from)
         
-        print("\(label) ended   on: \(endDate)")
+        print("\(label) ended   on: \(localFormat(endDate))")
         print("Elapsed time: \(format(timeDifference))\n")
     }
 }
