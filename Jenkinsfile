@@ -29,14 +29,14 @@ pipeline {
             steps {
                 echo 'Running..'
                 withCredentials([usernamePassword(credentialsId: 'managuide-user', usernameVariable: 'username', passwordVariable: 'password')]) {
-                    sh .build/release/managuide \
+                    sh '.build/release/managuide \
                         --host $HOST \
                         --port $PORT \
                         --database $DATABASE \
                         --user $USER \
                         --password $PASSWORD \
                         --full-update $FULL_UPDATE \
-                        --images-path $IMAGES_PATH
+                        --images-path $IMAGES_PATH'
                 }
             }
         }
