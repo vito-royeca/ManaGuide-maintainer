@@ -1,5 +1,13 @@
 #!/bin/sh
 
+echo host $host
+echo port $port
+echo database $database
+echo user $user
+echo password $password
+echo full-update $fullUpdate
+echo images-path $imagesPath
+
 .build/release/managuide \
   --host $host \
   --port $port \
