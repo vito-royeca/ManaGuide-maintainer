@@ -1,26 +1,29 @@
-node {
-    // def mvnHome
-    stage('Preparation') { // for display purposes
-        // Get some code from a GitHub repository
-        git 'https://github.com/vito-royeca/ManaGuide-maintainer.git'
-        // Get the Maven tool.
-        // ** NOTE: This 'M3' Maven tool must be configured
-        // **       in the global configuration.
-        // mvnHome = tool 'M3'
+pipeline {
+    agent any
+
+    environment {
+        SWIFT_PATH = '/opt/swiftlang-5.9.1-debian-12-release-arm64/usr/bin'
     }
-    stage('Build') {
-    //     // Run the maven build
-    //     withEnv(["MVN_HOME=$mvnHome"]) {
-    //         if (isUnix()) {
-    //             sh '"$MVN_HOME/bin/mvn" -Dmaven.test.failure.ignore clean package'
-    //         } else {
-    //             bat(/"%MVN_HOME%\bin\mvn" -Dmaven.test.failure.ignore clean package/)
-    //         }
-    //     }
-        sh 'swift build -c release'
+
+    stages {
+        stage('Preparation') { // for display purposes
+            // Get some code from a GitHub repository
+            git 'https://github.com/vito-royeca/ManaGuide-maintainer.git'
+        }
+        stage('Build') {
+            steps {
+                sh '$SWIFT_PATH/swift build -c release'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
     }
-    // stage('Results') {
-    //     junit '**/target/surefire-reports/TEST-*.xml'
-    //     archiveArtifacts 'target/*.jar'
-    // }
 }
