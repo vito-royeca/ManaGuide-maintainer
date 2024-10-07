@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        SWIFT_PATH = '/opt/swiftlang-5.9.1-debian-12-release-arm64/usr/bin'
-    }
-
     stages {
         stage('Preparation') { // for display purposes
             steps {
@@ -14,12 +10,27 @@ pipeline {
         }
         stage('Build') {
             steps {
+                environment {
+                   SWIFT_PATH = '/opt/swiftlang-5.9.1-debian-12-release-arm64/usr/bin'
+                }
+                echo 'Building..'
                 sh '$SWIFT_PATH/swift build -c release'
             }
         }
         stage('Test') {
+            environment {
+                APP_ENV = credentials('managuide-maintainer variables')
+            }
             steps {
                 echo 'Testing..'
+                sh 'echo "APP_ENV is located at $APP_ENV"'
+                sh 'echo "host=$host"'
+                sh 'echo "port=$port"'
+                sh 'echo "database=$database"'
+                sh 'echo "user=$user"'
+                sh 'echo "password=$password"'
+                sh 'echo "fullUpdate=$fullUpdate"'
+                sh 'echo "imagesPath=$imagesPath"'
             }
         }
         stage('Deploy') {
