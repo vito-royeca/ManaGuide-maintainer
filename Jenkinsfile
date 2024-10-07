@@ -20,22 +20,22 @@ pipeline {
         }
         stage('Test') {
             environment {
-                APP_ENV = credentials('managuide-maintainer variables')
+                HOST = credentials('managuide-host')
+                PORT = credentials('managuide-port')
+                DATABASE = credentials('managuide-database')
+                FULL_UPDATE = credentials('managuide-fullUpdate')
+                IMAGES_PATH = credentials('managuide-imagesPath')
             }
             steps {
                 echo 'Testing..'
                 withCredentials([usernamePassword(credentialsId: 'managuide-maintainer-user', usernameVariable: 'username', passwordVariable: 'password')]) {
                     sh 'echo $username/$password'
-  
+                    sh 'echo "host=$HOST"'
+                    sh 'echo "port=$POST"'
+                    sh 'echo "database=$DATABASE"'
+                    sh 'echo "fullUpdate=$FULL_UPDATE"'
+                    sh 'echo "imagesPath=$IMAGES_PATH"'  
                 }
-                // sh 'echo "APP_ENV is located at $APP_ENV"'
-                // sh 'echo "host=$host"'
-                // sh 'echo "port=$port"'
-                // sh 'echo "database=$database"'
-                // sh 'echo "user=$user"'
-                // sh 'echo "password=$password"'
-                // sh 'echo "fullUpdate=$fullUpdate"'
-                // sh 'echo "imagesPath=$imagesPath"'
             }
         }
         stage('Deploy') {
