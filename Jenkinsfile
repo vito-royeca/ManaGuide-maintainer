@@ -30,14 +30,14 @@ pipeline {
             steps {
                 echo 'Running..'
                 withCredentials([usernamePassword(credentialsId: 'managuide-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh '/bin/su -c ".build/release/managuide \
+                    sh 'sudo -u $IMAGES_OWNER sh -c ".build/release/managuide \
                         --host $HOST \
                         --port $PORT \
                         --database $DATABASE \
                         --user $USERNAME \
                         --password $PASSWORD \
                         --full-update $FULL_UPDATE \
-                        --images-path $IMAGES_PATH" - $IMAGES_OWNER'
+                        --images-path $IMAGES_PATH"'
                 }
             }
         }
