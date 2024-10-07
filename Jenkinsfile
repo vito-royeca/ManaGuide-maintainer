@@ -9,10 +9,11 @@ pipeline {
             }
         }
         stage('Build') {
+            environment {
+                SWIFT_PATH = '/opt/swiftlang-5.9.1-debian-12-release-arm64/usr/bin'
+            }
             steps {
-                environment {
-                   SWIFT_PATH = '/opt/swiftlang-5.9.1-debian-12-release-arm64/usr/bin'
-                }
+                
                 echo 'Building..'
                 sh '$SWIFT_PATH/swift build -c release'
             }
