@@ -36,8 +36,8 @@ extension Maintainer {
             fileReader.seek(toOffset: milestone.fileOffset)
         }
         
-        let label = "readCardsData"
-        let date = startActivity(label: label)
+//        let label = "readCardsData"
+//        let date = startActivity(label: label)
         let cards = readFileData(fileReader: fileReader, lines: self.printMilestone)
         
         if !cards.isEmpty {
@@ -57,7 +57,7 @@ extension Maintainer {
                 writeMilestone()
             }
 
-            endActivity(label: "\(label)", from: date)
+//            endActivity(label: "\(label)", from: date)
             try await loopReadCards(fileReader: fileReader, start: index)
         }
     }

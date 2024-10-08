@@ -31,8 +31,8 @@ extension Maintainer {
     }
     
     private func loopReadCards(fileReader: StreamingFileReader, dataType: CardsDataType, start: Int) async throws {
-        let label = "readCardsData"
-        let date = startActivity(label: label)
+//        let label = "readCardsData"
+//        let date = startActivity(label: label)
         let cards = readFileData(fileReader: fileReader, lines: self.printMilestone)
         
         if !cards.isEmpty {
@@ -59,7 +59,7 @@ extension Maintainer {
                                          processes: processes)
             }
 
-            endActivity(label: "\(label)", from: date)
+//            endActivity(label: "\(label)", from: date)
             try await loopReadCards(fileReader: fileReader, dataType: dataType, start: index)
         }
     }
