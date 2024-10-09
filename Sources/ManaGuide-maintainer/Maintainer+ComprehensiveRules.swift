@@ -19,8 +19,7 @@ extension Maintainer {
         })
         processes.append(contentsOf: filterRules(lines: rulesArray))
 
-        try await execInSequence(label: label,
-                                 processes: processes)
+        try await exec(processes: processes)
         endActivity(label: label, from: date)
     }
 

@@ -8,33 +8,6 @@
 import Foundation
 
 extension Maintainer {
-    func readFileData(fileReader: StreamingFileReader, lines: Int) -> [[String: Any]] {
-        var array = [[String: Any]]()
-        
-        while let line = fileReader.readLine() {
-            var cleanLine = String(line)
-            
-            if cleanLine.hasSuffix("}},") {
-                cleanLine.removeLast()
-            }
-            
-            guard cleanLine.hasPrefix("{\""),
-                let data = cleanLine.data(using: .utf16),
-                let dict = try! JSONSerialization.jsonObject(with: data,
-                                                             options: .mutableContainers) as? [String: Any] else {
-                continue
-            }
-            
-            array.append(dict)
-            
-            if array.count == lines {
-                break
-            }
-        }
-        
-        return array
-    }
-    
     func sectionFor(name: String) -> String? {
         if name.count == 0 {
             return nil

@@ -280,8 +280,7 @@ class Maintainer {
             })
 
         
-            try await execInSequence(label: label,
-                                     processes: processes)
+            try await exec(processes: processes)
             completion()
         }
     }
@@ -325,20 +324,6 @@ class Maintainer {
     
     // MARK: - Other methods
     
-    func fetchData(from remotePath: String, saveTo localPath: String) async throws {
-        let willFetch = !FileManager.default.fileExists(atPath: localPath)
-            
-        if willFetch {
-            guard let urlString = remotePath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                let url = URL(string: urlString) else {
-                fatalError("Malformed url")
-            }
-
-            let (localURL, _) = try await URLSession.shared.asyncDownload(from: url)
-            try FileManager.default.moveItem(atPath: localURL.path, toPath: localPath)
-        }
-    }
-    
     func exec(query: String, with parameters: [Any]? = nil) async throws {
         do {
             let statement = try connection.prepareStatement(text: query)
@@ -363,50 +348,14 @@ class Maintainer {
         }
     }
     
-    func execInSequence(label: String, processes: [() async throws -> Void]) async throws {
-//        let countTotal = processes.count
-        var countIndex = 0
-
-        let animation = PercentProgressAnimation(stream: stdoutStream,
-                                                 header: "\(label)")
-
+    func exec(processes: [() async throws -> Void]) async throws {
         do {
             for process in processes {
                 try await process()
-                
-                countIndex += 1
-
-//                if countIndex == countTotal {
-//                    animation.update(step: countIndex,
-//                                     total: countTotal,
-//                                     text: "Done")
-//                } else {
-//                    if countIndex % 2 == 0 {
-//                        animation.update(step: countIndex,
-//                                         total: countTotal,
-//                                         text: "Exec...")
-//                    }
-//                }
             }
-            
-            animation.complete(success: true)
         } catch {
             throw error
         }
-    }
-
-    func startActivity(label: String) -> Date {
-        let date = Date()
-        print("\(label) started on: \(localFormat(date))")
-        return date
-    }
-    
-    func endActivity(label: String, from: Date) {
-        let endDate = Date()
-        let timeDifference = endDate.timeIntervalSince(from)
-        
-        print("\(label) ended   on: \(localFormat(endDate))")
-        print("Elapsed time: \(format(timeDifference))\n")
     }
 }
 

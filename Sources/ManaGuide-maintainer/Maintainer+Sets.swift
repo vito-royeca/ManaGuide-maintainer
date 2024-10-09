@@ -18,8 +18,7 @@ extension Maintainer {
         processes.append(contentsOf: filterSetTypes(array: setsArray))
         processes.append(contentsOf: filterSets(array: setsArray))
 
-        try await execInSequence(label: label,
-                                 processes: processes)
+        try await exec(processes: processes)
         endActivity(label: label, from: date)
     }
     
@@ -140,8 +139,7 @@ extension Maintainer {
             }
         }
         
-        try await self.execInSequence(label: label,
-                                      processes: processes)
+        try await exec(processes: processes)
         endActivity(label: label, from: date)
     }
 }

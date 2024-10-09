@@ -22,48 +22,33 @@ extension Maintainer {
         case .partsAndFaces:
             "createCardPartsAndFaces"
         }
-        
         let date = startActivity(label: label)
         let fileReader = StreamingFileReader(path: cardsLocalPath)
-
-        try await loopReadCards(fileReader: fileReader, dataType: type, start: 0)
+        let callback: ([[String: Any]]) -> [() async throws -> Void] = { cards in
+            var processes = [() async throws -> Void]()
+            
+            for card in cards {
+                switch type {
+                case .misc:
+                    processes.append(contentsOf: self.createMiscCardProcesses(dict: card))
+                case .cards:
+                    processes.append(contentsOf: self.createCardProcesses(dict: card))
+                case .partsAndFaces:
+                    processes.append(contentsOf: self.createCardPartsAndFacesProcesses(dict: card))
+                }
+                
+            }
+            return processes
+        }
+        
+        try await loopReadCards(label: label,
+                                fileReader: fileReader,
+                                offset: 0,
+                                useMilestone: false,
+                                callback: callback)
         endActivity(label: label, from: date)
     }
     
-    private func loopReadCards(fileReader: StreamingFileReader, dataType: CardsDataType, start: Int) async throws {
-//        let label = "readCardsData"
-//        let date = startActivity(label: label)
-        let cards = readFileData(fileReader: fileReader, lines: self.printMilestone)
-        
-        if !cards.isEmpty {
-            let index = start + cards.count
-            var processes = [() async throws -> Void]()
-            var label2 = ""
-            
-            for card in cards {
-                switch dataType {
-                case .misc:
-                    label2 = "createMiscData"
-                    processes.append(contentsOf: createMiscCardProcesses(dict: card))
-                case .cards:
-                    label2 = "createCards"
-                    processes.append(contentsOf: createCardProcesses(dict: card))
-                case .partsAndFaces:
-                    label2 = "createCardPartsAndFaces"
-                    processes.append(contentsOf: createCardPartsAndFacesProcesses(dict: card))
-                }
-            }
-            
-            if !processes.isEmpty {
-                try await execInSequence(label: "\(label2): \(index)",
-                                         processes: processes)
-            }
-
-//            endActivity(label: "\(label)", from: date)
-            try await loopReadCards(fileReader: fileReader, dataType: dataType, start: index)
-        }
-    }
-
     private func createMiscCardProcesses(dict: [String: Any]) -> [() async throws -> Void] {
         var processes = [() async throws -> Void]()
         

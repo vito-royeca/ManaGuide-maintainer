@@ -24,42 +24,21 @@ extension Maintainer {
         let label = "fetchCardImages"
         let date = startActivity(label: label)
         let fileReader = StreamingFileReader(path: cardsLocalPath)
-        
-        try await loopReadCards(fileReader: fileReader, start: 0)
-        endActivity(label: label, from: date)
-    }
-    
-    private func loopReadCards(fileReader: StreamingFileReader, start: Int) async throws {
-        if start + milestone.value <= milestone.value &&
-            milestone.fileOffset != 0 {
-            print("seeking to milestone: \(milestone.value), offset: \(milestone.fileOffset)")
-            fileReader.seek(toOffset: milestone.fileOffset)
-        }
-        
-//        let label = "readCardsData"
-//        let date = startActivity(label: label)
-        let cards = readFileData(fileReader: fileReader, lines: self.printMilestone)
-        
-        if !cards.isEmpty {
-            let index = start + cards.count
-            let label2 = "downloadCardImages"
+        let callback: ([[String: Any]]) -> [() async throws -> Void] = { cards in
             var processes = [() async throws -> Void]()
             
             for card in cards {
                 processes.append(contentsOf: self.createImageDownloads(dict: card))
             }
-            
-            if !processes.isEmpty {
-                try await execInSequence(label: "\(label2): \(milestone.value)",
-                                         processes: processes)
-                milestone.value += cards.count
-                milestone.fileOffset = fileReader.offset
-                writeMilestone()
-            }
-
-//            endActivity(label: "\(label)", from: date)
-            try await loopReadCards(fileReader: fileReader, start: index)
+            return processes
         }
+        
+        try await loopReadCards(label: label,
+                                fileReader: fileReader,
+                                offset: 0,
+                                useMilestone: true,
+                                callback: callback)
+        endActivity(label: label, from: date)
     }
     
     private func createImageDownloads(dict: [String: Any]) -> [() async throws -> Void] {
@@ -164,8 +143,7 @@ extension Maintainer {
         }
 
         if !processes.isEmpty {
-            try await execInSequence(label: "Downloading... \(set)/\(language)/\(number)",
-                                     processes: processes)
+            try await exec(processes: processes)
             print("Downloaded \(set)/\(language)/\(number)")
             writeStatus(directoryPath: path, status: imageStatus)
         }
@@ -187,111 +165,5 @@ extension Maintainer {
         newDict["imageUris"]   =  newImageUris
         
         return newDict
-    }
-    
-    // MARK: - File methods
-    
-    func readMilestone() {
-        guard FileManager.default.fileExists(atPath: milestoneLocalPath) else {
-            return
-        }
-        
-        do {
-            let data = try Data(contentsOf: URL(fileURLWithPath: milestoneLocalPath), options: .mappedIfSafe)
-            let decoder = JSONDecoder()
-            milestone = try decoder.decode(Milestone.self, from: data)
-        } catch {
-            milestone = Milestone(value: 0, fileOffset: UInt64(0))
-        }
-    }
-    
-    func writeMilestone() {
-        do {
-            if FileManager.default.fileExists(atPath: milestoneLocalPath) {
-                try FileManager.default.removeItem(atPath: milestoneLocalPath)
-            }
-            
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(milestone)
-            
-            FileManager.default.createFile(atPath: milestoneLocalPath,
-                                           contents: data,
-                                           attributes: nil)
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-    }
-    
-    private func readStatus(directoryPath: String) -> String? {
-        var statusFile = "\(directoryPath)/status.txt"
-        
-        if FileManager.default.fileExists(atPath: statusFile) {
-            do {
-                var status = try String(contentsOfFile: statusFile)
-                status = status.trimmingCharacters(in: .whitespacesAndNewlines)
-                try FileManager.default.removeItem(atPath: statusFile)
-                writeStatus(directoryPath: directoryPath, status: status)
-                return status
-            } catch {
-                return nil
-            }
-        } else {
-            statusFile = "\(directoryPath)/status.json"
-            
-            if FileManager.default.fileExists(atPath: statusFile) {
-                do {
-                    let data = try Data(contentsOf: URL(fileURLWithPath: statusFile), options: .mappedIfSafe)
-                    let decoder = JSONDecoder()
-                    let cardStatus = try decoder.decode(CardStatus.self, from: data)
-                    return cardStatus.status
-                } catch {
-                    return nil
-                }
-            }
-        }
-        
-        return nil
-    }
-    
-    private func writeStatus(directoryPath: String, status: String) {
-        let statusFile = "\(directoryPath)/status.json"
-        
-        do {
-            if FileManager.default.fileExists(atPath: statusFile) {
-                try FileManager.default.removeItem(atPath: statusFile)
-            }
-            
-            let cardStatus = CardStatus(status: status)
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(cardStatus)
-            
-            self.prepare(destinationFile: statusFile)
-            FileManager.default.createFile(atPath: statusFile,
-                                           contents: data,
-                                           attributes: nil)
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-    }
-    
-    func prepare(destinationFile: String) {
-        do {
-            let destinationURL = URL(fileURLWithPath: destinationFile)
-            let parentDir = destinationURL.deletingLastPathComponent().path
-            
-            // create parent dirs
-            if !FileManager.default.fileExists(atPath: parentDir) {
-                try! FileManager.default.createDirectory(atPath: parentDir,
-                                                         withIntermediateDirectories: true,
-                                                         attributes: nil)
-            }
-            
-            // delete if existing
-            if FileManager.default.fileExists(atPath: destinationFile) {
-                try FileManager.default.removeItem(atPath: destinationFile)
-            }
-        } catch {
-            print(error)
-        }
     }
 }

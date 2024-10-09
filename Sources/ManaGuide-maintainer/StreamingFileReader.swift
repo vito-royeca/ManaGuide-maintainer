@@ -30,7 +30,9 @@ class StreamingFileReader {
         var rangeOfDelimiter = buffer.range(of: delimiter)
         
         while rangeOfDelimiter == nil {
-            guard let chunk = fileHandle?.readData(ofLength: bufferSize) else { return nil }
+            guard let chunk = fileHandle?.readData(ofLength: bufferSize) else {
+                return nil
+            }
             offset += UInt64(bufferSize)
             
             if chunk.count == 0 {

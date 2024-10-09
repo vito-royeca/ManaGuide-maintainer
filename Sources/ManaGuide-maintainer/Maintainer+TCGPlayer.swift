@@ -23,7 +23,7 @@ extension Maintainer {
             let array = try await fetchCardPricingBy(groupId: groupId)
             processes.append(contentsOf: array)
         }
-        try await execInSequence(label: label, processes: processes)
+        try await exec(processes: processes)
         
         endActivity(label: label, from: date)
     }
