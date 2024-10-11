@@ -11,50 +11,41 @@ import FoundationNetworking
 #endif
 
 extension Maintainer {
-    func loopReadCards(label: String,
-                       fileReader: StreamingFileReader,
-                       offset: Int,
-                       useMilestone: Bool,
-                       callback: ([[String: Any]]) -> [() async throws -> Void]) async throws {
-        if useMilestone {
+    func processCards(label: String,
+                      callback: ([[String: Any]]) -> [() async throws -> Void]) async throws {
+        let fileReader = StreamingFileReader(path: cardsLocalPath)
+        var cards = [[String: Any]]()
+        var offset = 0
+
+        repeat {
+            let startDate = Date()
+            let path = "\(cachePath)/managuide-\(label).json"
+            var milestone = readMilestone(at: path)
+            var seeking = false
+            
             if offset + milestone.value <= milestone.value &&
                 milestone.fileOffset != 0 {
                 print("seeking to milestone: \(milestone.value), offset: \(milestone.fileOffset)")
                 fileReader.seek(toOffset: milestone.fileOffset)
+                seeking = true
             }
-        }
-        
-        let cards = readFileData(fileReader: fileReader, lines: self.printMilestone)
-        
-        guard !cards.isEmpty else {
-            return
-        }
-
-        let index = offset + cards.count
-        let processes = callback(cards)
-        
-        if !processes.isEmpty {
-            let startDate = Date()
+            
+            cards = readFileData(fileReader: fileReader, lines: printMilestone)
+            let processes = callback(cards)
             try await exec(processes: processes)
             
-            if useMilestone {
-                milestone.value += cards.count
-                milestone.fileOffset = fileReader.offset
-                writeMilestone()
-            }
+            offset = seeking ? milestone.value : offset + cards.count
+            milestone.value += cards.count
+            milestone.fileOffset = fileReader.offset
+            writeMilestone(milestone, at: path)
             
             let endDate = Date()
             let timeDifference = endDate.timeIntervalSince(startDate)
             print("\(label): \(offset) Elapsed time: \(format(timeDifference))")
-        }
 
-        try await loopReadCards(label: label,
-                                fileReader: fileReader,
-                                offset: index,
-                                useMilestone: useMilestone,
-                                callback: callback)
+        } while !cards.isEmpty
     }
-
+    
     func readFileData(fileReader: StreamingFileReader, lines: Int) -> [[String: Any]] {
         var array = [[String: Any]]()
         
@@ -96,30 +87,31 @@ extension Maintainer {
         try FileManager.default.moveItem(atPath: localURL.path, toPath: localPath)
     }
 
-    func readMilestone() {
-        guard FileManager.default.fileExists(atPath: milestoneLocalPath) else {
-            return
+    func readMilestone(at path: String) -> Milestone {
+        guard FileManager.default.fileExists(atPath: path) else {
+            return Milestone(value: 0, fileOffset: UInt64(0))
         }
         
         do {
-            let data = try Data(contentsOf: URL(fileURLWithPath: milestoneLocalPath), options: .mappedIfSafe)
+            let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
             let decoder = JSONDecoder()
-            milestone = try decoder.decode(Milestone.self, from: data)
+            let milestone = try decoder.decode(Milestone.self, from: data)
+            return milestone
         } catch {
-            milestone = Milestone(value: 0, fileOffset: UInt64(0))
+            return Milestone(value: 0, fileOffset: UInt64(0))
         }
     }
     
-    func writeMilestone() {
+    func writeMilestone(_ milestone: Milestone, at path: String) {
         do {
-            if FileManager.default.fileExists(atPath: milestoneLocalPath) {
-                try FileManager.default.removeItem(atPath: milestoneLocalPath)
+            if FileManager.default.fileExists(atPath: path) {
+                try FileManager.default.removeItem(atPath: path)
             }
             
             let encoder = JSONEncoder()
             let data = try encoder.encode(milestone)
             
-            FileManager.default.createFile(atPath: milestoneLocalPath,
+            FileManager.default.createFile(atPath: path,
                                            contents: data,
                                            attributes: nil)
         } catch {
@@ -128,34 +120,20 @@ extension Maintainer {
     }
     
     func readStatus(directoryPath: String) -> String? {
-        var statusFile = "\(directoryPath)/status.txt"
-        
-        if FileManager.default.fileExists(atPath: statusFile) {
-            do {
-                var status = try String(contentsOfFile: statusFile)
-                status = status.trimmingCharacters(in: .whitespacesAndNewlines)
-                try FileManager.default.removeItem(atPath: statusFile)
-                writeStatus(directoryPath: directoryPath, status: status)
-                return status
-            } catch {
-                return nil
-            }
-        } else {
-            statusFile = "\(directoryPath)/status.json"
+        let statusFile = "\(directoryPath)/status.json"
             
-            if FileManager.default.fileExists(atPath: statusFile) {
-                do {
-                    let data = try Data(contentsOf: URL(fileURLWithPath: statusFile), options: .mappedIfSafe)
-                    let decoder = JSONDecoder()
-                    let cardStatus = try decoder.decode(CardStatus.self, from: data)
-                    return cardStatus.status
-                } catch {
-                    return nil
-                }
-            }
+        guard FileManager.default.fileExists(atPath: statusFile) else {
+            return nil
         }
-        
-        return nil
+
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: statusFile), options: .mappedIfSafe)
+            let decoder = JSONDecoder()
+            let cardStatus = try decoder.decode(CardStatus.self, from: data)
+            return cardStatus.status
+        } catch {
+            return nil
+        }
     }
     
     func writeStatus(directoryPath: String, status: String) {

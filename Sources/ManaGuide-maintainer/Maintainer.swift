@@ -21,14 +21,12 @@ class Maintainer {
     let setsFileName       = "scryfall-sets.json"
     let keyruneFileName    = "keyrune.html"
     let rulesFileName      = "MagicCompRules.txt"
-    let milestoneFileName  = "milestone.json"
     let cachePath          = "/tmp"
     let emdash             = "\u{2014}"
     
     // MARK: - Variables
     var tcgplayerAPIToken  = ""
     var filePrefix         = ""
-    var milestone          = Milestone(value: 0, fileOffset: UInt64(0))
     
     // remote file names
     let bulkDataRemotePath = "https://api.scryfall.com/bulk-data"
@@ -212,9 +210,6 @@ class Maintainer {
                 setsLocalPath      = "\(cachePath)/\(filePrefix)_\(setsFileName)"
                 keyruneLocalPath   = "\(cachePath)/\(filePrefix)_\(keyruneFileName)"
                 rulesLocalPath     = "\(cachePath)/\(filePrefix)_\(rulesFileName)"
-                milestoneLocalPath = "\(cachePath)/\(milestoneFileName)"
-                
-                readMilestone()
                 
                 // downloads
                 processes.append({
@@ -279,7 +274,6 @@ class Maintainer {
                 try await self.processServerVacuum()
             })
 
-        
             try await exec(processes: processes)
             completion()
         }
@@ -307,11 +301,21 @@ class Maintainer {
                     if let value = v as? String {
                         switch value {
                         case "All Cards":
-                            self.cardsRemotePath = dict["download_uri"] as! String
-                            self.cardsLocalPath = "\(cachePath)/\(self.cardsRemotePath.components(separatedBy: "/").last ?? "")"
+                            if let downloadURI = dict["download_uri"] as? String {
+                                cardsRemotePath = downloadURI
+                                
+                                if let last = cardsRemotePath.components(separatedBy: "/").last {
+                                    cardsLocalPath = "\(cachePath)/managuide-\(last)"
+                                }
+                            }
                         case "Rulings":
-                            self.rulingsRemotePath = dict["download_uri"] as! String
-                            self.rulingsLocalPath = "\(cachePath)/\(self.rulingsRemotePath.components(separatedBy: "/").last ?? "")"
+                            if let downloadURI = dict["download_uri"] as? String {
+                                rulingsRemotePath = downloadURI
+                                
+                                if let last = rulingsRemotePath.components(separatedBy: "/").last {
+                                    rulingsLocalPath = "\(cachePath)/managuide-\(last)"
+                                }
+                            }
                         default:
                             ()
                         }
@@ -340,9 +344,9 @@ class Maintainer {
             
             statement.close()
         } catch {
-            print(query)
+            print("Error in query: \(query)")
             if let parameters = parameters {
-                print(parameters)
+                print("With parameters: \(parameters)")
             }
             fatalError(error.localizedDescription)
         }

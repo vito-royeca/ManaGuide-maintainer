@@ -23,7 +23,6 @@ extension Maintainer {
             "createCardPartsAndFaces"
         }
         let date = startActivity(label: label)
-        let fileReader = StreamingFileReader(path: cardsLocalPath)
         let callback: ([[String: Any]]) -> [() async throws -> Void] = { cards in
             var processes = [() async throws -> Void]()
             
@@ -41,11 +40,7 @@ extension Maintainer {
             return processes
         }
         
-        try await loopReadCards(label: label,
-                                fileReader: fileReader,
-                                offset: 0,
-                                useMilestone: false,
-                                callback: callback)
+        try await processCards(label: label, callback: callback)
         endActivity(label: label, from: date)
     }
     
