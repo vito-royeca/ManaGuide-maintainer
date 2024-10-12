@@ -29,9 +29,7 @@ extension Maintainer {
     }
     
     func rulingsData() -> [[String: Any]] {
-        let rulingsPath = "\(cachePath)/\(rulingsRemotePath.components(separatedBy: "/").last ?? "")"
-        
-        let data = try! Data(contentsOf: URL(fileURLWithPath: rulingsPath))
+        let data = try! Data(contentsOf: URL(fileURLWithPath: rulingsLocalPath))
         guard let array = try! JSONSerialization.jsonObject(with: data,
                                                             options: .mutableContainers) as? [[String: Any]] else {
             fatalError("Malformed data")
