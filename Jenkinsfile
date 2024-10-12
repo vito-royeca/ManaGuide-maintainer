@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Preparation') { // for display purposes
+        stage('Preparation') {
             steps {
                 // Get some code from a GitHub repository
                 git 'https://github.com/vito-royeca/ManaGuide-maintainer.git'
@@ -13,7 +13,6 @@ pipeline {
                 SWIFT_PATH = '/opt/swiftlang-5.10-debian-12-release-arm64-01/usr/bin'
             }
             steps {
-                
                 echo 'Building..'
                 sh '$SWIFT_PATH/swift build -c release'
             }
@@ -39,12 +38,6 @@ pipeline {
                         --full-update $FULL_UPDATE \
                         --images-path $IMAGES_PATH"'
                 }
-            }
-        }
-        stage('Cleanup') {
-            steps {
-                echo 'Cleaning..'
-                sh 'rm /tmp/managuide*'
             }
         }
     }
