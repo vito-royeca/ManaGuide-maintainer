@@ -238,21 +238,21 @@ class Maintainer {
                 })
                 
     //             updates
-//                processes.append({
-//                    try await self.fetchCardImages()
-//                })
-//                processes.append({
-//                    try await self.processSetsData()
-//                })
-//                processes.append({
-//                    try await self.processCardsData(type: .misc)
-//                })
-//                processes.append({
-//                    try await self.processCardsData(type: .cards)
-//                })
-//                processes.append({
-//                    try await self.processCardsData(type: .partsAndFaces)
-//                })
+                processes.append({
+                    try await self.fetchCardImages()
+                })
+                processes.append({
+                    try await self.processSetsData()
+                })
+                processes.append({
+                    try await self.processCardsData(type: .misc)
+                })
+                processes.append({
+                    try await self.processCardsData(type: .cards)
+                })
+                processes.append({
+                    try await self.processCardsData(type: .partsAndFaces)
+                })
                 processes.append({
                     try await self.processRulingsData()
                 })
