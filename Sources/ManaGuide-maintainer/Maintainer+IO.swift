@@ -14,12 +14,12 @@ extension Maintainer {
     func processCards(label: String,
                       callback: ([[String: Any]]) -> [() async throws -> Void]) async throws {
         let fileReader = StreamingFileReader(path: cardsLocalPath)
+        let path = "\(cachePath)/managuide-\(label).json"
         var cards = [[String: Any]]()
         var offset = 0
 
         repeat {
             let startDate = Date()
-            let path = "\(cachePath)/managuide-\(label).json"
             var milestone = readMilestone(at: path)
             var seeking = false
             
@@ -44,6 +44,8 @@ extension Maintainer {
             print("\(label): \(offset) Elapsed time: \(format(timeDifference))")
 
         } while !cards.isEmpty
+        
+        try FileManager.default.removeItem(atPath: path)
     }
     
     func readFileData(fileReader: StreamingFileReader, lines: Int) -> [[String: Any]] {
