@@ -218,6 +218,15 @@
 		<key>logo_code</key>
 		<string>dmu</string>
 	</dict>
+	<key>adsk</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>dsk</string>
+		<key>keyrune_unicode</key>
+		<string>e9d7</string>
+		<key>logo_code</key>
+		<string>dsk</string>
+	</dict>
 	<key>aer</key>
 	<dict>
 		<key>keyrune_class</key>
