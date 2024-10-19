@@ -5263,6 +5263,15 @@
 		<key>logo_code</key>
 		<string>som</string>
 	</dict>
+	<key>pspl</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
+	</dict>
 	<key>pss1</key>
 	<dict>
 		<key>keyrune_class</key>
