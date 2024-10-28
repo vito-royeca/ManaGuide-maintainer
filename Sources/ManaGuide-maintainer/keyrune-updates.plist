@@ -1150,6 +1150,15 @@
 		<key>logo_code</key>
 		<string>evi</string>
 	</dict>
+	<key>dft</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>dft</string>
+		<key>keyrune_unicode</key>
+		<string>e9e0</string>
+		<key>logo_code</key>
+		<string>dft</string>
+	</dict>
 	<key>dgm</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -1251,6 +1260,10 @@
 	</dict>
 	<key>dsc</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>dsc</string>
+		<key>keyrune_unicode</key>
+		<string>e9dc</string>
 		<key>logo_code</key>
 		<string>dsc</string>
 	</dict>
@@ -2105,6 +2118,11 @@
 		<key>logo_code</key>
 		<string>ima</string>
 	</dict>
+	<key>inr</key>
+	<dict>
+		<key>logo_code</key>
+		<string>inr</string>
+	</dict>
 	<key>inv</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -2230,6 +2248,15 @@
 		<string>e96f</string>
 		<key>logo_code</key>
 		<string>j22</string>
+	</dict>
+	<key>j25</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>j25</string>
+		<key>keyrune_unicode</key>
+		<string>e96f</string>
+		<key>logo_code</key>
+		<string>j25</string>
 	</dict>
 	<key>jgp</key>
 	<dict>
@@ -2575,6 +2602,10 @@
 	</dict>
 	<key>mb2</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>mb2</string>
+		<key>keyrune_unicode</key>
+		<string>e9d9</string>
 		<key>logo_code</key>
 		<string>ms2</string>
 	</dict>
@@ -4094,6 +4125,15 @@
 		<string>e687</string>
 		<key>logo_code</key>
 		<string>pmo</string>
+	</dict>
+	<key>pfdn</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>fdn</string>
+		<key>keyrune_unicode</key>
+		<string>e9d8</string>
+		<key>logo_code</key>
+		<string>fdn</string>
 	</dict>
 	<key>pfrf</key>
 	<dict>
@@ -6758,6 +6798,15 @@
 		<key>logo_code</key>
 		<string>dmu</string>
 	</dict>
+	<key>tdsc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>dsc</string>
+		<key>keyrune_unicode</key>
+		<string>e9dc</string>
+		<key>logo_code</key>
+		<string>dsc</string>
+	</dict>
 	<key>tdsk</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -8243,6 +8292,15 @@
 		<key>logo_code</key>
 		<string>xln</string>
 	</dict>
+	<key>yblb</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>y25</string>
+		<key>keyrune_unicode</key>
+		<string>e9da</string>
+		<key>logo_code</key>
+		<string>blb</string>
+	</dict>
 	<key>ybro</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -8260,6 +8318,15 @@
 		<string>e9a7</string>
 		<key>logo_code</key>
 		<string>a22</string>
+	</dict>
+	<key>ydsk</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>y25</string>
+		<key>keyrune_unicode</key>
+		<string>e9da</string>
+		<key>logo_code</key>
+		<string>dsk</string>
 	</dict>
 	<key>ylci</key>
 	<dict>
