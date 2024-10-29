@@ -1643,6 +1643,15 @@
 		<key>logo_code</key>
 		<string>j22</string>
 	</dict>
+	<key>fj25</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>j25</string>
+		<key>keyrune_unicode</key>
+		<string>e96f</string>
+		<key>logo_code</key>
+		<string>j25</string>
+	</dict>
 	<key>fjmp</key>
 	<dict>
 		<key>keyrune_class</key>
