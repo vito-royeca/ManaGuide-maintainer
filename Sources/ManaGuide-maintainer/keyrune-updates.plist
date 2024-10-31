@@ -2129,6 +2129,10 @@
 	</dict>
 	<key>inr</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>inr</string>
+		<key>keyrune_unicode</key>
+		<string>e9e2</string>
 		<key>logo_code</key>
 		<string>inr</string>
 	</dict>
