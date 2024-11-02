@@ -245,6 +245,15 @@
 		<key>logo_code</key>
 		<string>afc</string>
 	</dict>
+	<key>afdn</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>fdn</string>
+		<key>keyrune_unicode</key>
+		<string>e9d8</string>
+		<key>logo_code</key>
+		<string>fdn</string>
+	</dict>
 	<key>afr</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -6900,6 +6909,15 @@
 		<string>e669</string>
 		<key>logo_code</key>
 		<string>dda</string>
+	</dict>
+	<key>tfdn</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>fdn</string>
+		<key>keyrune_unicode</key>
+		<string>e9d8</string>
+		<key>logo_code</key>
+		<string>fdn</string>
 	</dict>
 	<key>tfrf</key>
 	<dict>
