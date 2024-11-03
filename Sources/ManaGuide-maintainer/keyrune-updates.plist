@@ -2485,7 +2485,7 @@
 		<key>keyrune_unicode</key>
 		<string>e9b6</string>
 		<key>logo_code</key>
-		<string>ltr</string>
+		<string>ltc</string>
 	</dict>
 	<key>ltr</key>
 	<dict>
@@ -4613,6 +4613,15 @@
 		<string>e629</string>
 		<key>logo_code</key>
 		<string>pla</string>
+	</dict>
+	<key>pltc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>ltc</string>
 	</dict>
 	<key>pltr</key>
 	<dict>
@@ -7169,7 +7178,7 @@
 		<key>keyrune_unicode</key>
 		<string>e9b6</string>
 		<key>logo_code</key>
-		<string>a16</string>
+		<string>ltc</string>
 	</dict>
 	<key>tltr</key>
 	<dict>
