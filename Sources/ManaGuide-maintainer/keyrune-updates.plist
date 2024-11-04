@@ -961,6 +961,15 @@
 		<key>logo_code</key>
 		<string>cst</string>
 	</dict>
+	<key>da1</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>mb1</string>
+		<key>keyrune_unicode</key>
+		<string>e971</string>
+		<key>logo_code</key>
+		<string>pmo</string>
+	</dict>
 	<key>dbl</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -8385,6 +8394,15 @@
 		<string>e989</string>
 		<key>logo_code</key>
 		<string>a22</string>
+	</dict>
+	<key>ymkm</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>y24</string>
+		<key>keyrune_unicode</key>
+		<string>e9bd</string>
+		<key>logo_code</key>
+		<string>mkm</string>
 	</dict>
 	<key>yneo</key>
 	<dict>
