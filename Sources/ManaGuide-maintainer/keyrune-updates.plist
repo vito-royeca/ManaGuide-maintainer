@@ -4373,6 +4373,15 @@
 		<key>logo_code</key>
 		<string>inv</string>
 	</dict>
+	<key>pio</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>dpa</string>
+		<key>keyrune_unicode</key>
+		<string>e689</string>
+		<key>logo_code</key>
+		<string>pio</string>
+	</dict>
 	<key>pip</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -4725,9 +4734,9 @@
 	<key>pmat</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>dpa</string>
+		<string>mat</string>
 		<key>keyrune_unicode</key>
-		<string>e689</string>
+		<string>e9a3</string>
 		<key>logo_code</key>
 		<string>mat</string>
 	</dict>
