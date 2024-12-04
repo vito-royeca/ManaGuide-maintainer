@@ -4157,6 +4157,15 @@
 		<key>logo_code</key>
 		<string>pmo</string>
 	</dict>
+	<key>pf25</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
+	</dict>
 	<key>pfdn</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -7098,6 +7107,15 @@
 		<string>e935</string>
 		<key>logo_code</key>
 		<string>ima</string>
+	</dict>
+	<key>tinr</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>inr</string>
+		<key>keyrune_unicode</key>
+		<string>e9e2</string>
+		<key>logo_code</key>
+		<string>inr</string>
 	</dict>
 	<key>tisd</key>
 	<dict>
