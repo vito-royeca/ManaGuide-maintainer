@@ -4445,6 +4445,15 @@
 		<key>logo_code</key>
 		<string>jou</string>
 	</dict>
+	<key>pjsc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
+	</dict>
 	<key>pjse</key>
 	<dict>
 		<key>keyrune_class</key>
