@@ -4385,9 +4385,9 @@
 	<key>pio</key>
 	<dict>
 		<key>keyrune_class</key>
-		<string>dpa</string>
+		<string>pio</string>
 		<key>keyrune_unicode</key>
-		<string>e689</string>
+		<string>e9e7</string>
 		<key>logo_code</key>
 		<string>pio</string>
 	</dict>
