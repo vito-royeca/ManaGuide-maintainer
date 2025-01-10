@@ -263,6 +263,15 @@
 		<key>logo_code</key>
 		<string>afr</string>
 	</dict>
+	<key>ainr</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>inr</string>
+		<key>keyrune_unicode</key>
+		<string>e9e2</string>
+		<key>logo_code</key>
+		<string>inr</string>
+	</dict>
 	<key>ajmp</key>
 	<dict>
 		<key>keyrune_class</key>
