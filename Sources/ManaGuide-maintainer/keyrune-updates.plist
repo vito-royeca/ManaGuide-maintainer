@@ -1276,6 +1276,15 @@
 		<key>logo_code</key>
 		<string>fvd</string>
 	</dict>
+	<key>drc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>drc</string>
+		<key>keyrune_unicode</key>
+		<string>e9e8</string>
+		<key>logo_code</key>
+		<string>drc</string>
+	</dict>
 	<key>drk</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -6819,6 +6828,15 @@
 		<string>e93e</string>
 		<key>logo_code</key>
 		<string>evi</string>
+	</dict>
+	<key>tdft</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>dft</string>
+		<key>keyrune_unicode</key>
+		<string>e9e0</string>
+		<key>logo_code</key>
+		<string>dft</string>
 	</dict>
 	<key>tdgm</key>
 	<dict>
