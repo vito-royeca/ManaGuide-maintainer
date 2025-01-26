@@ -6892,6 +6892,15 @@
 		<key>logo_code</key>
 		<string>dmu</string>
 	</dict>
+	<key>tdrc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>drc</string>
+		<key>keyrune_unicode</key>
+		<string>e9e8</string>
+		<key>logo_code</key>
+		<string>drc</string>
+	</dict>
 	<key>tdsc</key>
 	<dict>
 		<key>keyrune_class</key>
