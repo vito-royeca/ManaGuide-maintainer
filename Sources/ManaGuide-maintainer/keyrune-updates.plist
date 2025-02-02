@@ -209,6 +209,15 @@
 		<key>logo_code</key>
 		<string>a41</string>
 	</dict>
+	<key>adft</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>dft</string>
+		<key>keyrune_unicode</key>
+		<string>e9e0</string>
+		<key>logo_code</key>
+		<string>dft</string>
+	</dict>
 	<key>admu</key>
 	<dict>
 		<key>keyrune_class</key>
