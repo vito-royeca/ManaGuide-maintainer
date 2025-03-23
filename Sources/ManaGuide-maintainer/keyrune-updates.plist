@@ -4649,6 +4649,15 @@
 		<key>logo_code</key>
 		<string>pmo</string>
 	</dict>
+	<key>plg25</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
+	</dict>
 	<key>plgm</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -8514,6 +8523,15 @@
 		<string>e9a7</string>
 		<key>logo_code</key>
 		<string>a22</string>
+	</dict>
+	<key>ydft</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>dft</string>
+		<key>keyrune_unicode</key>
+		<string>e9e0</string>
+		<key>logo_code</key>
+		<string>dft</string>
 	</dict>
 	<key>ydmu</key>
 	<dict>
