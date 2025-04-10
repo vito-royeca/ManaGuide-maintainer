@@ -23,7 +23,7 @@ The database backend is PostgreSQL, and [PostgresClientKit](https://github.com/c
 ## Building
 
     $ swift build -c release
-    $ cp .build/release/ManaGuide-maintainer /usr/local/bin/ManaGuide-maintainer
+    $ cp .build/release/managuide /usr/local/bin/
 
 ## Author
 
