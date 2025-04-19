@@ -5574,6 +5574,15 @@
 		<key>logo_code</key>
 		<string>pmo</string>
 	</dict>
+	<key>ptdm</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>tdm</string>
+		<key>keyrune_unicode</key>
+		<string>e9e6</string>
+		<key>logo_code</key>
+		<string>tdm</string>
+	</dict>
 	<key>ptdmu</key>
 	<dict>
 		<key>keyrune_class</key>
