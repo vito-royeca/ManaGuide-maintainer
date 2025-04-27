@@ -129,7 +129,7 @@ extension Maintainer {
             directLow,
             tcgPlayerId,
             isFoil
-            ] as [Any]
+        ] as [Any]
         try await exec(query: query, with: parameters)
     }
 }

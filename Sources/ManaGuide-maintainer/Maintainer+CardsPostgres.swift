@@ -31,8 +31,10 @@ extension Maintainer {
         let nameSection = sectionFor(name: rarity) ?? "NULL"
         
         let query = "SELECT createOrUpdateRarity($1,$2)"
-        let parameters = [capName,
-                          nameSection]
+        let parameters = [
+            capName,
+            nameSection
+        ]
         try await exec(query: query, with: parameters)
     }
     
@@ -40,10 +42,12 @@ extension Maintainer {
         let nameSection = sectionFor(name: name) ?? "NULL"
         
         let query = "SELECT createOrUpdateLanguage($1,$2,$3,$4)"
-        let parameters = [code,
-                          displayCode,
-                          name,
-                          nameSection]
+        let parameters = [
+            code,
+            displayCode,
+            name,
+            nameSection
+        ]
         try await exec(query: query, with: parameters)
     }
     
@@ -52,9 +56,11 @@ extension Maintainer {
         let nameSection = sectionFor(name: name) ?? "NULL"
         
         let query = "SELECT createOrUpdateLayout($1,$2,$3)"
-        let parameters = [capName,
-                          nameSection,
-                          description_]
+        let parameters = [
+            capName,
+            nameSection,
+            description_
+        ]
         try await exec(query: query, with: parameters)
     }
     
@@ -63,8 +69,10 @@ extension Maintainer {
         let nameSection = sectionFor(name: watermark) ?? "NULL"
         
         let query = "SELECT createOrUpdateWatermark($1,$2)"
-        let parameters = [capName,
-                          nameSection]
+        let parameters = [
+            capName,
+            nameSection
+        ]
         try await exec(query: query, with: parameters)
     }
     
@@ -73,9 +81,11 @@ extension Maintainer {
         let nameSection = sectionFor(name: name) ?? "NULL"
         
         let query = "SELECT createOrUpdateFrame($1,$2,$3)"
-        let parameters = [capName,
-                          nameSection,
-                          description_]
+        let parameters = [
+            capName,
+            nameSection,
+            description_
+        ]
         try await exec(query: query, with: parameters)
     }
     
@@ -83,10 +93,12 @@ extension Maintainer {
         let nameSection = sectionFor(name: name) ?? "NULL"
         
         let query = "SELECT createOrUpdateFrameEffect($1,$2,$3,$4)"
-        let parameters = [id,
-                          name,
-                          nameSection,
-                          description_]
+        let parameters = [
+            id,
+            name,
+            nameSection,
+            description_
+        ]
         try await exec(query: query, with: parameters)
     }
     
@@ -106,8 +118,10 @@ extension Maintainer {
         let nameSection = sectionFor(name: format) ?? "NULL"
         
         let query = "SELECT createOrUpdateFormat($1,$2)"
-        let parameters = [capName,
-                          nameSection]
+        let parameters = [
+            capName,
+            nameSection
+        ]
         try await exec(query: query, with: parameters)
     }
     
@@ -116,8 +130,10 @@ extension Maintainer {
         let nameSection = sectionFor(name: legality) ?? "NULL"
         
         let query = "SELECT createOrUpdateLegality($1,$2)"
-        let parameters = [capName,
-                          nameSection]
+        let parameters = [
+            capName,
+            nameSection
+        ]
         try await exec(query: query, with: parameters)
     }
     
@@ -125,9 +141,11 @@ extension Maintainer {
         let nameSection = sectionFor(name: name) ?? "NULL"
         
         let query = "SELECT createOrUpdateCardType($1,$2,$3)"
-        let parameters = [name,
-                          nameSection,
-                          parent]
+        let parameters = [
+            name,
+            nameSection,
+            parent
+        ]
         try await exec(query: query, with: parameters)
     }
     
@@ -136,15 +154,19 @@ extension Maintainer {
         let nameSection = sectionFor(name: component) ?? "NULL"
         
         let query = "SELECT createOrUpdateComponent($1,$2)"
-        let parameters = [capName,
-                          nameSection]
+        let parameters = [
+            capName,
+            nameSection
+        ]
         try await exec(query: query, with: parameters)
     }
     
     func createFace(card: String, cardFace: String) async throws {
         let query = "SELECT createOrUpdateCardFaces($1,$2)"
-        let parameters = [card,
-                          cardFace]
+        let parameters = [
+            card,
+            cardFace
+        ]
         try await exec(query: query, with: parameters)
     }
     
@@ -152,9 +174,11 @@ extension Maintainer {
         let capName = capitalize(string: displayFor(name: component))
         
         let query = "SELECT createOrUpdateCardParts($1,$2,$3)"
-        let parameters = [card,
-                          capName,
-                          cardPart]
+        let parameters = [
+            card,
+            capName,
+            cardPart
+        ]
         try await exec(query: query, with: parameters)
     }
 
@@ -175,8 +199,10 @@ extension Maintainer {
         let nameSection = sectionFor(name: game) ?? "NULL"
         
         let query = "SELECT createOrUpdateGame($1,$2)"
-        let parameters = [capName,
-                          nameSection]
+        let parameters = [
+            capName,
+            nameSection
+        ]
         try await exec(query: query, with: parameters)
     }
     
@@ -185,8 +211,10 @@ extension Maintainer {
         let nameSection = sectionFor(name: keyword) ?? "NULL"
         
         let query = "SELECT createOrUpdateKeyword($1,$2)"
-        let parameters = [capName,
-                          nameSection]
+        let parameters = [
+            capName,
+            nameSection
+        ]
         try await exec(query: query, with: parameters)
     }
     
@@ -379,64 +407,66 @@ extension Maintainer {
         }
         
         let query = "SELECT createOrUpdateCard($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43,$44,$45,$46,$47,$48,$49,$50,$51,$52,$53,$54,$55,$56,$57,$58)"
-        let parameters = [collectorNumber,
-                          cmc,
-                          flavorText,
-                          isFoil,
-                          isFullArt,
-                          isHighresImage,
-                          isNonfoil,
-                          isOversized,
-                          isReserved,
-                          isStorySpotlight,
-                          loyalty,
-                          manaCost,
-                          multiverseIds,
-                          nameSection,
-                          numberOrder,
-                          name,
-                          oracleText,
-                          power,
-                          printedName,
-                          printedText,
-                          toughness,
-                          arenaId,
-                          mtgoId,
-                          tcgplayerId,
-                          handModifier,
-                          lifeModifier,
-                          isBooster,
-                          isDigital,
-                          isPromo,
-                          releasedAt,
-                          isTextless,
-                          mtgoFoilId,
-                          isReprint,
-                          artists,
-                          set,
-                          rarity,
-                          language,
-                          layout,
-                          watermark,
-                          frame,
-                          frameEffects,
-                          colors,
-                          colorIdentities,
-                          colorIndicators,
-                          legalities,
-                          typeLine,
-                          printedTypeLine,
-                          cardtypeSubtypes,
-                          cardtypeSupertypes,
-                          faceOrder,
-                          newId,
-                          oracle_id,
-                          id,
-                          artCropURL,
-                          normalURL,
-                          pngURL,
-                          games,
-                          keywords] as [Any]
+        let parameters = [
+            collectorNumber,
+            cmc,
+            flavorText,
+            isFoil,
+            isFullArt,
+            isHighresImage,
+            isNonfoil,
+            isOversized,
+            isReserved,
+            isStorySpotlight,
+            loyalty,
+            manaCost,
+            multiverseIds,
+            nameSection,
+            numberOrder,
+            name,
+            oracleText,
+            power,
+            printedName,
+            printedText,
+            toughness,
+            arenaId,
+            mtgoId,
+            tcgplayerId,
+            handModifier,
+            lifeModifier,
+            isBooster,
+            isDigital,
+            isPromo,
+            releasedAt,
+            isTextless,
+            mtgoFoilId,
+            isReprint,
+            artists,
+            set,
+            rarity,
+            language,
+            layout,
+            watermark,
+            frame,
+            frameEffects,
+            colors,
+            colorIdentities,
+            colorIndicators,
+            legalities,
+            typeLine,
+            printedTypeLine,
+            cardtypeSubtypes,
+            cardtypeSupertypes,
+            faceOrder,
+            newId,
+            oracle_id,
+            id,
+            artCropURL,
+            normalURL,
+            pngURL,
+            games,
+            keywords
+        ] as [Any]
         try await exec(query: query, with: parameters)
     }
 }

@@ -117,12 +117,14 @@ extension Maintainer {
         let parent = dict["parent"] as? Int ?? Int(-1)
         let id = dict["id"] as? Int ?? Int(0)
         let query = "SELECT createOrUpdateRule($1,$2,$3,$4,$5,$6)"
-        let parameters = [term,
-                          termSection,
-                          definition,
-                          order,
-                          parent,
-                          id] as [Any]
+        let parameters = [
+            term,
+            termSection,
+            definition,
+            order,
+            parent,
+            id
+        ] as [Any]
         
         try await exec(query: query, with: parameters)
     }
@@ -218,10 +220,12 @@ extension Maintainer {
                     }
 
                     id = id + 1
-                    var rule = ["term": term,
-                                "definition": definition.replacingOccurrences(of: "“", with: "\""),
-                                "order": order(of: term),
-                                "id": id] as [String: Any]
+                    var rule = [
+                        "term": term,
+                        "definition": definition.replacingOccurrences(of: "“", with: "\""),
+                        "order": order(of: term),
+                        "id": id
+                    ] as [String: Any]
                     
                     if term.contains(".") {
                         if let term = term.components(separatedBy: ".").first,
@@ -319,11 +323,13 @@ extension Maintainer {
                                 prefix = "#"
                             }
                             
-                            let rule = ["term": term ?? "NULL",
-                                        "termSection": prefix,
-                                        "definition": (definition ?? "NULL").replacingOccurrences(of: "“", with: "\""),
-                                        "parent": parent ?? 0,
-                                        "id": id] as [String: Any]
+                            let rule = [
+                                "term": term ?? "NULL",
+                                "termSection": prefix,
+                                "definition": (definition ?? "NULL").replacingOccurrences(of: "“", with: "\""),
+                                "parent": parent ?? 0,
+                                "id": id
+                            ] as [String: Any]
                             rules.append(rule)
                             
                             term = nil

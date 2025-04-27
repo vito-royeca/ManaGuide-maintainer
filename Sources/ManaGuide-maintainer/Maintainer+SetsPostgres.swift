@@ -14,9 +14,11 @@ extension Maintainer {
         let nameSection = self.sectionFor(name: block) ?? "NULL"
         
         let query = "SELECT createOrUpdateSetBlock($1,$2,$3)"
-        let parameters = [blockCode,
-                          block,
-                          nameSection]
+        let parameters = [
+            blockCode,
+            block,
+            nameSection
+        ]
         try await exec(query: query, with: parameters)
     }
 
@@ -25,8 +27,10 @@ extension Maintainer {
         let nameSection = self.sectionFor(name: setType) ?? "NULL"
         
         let query = "SELECT createOrUpdateSetType($1,$2)"
-        let parameters = [capName,
-                          nameSection]
+        let parameters = [
+            capName,
+            nameSection
+        ]
         try await exec(query: query, with: parameters)
     }
     
@@ -58,22 +62,24 @@ extension Maintainer {
         let setParent = dict["parent_set_code"] as? String ?? "NULL"
         
         let query = "SELECT createOrUpdateSet($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)"
-        let parameters = [cardCount,
-                          code,
-                          isFoilOnly,
-                          isOnlineOnly,
-                          logoCode,
-                          mtgoCode,
-                          keyruneUnicode,
-                          keyruneClass,
-                          nameSection,
-                          yearSection,
-                          name,
-                          releaseDate,
-                          tcgplayerId,
-                          cmsetblock,
-                          setTypeCap,
-                          setParent] as [Any]
+        let parameters = [
+            cardCount,
+            code,
+            isFoilOnly,
+            isOnlineOnly,
+            logoCode,
+            mtgoCode,
+            keyruneUnicode,
+            keyruneClass,
+            nameSection,
+            yearSection,
+            name,
+            releaseDate,
+            tcgplayerId,
+            cmsetblock,
+            setTypeCap,
+            setParent
+        ] as [Any]
         try await exec(query: query, with: parameters)
     }
     
@@ -89,8 +95,10 @@ extension Maintainer {
                     if components.count == 3 {
                         let keyruneClass = components[1].replacingOccurrences(of: "ss-", with: "")
                         let keyruneUnicode = components[2].replacingOccurrences(of: "&#x", with: "").replacingOccurrences(of: ";", with: "")
-                        keyrunes[keyruneClass] = ["keyrune_unicode": keyruneUnicode,
-                                                  "keyrune_class": keyruneClass]
+                        keyrunes[keyruneClass] = [
+                            "keyrune_unicode": keyruneUnicode,
+                            "keyrune_class": keyruneClass
+                        ]
                     }
                 }
             }
