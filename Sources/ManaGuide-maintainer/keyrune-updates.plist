@@ -8632,6 +8632,15 @@
 		<key>logo_code</key>
 		<string>a22</string>
 	</dict>
+	<key>ytdm</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>y25</string>
+		<key>keyrune_unicode</key>
+		<string>e9da</string>
+		<key>logo_code</key>
+		<string>tdm</string>
+	</dict>
 	<key>ywoe</key>
 	<dict>
 		<key>keyrune_class</key>
