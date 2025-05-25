@@ -238,9 +238,9 @@ class Maintainer {
                 })
                 
     //             updates
-                processes.append({
-                    try await self.fetchCardImages()
-                })
+//                processes.append({
+//                    try await self.fetchCardImages()
+//                })
                 processes.append({
                     try await self.processSetsData()
                 })
