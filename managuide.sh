@@ -1,6 +1,6 @@
 #! /bin/bash
 
-. .config
+. ~/managuide.config
 
 read -d '' command << EOF
 /usr/local/bin/managuide \

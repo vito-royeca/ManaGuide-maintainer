@@ -172,36 +172,6 @@ class Maintainer {
         Task {
             let label = "updateDatabase"
             let dateStart = startActivity(label: label)
-            let completion = {
-                do {
-                    if FileManager.default.fileExists(atPath: self.bulkDataLocalPath) {
-                        try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
-                    }
-                    if FileManager.default.fileExists(atPath: self.setsLocalPath) {
-                        try FileManager.default.removeItem(atPath: self.setsLocalPath)
-                    }
-                    if FileManager.default.fileExists(atPath: self.keyruneLocalPath) {
-                        try FileManager.default.removeItem(atPath: self.keyruneLocalPath)
-                    }
-                    if FileManager.default.fileExists(atPath: self.cardsLocalPath) {
-                        try FileManager.default.removeItem(atPath: self.cardsLocalPath)
-                    }
-                    if FileManager.default.fileExists(atPath: self.rulingsLocalPath) {
-                        try FileManager.default.removeItem(atPath: self.rulingsLocalPath)
-                    }
-                    if FileManager.default.fileExists(atPath: self.rulesLocalPath) {
-                        try FileManager.default.removeItem(atPath: self.rulesLocalPath)
-                    }
-                    if FileManager.default.fileExists(atPath: self.milestoneLocalPath) {
-                        try FileManager.default.removeItem(atPath: self.milestoneLocalPath)
-                    }
-                } catch {
-                    print(error)
-                }
-                self.endActivity(label: label, from: dateStart)
-                exit(EXIT_SUCCESS)
-            }
-            
             var processes = [() async throws -> Void]()
             
             if isFullUpdate {
@@ -275,7 +245,34 @@ class Maintainer {
             })
 
             try await exec(processes: processes)
-            completion()
+            
+            do {
+                if FileManager.default.fileExists(atPath: self.bulkDataLocalPath) {
+                    try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
+                }
+                if FileManager.default.fileExists(atPath: self.setsLocalPath) {
+                    try FileManager.default.removeItem(atPath: self.setsLocalPath)
+                }
+                if FileManager.default.fileExists(atPath: self.keyruneLocalPath) {
+                    try FileManager.default.removeItem(atPath: self.keyruneLocalPath)
+                }
+                if FileManager.default.fileExists(atPath: self.cardsLocalPath) {
+                    try FileManager.default.removeItem(atPath: self.cardsLocalPath)
+                }
+                if FileManager.default.fileExists(atPath: self.rulingsLocalPath) {
+                    try FileManager.default.removeItem(atPath: self.rulingsLocalPath)
+                }
+                if FileManager.default.fileExists(atPath: self.rulesLocalPath) {
+                    try FileManager.default.removeItem(atPath: self.rulesLocalPath)
+                }
+                if FileManager.default.fileExists(atPath: self.milestoneLocalPath) {
+                    try FileManager.default.removeItem(atPath: self.milestoneLocalPath)
+                }
+            } catch {
+                print(error)
+            }
+            self.endActivity(label: label, from: dateStart)
+            exit(EXIT_SUCCESS)
         }
     }
 
