@@ -20,7 +20,6 @@ extension Maintainer {
         for dict in rulingsArray {
             processes.append({
                 try await self.createRuling(dict: dict)
-
             })
         }
         

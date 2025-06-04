@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import Kanna
 import PostgresClientKit
 
@@ -115,6 +118,23 @@ extension Maintainer {
         })
     }
     
+    func fetchSets() async throws -> [[String: Any]]? {
+        let urlString = "http://managuideapp.com/sets?json=true"
+        
+        guard let cleanURL = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+           let url = URL(string: cleanURL) else {
+            fatalError("Malformed url")
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        let (data, _) = try await URLSession.shared.asyncData(for: request)
+        
+        return try JSONSerialization.jsonObject(with: data) as? [[String: Any]]
+    }
+
     private func keyruneCodes() -> HTMLDocument {
         let keyrunePath = "\(cachePath)/\(filePrefix)_\(keyruneFileName)"
         let url = URL(fileURLWithPath: keyrunePath)

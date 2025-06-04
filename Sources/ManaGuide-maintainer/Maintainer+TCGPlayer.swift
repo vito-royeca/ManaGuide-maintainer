@@ -16,9 +16,21 @@ extension Maintainer {
         let label = "processPricingData"
         let date = startActivity(label: label)
         var processes = [() async throws -> Void]()
+        var groupIds = [Int32]()
         
         try await getTcgPlayerToken()
-        let groupIds = try await fetchSets()
+        if let sets = try await fetchSets() {
+            for set in sets {
+                for (key,value) in set {
+                    if key == "tcgplayer_id",
+                       let tcgPlayerId = value as? Int32,
+                       tcgPlayerId > 0 {
+                        groupIds.append(tcgPlayerId)
+                    }
+                }
+            }
+        }
+            
         for groupId in groupIds {
             let array = try await fetchCardPricingBy(groupId: groupId)
             processes.append(contentsOf: array)
@@ -53,35 +65,35 @@ extension Maintainer {
         }
     }
     
-    func fetchSets() async throws -> [Int32] {
-        let urlString = "http://managuideapp.com/sets?json=true"
-        
-        guard let cleanURL = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-           let url = URL(string: cleanURL) else {
-            fatalError("Malformed url")
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        
-        let (data, _) = try await URLSession.shared.asyncData(for: request)
-        var tcgPlayerIds = [Int32]()
-        
-        if let array = try JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
-            for dict in array {
-                for (key,value) in dict {
-                    if key == "tcgplayer_id",
-                       let tcgPlayerId = value as? Int32,
-                       tcgPlayerId > 0 {
-                        tcgPlayerIds.append(tcgPlayerId)
-                    }
-                }
-            }
-        }
-        
-        return tcgPlayerIds
-    }
+//    func fetchSets() async throws -> [Int32] {
+//        let urlString = "http://managuideapp.com/sets?json=true"
+//        
+//        guard let cleanURL = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+//           let url = URL(string: cleanURL) else {
+//            fatalError("Malformed url")
+//        }
+//        
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "GET"
+//        request.setValue("application/json", forHTTPHeaderField: "Accept")
+//        
+//        let (data, _) = try await URLSession.shared.asyncData(for: request)
+//        var tcgPlayerIds = [Int32]()
+//        
+//        if let array = try JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
+//            for dict in array {
+//                for (key,value) in dict {
+//                    if key == "tcgplayer_id",
+//                       let tcgPlayerId = value as? Int32,
+//                       tcgPlayerId > 0 {
+//                        tcgPlayerIds.append(tcgPlayerId)
+//                    }
+//                }
+//            }
+//        }
+//        
+//        return tcgPlayerIds
+//    }
     
     func fetchCardPricingBy(groupId: Int32) async throws -> [() async throws -> Void] {
         let urlString = "https://api.tcgplayer.com/\(TCGPlayer.apiVersion)/pricing/group/\(groupId)"
