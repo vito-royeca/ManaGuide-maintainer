@@ -263,6 +263,15 @@
 		<key>logo_code</key>
 		<string>fdn</string>
 	</dict>
+	<key>afin</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>fin</string>
+		<key>keyrune_unicode</key>
+		<string>e9ed</string>
+		<key>logo_code</key>
+		<string>fin</string>
+	</dict>
 	<key>afr</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -1645,6 +1654,10 @@
 	</dict>
 	<key>fca</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>fca</string>
+		<key>keyrune_unicode</key>
+		<string>e9f8</string>
 		<key>logo_code</key>
 		<string>fca</string>
 	</dict>
@@ -1695,11 +1708,19 @@
 	</dict>
 	<key>fic</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>fic</string>
+		<key>keyrune_unicode</key>
+		<string>e9f5</string>
 		<key>logo_code</key>
 		<string>fic</string>
 	</dict>
 	<key>fin</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>fin</string>
+		<key>keyrune_unicode</key>
+		<string>e9ed</string>
 		<key>logo_code</key>
 		<string>fin</string>
 	</dict>
@@ -5511,6 +5532,15 @@
 		<key>logo_code</key>
 		<string>mkm</string>
 	</dict>
+	<key>pss5</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>fin</string>
+	</dict>
 	<key>psth</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -6000,6 +6030,15 @@
 		<key>logo_code</key>
 		<string>rex</string>
 	</dict>
+	<key>rfin</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>fin</string>
+		<key>keyrune_unicode</key>
+		<string>e9ed</string>
+		<key>logo_code</key>
+		<string>fin</string>
+	</dict>
 	<key>rin</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -6278,6 +6317,15 @@
 		<string>e647</string>
 		<key>logo_code</key>
 		<string>som</string>
+	</dict>
+	<key>spe</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>spe</string>
+		<key>keyrune_unicode</key>
+		<string>e9f3</string>
+		<key>logo_code</key>
+		<string>spe</string>
 	</dict>
 	<key>spg</key>
 	<dict>
@@ -6765,6 +6813,10 @@
 	</dict>
 	<key>tdc</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>tdc</string>
+		<key>keyrune_unicode</key>
+		<string>e9f4</string>
 		<key>logo_code</key>
 		<string>tdc</string>
 	</dict>
@@ -7092,8 +7144,21 @@
 		<key>logo_code</key>
 		<string>fdn</string>
 	</dict>
+	<key>tfic</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>fic</string>
+		<key>keyrune_unicode</key>
+		<string>e9f5</string>
+		<key>logo_code</key>
+		<string>fic</string>
+	</dict>
 	<key>tfin</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>fin</string>
+		<key>keyrune_unicode</key>
+		<string>e9ed</string>
 		<key>logo_code</key>
 		<string>fin</string>
 	</dict>
@@ -7891,6 +7956,10 @@
 	</dict>
 	<key>ttdc</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>tdc</string>
+		<key>keyrune_unicode</key>
+		<string>e9f4</string>
 		<key>logo_code</key>
 		<string>tdc</string>
 	</dict>

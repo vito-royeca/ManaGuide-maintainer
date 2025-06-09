@@ -42,6 +42,7 @@ extension Maintainer {
                 if let languageCode = language["code"] as? String {
                     processes1.append({
                         try await self.createSetMaterializedView(code: code, language: languageCode)
+//                        try await self.deleteSetMaterializedView(code: code, language: languageCode)
                     })
                     processes2.append({
                         try await self.updateSetMaterializedView(code: code, language: languageCode)
@@ -76,6 +77,11 @@ extension Maintainer {
         print("setsMaterializedView Elapsed time: \(format(timeDifference))")
     }
 
+    func deleteSetMaterializedView(code: String, language: String) async throws {
+        let query = "DROP MATERIALIZED VIEW IF EXISTS matv_cmset_\(code)_\(language)"
+        try await exec(query: query)
+    }
+    
     func createSetMaterializedView(code: String, language: String) async throws {
         let query = "SELECT createSetMaterializedView($1,$2)"
         let parameters = [code, language]
