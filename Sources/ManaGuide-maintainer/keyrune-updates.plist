@@ -4279,6 +4279,15 @@
 		<key>logo_code</key>
 		<string>fdn</string>
 	</dict>
+	<key>pfin</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>fin</string>
+		<key>keyrune_unicode</key>
+		<string>e9ed</string>
+		<key>logo_code</key>
+		<string>fin</string>
+	</dict>
 	<key>pfrf</key>
 	<dict>
 		<key>keyrune_class</key>
