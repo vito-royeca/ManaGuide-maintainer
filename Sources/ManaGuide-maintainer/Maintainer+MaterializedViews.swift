@@ -14,6 +14,10 @@ extension Maintainer {
         let date = startActivity(label: label)
         var processes = [() async throws -> Void]()
         
+        processes.append({
+            try await self.processSetsMaterializedView()
+        })
+        
         if let sets = try await fetchSets() {
             for set in sets {
                 processes.append({
@@ -22,10 +26,6 @@ extension Maintainer {
             }
         }
 
-        processes.append({
-            try await self.processSetsMaterializedView()
-        })
-        
         try await exec(processes: processes)
         endActivity(label: label, from: date)
     }
