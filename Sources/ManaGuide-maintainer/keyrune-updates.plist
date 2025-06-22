@@ -1438,6 +1438,29 @@
 		<key>logo_code</key>
 		<string>emn</string>
 	</dict>
+	<key>eoc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>eoc</string>
+		<key>keyrune_unicode</key>
+		<string>e9f6</string>
+		<key>logo_code</key>
+		<string>eoc</string>
+	</dict>
+	<key>eoe</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>eoe</string>
+		<key>keyrune_unicode</key>
+		<string>e9ee</string>
+		<key>logo_code</key>
+		<string>eoe</string>
+	</dict>
+	<key>eos</key>
+	<dict>
+		<key>logo_code</key>
+		<string>eos</string>
+	</dict>
 	<key>eve</key>
 	<dict>
 		<key>keyrune_class</key>
