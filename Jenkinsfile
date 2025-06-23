@@ -26,12 +26,12 @@ pipeline {
         stage('Run') {
             steps {
                 environment {
-                    HOST = params.host
-                    PORT = params.port
-                    DATABASE = params.database
-                    FULL_UPDATE = params.isFullUpdate
-                    IMAGES_PATH = params.imagesPath
-                    IMAGES_OWNER = params.imagesOwner
+                    HOST = ${params.host}
+                    PORT = ${params.port}
+                    DATABASE = ${params.database}
+                    FULL_UPDATE = ${params.isFullUpdate}
+                    IMAGES_PATH = ${params.imagesPath}
+                    IMAGES_OWNER = ${params.imagesOwner}
                 }
 
                 echo 'Running...'
