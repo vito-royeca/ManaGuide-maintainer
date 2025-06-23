@@ -156,7 +156,7 @@ class Maintainer {
         configuration.port = port
         configuration.database = database
         configuration.user = user
-        configuration.credential = .trust //.scramSHA256(password: password)
+        configuration.credential = .scramSHA256(password: password)
         configuration.ssl = false
         configuration.sslServiceConfiguration = SSLService.Configuration()
         
