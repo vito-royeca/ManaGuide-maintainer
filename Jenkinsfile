@@ -28,15 +28,18 @@ pipeline {
         stage('Run') {
             
             steps {
-                echo 'Running..'
-                sh 'sudo -u ${params.imagesOwner} sh -c ".build/release/managuide \
+                SCRIPT = ".build/release/managuide \
                     --host ${params.host} \
                     --port ${params.port} \
                     --database ${params.databaseName} \
                     --user ${params.databaseUser} \
                     --password ${params.databasePassword} \
                     --full-update ${params.isFullUpdate} \
-                    --images-path ${params.imagesPath}"'
+                    --images-path ${params.imagesPath}"
+
+                echo 'Running...'
+                echo '$SCRIPT'
+                sh 'sudo -u ${params.imagesOwner} sh -c ${SCRIPT}'
             }
         }
     }
