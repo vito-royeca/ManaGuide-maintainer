@@ -26,6 +26,22 @@ pipeline {
         stage('Run') {
             steps {
                 echo 'Running...'
+                echo '${params.IMAGES_OWNER}'
+                echo '${params.HOST}'
+                echo '${params.PORT}'
+                echo '${params.DATABASE}'
+                echo '${params.FULL_UPDATE}'
+                echo '${params.IMAGES_PATH}'
+                echo '''
+                        ".build/release/managuide \
+                            --host ${params.HOST} \
+                            --port ${params.PORT} \
+                            --database ${params.DATABASE} \
+                            --user $USERNAME \
+                            --password $PASSWORD \
+                            --full-update ${params.FULL_UPDATE} \
+                            --images-path ${params.IMAGES_PATH}"
+                    '''
                 withCredentials([usernamePassword(credentialsId: 'managuide-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh '''
                         sudo -u ${params.IMAGES_OWNER} sh -c ".build/release/managuide \
