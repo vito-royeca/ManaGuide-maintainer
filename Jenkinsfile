@@ -28,7 +28,7 @@ pipeline {
                 echo 'Running...'
                 withCredentials([usernamePassword(credentialsId: 'managuide-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh '''
-                        sudo -u $IMAGES_OWNER sh -c ".build/release/managuide \
+                        sudo -u ${params.imagesOwner} sh -c ".build/release/managuide \
                             --host ${params.host} \
                             --port ${params.port} \
                             --database ${params.database} \
