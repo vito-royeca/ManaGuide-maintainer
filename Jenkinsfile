@@ -1,6 +1,17 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'host', defaultValue: 'localhost', description: 'Database hostname or IP address')
+        string(name: 'port', defaultValue: '5432', description: 'Database port')
+        string(name: 'databaseName', defaultValue: 'database', description: 'Database name')
+        string(name: 'databaseUser', defaultValue: 'user', description: 'Database user')
+        password(name: 'databasePassword', defaultValue: 'SECRET', description: 'Enter a password')
+        booleanParam(name: 'isFullUpdate', defaultValue: false, description: 'Perform a full update or not')
+        string(name: 'imagesPath', defaultValue: '/path/to/images/cards', description: 'Path to the card image files')
+        string(name: 'imagesOwner', defaultValue: 'user', description: 'User who has RW access to the card image files')
+    }
+
     stages {
         stage('Preparation') {
             steps {
@@ -15,26 +26,17 @@ pipeline {
             }
         }
         stage('Run') {
-            environment {
-                HOST = credentials('managuide-host')
-                PORT = credentials('managuide-port')
-                DATABASE = credentials('managuide-database')
-                FULL_UPDATE = credentials('managuide-fullUpdate')
-                IMAGES_PATH = credentials('managuide-imagesPath')
-                IMAGES_OWNER = credentials('managuide-imagesOwner')
-            }
+            
             steps {
                 echo 'Running..'
-                withCredentials([usernamePassword(credentialsId: 'managuide-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh 'sudo -u $IMAGES_OWNER sh -c ".build/release/managuide \
-                        --host $HOST \
-                        --port $PORT \
-                        --database $DATABASE \
-                        --user $USERNAME \
-                        --password $PASSWORD \
-                        --full-update $FULL_UPDATE \
-                        --images-path $IMAGES_PATH"'
-                }
+                sh 'sudo -u ${params.imagesOwner} sh -c ".build/release/managuide \
+                    --host ${params.host} \
+                    --port ${params.port} \
+                    --database ${params.databaseName} \
+                    --user ${params.databaseUser} \
+                    --password ${params.databasePassword} \
+                    --full-update ${params.isFullUpdate} \
+                    --images-path ${params.imagesPath}"'
             }
         }
     }
