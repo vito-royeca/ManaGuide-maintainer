@@ -25,26 +25,17 @@ pipeline {
         }
         stage('Run') {
             steps {
-                environment {
-                    HOST = ${params.host}
-                    PORT = ${params.port}
-                    DATABASE = ${params.database}
-                    FULL_UPDATE = ${params.isFullUpdate}
-                    IMAGES_PATH = ${params.imagesPath}
-                    IMAGES_OWNER = ${params.imagesOwner}
-                }
-
                 echo 'Running...'
                 withCredentials([usernamePassword(credentialsId: 'managuide-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh '''
-                        sudo -u $IMAGES_OWNER sh -c ".build/release/managuide \
-                            --host $HOST \
-                            --port $PORT \
-                            --database $DATABASE \
+                        sudo -u ${params.imagesOwner} sh -c ".build/release/managuide \
+                            --host ${params.host} \
+                            --port ${params.port} \
+                            --database ${params.database} \
                             --user $USERNAME \
                             --password $PASSWORD \
-                            --full-update $FULL_UPDATE \
-                            --images-path $IMAGES_PATH"
+                            --full-update ${params.isFullUpdate} \
+                            --images-path ${params.imagesPath}"
                     '''
                 }
             }
