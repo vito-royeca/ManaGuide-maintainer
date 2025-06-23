@@ -26,20 +26,21 @@ pipeline {
             }
         }
         stage('Run') {
-            
             steps {
-                SCRIPT = ".build/release/managuide \
-                    --host ${params.host} \
-                    --port ${params.port} \
-                    --database ${params.databaseName} \
-                    --user ${params.databaseUser} \
-                    --password ${params.databasePassword} \
-                    --full-update ${params.isFullUpdate} \
-                    --images-path ${params.imagesPath}"
+                environment {
+                    COMMAND = ".build/release/managuide \
+                        --host ${params.host} \
+                        --port ${params.port} \
+                        --database ${params.databaseName} \
+                        --user ${params.databaseUser} \
+                        --password ${params.databasePassword} \
+                        --full-update ${params.isFullUpdate} \
+                        --images-path ${params.imagesPath}"
+                }
 
                 echo 'Running...'
-                echo '$SCRIPT'
-                sh 'sudo -u ${params.imagesOwner} sh -c ${SCRIPT}'
+                echo '$COMMAND'
+                sh 'sudo -u ${params.imagesOwner} sh -c $COMMAND'
             }
         }
     }
