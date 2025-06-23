@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'host', defaultValue: 'localhost', description: 'Database hostname or IP address')
-        string(name: 'port', defaultValue: '5432', description: 'Database port')
-        string(name: 'database', defaultValue: 'database', description: 'Database name')
-        booleanParam(name: 'isFullUpdate', defaultValue: false, description: 'Perform a full update or not')
-        string(name: 'imagesPath', defaultValue: '/mnt/managuide_images/cards', description: 'Path to the card image files')
-        string(name: 'imagesOwner', defaultValue: 'user', description: 'User who has RW access to the card image files')
+        string(name: 'HOST', defaultValue: 'localhost', description: 'Database hostname or IP address')
+        string(name: 'PORT', defaultValue: '5432', description: 'Database port')
+        string(name: 'DATABASE', defaultValue: 'database', description: 'Database name')
+        booleanParam(name: 'FULL_UPDATE', defaultValue: false, description: 'Perform a full update or not')
+        string(name: 'IMAGES_PATH', defaultValue: '/mnt/managuide_images/cards', description: 'Path to the card image files')
+        string(name: 'IMAGES_OWNER', defaultValue: 'user', description: 'User who has RW access to the card image files')
     }
 
     stages {
@@ -28,14 +28,14 @@ pipeline {
                 echo 'Running...'
                 withCredentials([usernamePassword(credentialsId: 'managuide-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh '''
-                        sudo -u ${params.imagesOwner} sh -c ".build/release/managuide \
-                            --host ${params.host} \
-                            --port ${params.port} \
-                            --database ${params.database} \
+                        sudo -u ${params.IMAGES_OWNER} sh -c ".build/release/managuide \
+                            --host ${params.HOST} \
+                            --port ${params.PORT} \
+                            --database ${params.DATABASE} \
                             --user $USERNAME \
                             --password $PASSWORD \
-                            --full-update ${params.isFullUpdate} \
-                            --images-path ${params.imagesPath}"
+                            --full-update ${params.FULL_UPDATE} \
+                            --images-path ${params.IMAGES_PATH}"
                     '''
                 }
             }
