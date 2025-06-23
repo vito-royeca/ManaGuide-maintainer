@@ -28,14 +28,16 @@ pipeline {
         stage('Run') {
             steps {
                 echo 'Running...'
-                sh("sudo -u ${params.IMAGES_OWNER} sh -c '.build/release/managuide \
-                        --host ${params.HOST} \
-                        --port ${params.PORT} \
-                        --database ${params.DATABASE} \
-                        --user ${params.USERNAME} \
-                        --password ${params.PASSWORD} \
-                        --full-update ${params.FULL_UPDATE} \
-                        --images-path ${params.IMAGES_PATH}'")
+                withCredentials([string(credentialsId: 'masked-string', variable: 'STRING')]) {
+                    sh("sudo -u ${params.IMAGES_OWNER} sh -c '.build/release/managuide \
+                            --host ${params.HOST} \
+                            --port ${params.PORT} \
+                            --database ${params.DATABASE} \
+                            --user ${params.USERNAME} \
+                            --password ${params.PASSWORD} \
+                            --full-update ${params.FULL_UPDATE} \
+                            --images-path ${params.IMAGES_PATH}'")
+                }
             }
         }
     }
