@@ -28,14 +28,14 @@ pipeline {
                 echo 'Running...'
                 withCredentials([usernamePassword(credentialsId: 'managuide-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh '''
-                        sudo -u ${params.imagesOwner} sh -c ".build/release/managuide \
-                            --host ${params.host} \
-                            --port ${params.port} \
-                            --database ${params.database} \
+                        sudo -u $params.imagesOwner sh -c ".build/release/managuide \
+                            --host $params.host \
+                            --port $params.port \
+                            --database $params.database \
                             --user $USERNAME \
                             --password $PASSWORD \
-                            --full-update ${params.isFullUpdate} \
-                            --images-path ${params.imagesPath}"
+                            --full-update $params.isFullUpdate \
+                            --images-path $params.imagesPath"
                     '''
                 }
             }
