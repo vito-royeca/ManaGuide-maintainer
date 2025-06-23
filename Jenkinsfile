@@ -9,13 +9,9 @@ pipeline {
             }
         }
         stage('Build') {
-            environment {
-                SWIFTLY_HOME_DIR = '/mnt/datadrv/bin/swiftly'
-                SWIFTLY_BIN_DIR = '/mnt/datadrv/bin/swiftly/bin'
-            }
             steps {
                 echo 'Building..'
-                sh '$SWIFTLY_BIN_DIR/swift build -c release'
+                sh 'swift build -c release'
             }
         }
         stage('Run') {
