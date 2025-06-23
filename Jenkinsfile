@@ -11,7 +11,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                sh 'swift build -c release'
+                sh '~/.local/share/swiftly/bin/swift build -c release'
             }
         }
         stage('Run') {
