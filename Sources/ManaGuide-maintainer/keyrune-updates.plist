@@ -3635,6 +3635,13 @@
 		<key>logo_code</key>
 		<string>9th</string>
 	</dict>
+	<key>pa1</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>parl3</string>
+		<key>keyrune_unicode</key>
+		<string>e943</string>
+	</dict>
 	<key>paer</key>
 	<dict>
 		<key>keyrune_class</key>

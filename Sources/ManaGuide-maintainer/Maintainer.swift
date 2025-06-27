@@ -207,7 +207,7 @@ class Maintainer {
                     try await self.downloadSetLogos()
                 })
                 
-    //             updates
+                // updates
                 processes.append({
                     try await self.fetchCardImages()
                 })
