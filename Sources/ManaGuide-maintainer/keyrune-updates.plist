@@ -1458,6 +1458,10 @@
 	</dict>
 	<key>eos</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>eos</string>
+		<key>keyrune_unicode</key>
+		<string>ea00</string>
 		<key>logo_code</key>
 		<string>eos</string>
 	</dict>
@@ -7425,6 +7429,15 @@
 		<string>e974</string>
 		<key>logo_code</key>
 		<string>khm</string>
+	</dict>
+	<key>tla</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>tla</string>
+		<key>keyrune_unicode</key>
+		<string>e9fb</string>
+		<key>logo_code</key>
+		<string>tla</string>
 	</dict>
 	<key>tlcc</key>
 	<dict>
