@@ -65,36 +65,6 @@ extension Maintainer {
         }
     }
     
-//    func fetchSets() async throws -> [Int32] {
-//        let urlString = "http://managuideapp.com/sets?json=true"
-//        
-//        guard let cleanURL = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-//           let url = URL(string: cleanURL) else {
-//            fatalError("Malformed url")
-//        }
-//        
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "GET"
-//        request.setValue("application/json", forHTTPHeaderField: "Accept")
-//        
-//        let (data, _) = try await URLSession.shared.asyncData(for: request)
-//        var tcgPlayerIds = [Int32]()
-//        
-//        if let array = try JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
-//            for dict in array {
-//                for (key,value) in dict {
-//                    if key == "tcgplayer_id",
-//                       let tcgPlayerId = value as? Int32,
-//                       tcgPlayerId > 0 {
-//                        tcgPlayerIds.append(tcgPlayerId)
-//                    }
-//                }
-//            }
-//        }
-//        
-//        return tcgPlayerIds
-//    }
-    
     func fetchCardPricingBy(groupId: Int32) async throws -> [() async throws -> Void] {
         let urlString = "https://api.tcgplayer.com/\(TCGPlayer.apiVersion)/pricing/group/\(groupId)"
 

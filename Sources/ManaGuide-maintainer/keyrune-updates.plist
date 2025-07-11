@@ -7160,6 +7160,24 @@
 		<key>logo_code</key>
 		<string>emn</string>
 	</dict>
+	<key>teoc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>eoc</string>
+		<key>keyrune_unicode</key>
+		<string>e9f6</string>
+		<key>logo_code</key>
+		<string>eoc</string>
+	</dict>
+	<key>teoe</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>eoe</string>
+		<key>keyrune_unicode</key>
+		<string>e9ee</string>
+		<key>logo_code</key>
+		<string>eoe</string>
+	</dict>
 	<key>teve</key>
 	<dict>
 		<key>keyrune_class</key>

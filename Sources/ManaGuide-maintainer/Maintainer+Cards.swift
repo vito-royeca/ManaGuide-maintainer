@@ -225,11 +225,15 @@ extension Maintainer {
         
         if let parts = self.filterParts(dict: dict) {
             for part in parts {
-                processes.append({
-                    try await self.createPart(card: part["cmcard"] as? String ?? "NULL",
-                                              component: part["cmcomponent"] as? String ?? "NULL",
-                                              cardPart: part["cmcard_part"] as? String ?? "NULL")
-                })
+                if let card = part["cmcard"] as? String,
+                   let component = part["cmcomponent"] as? String,
+                   let cardPart = part["cmcard_part"] as? String {
+                    processes.append({
+                        try await self.createPart(card: card,
+                                                  component: component,
+                                                  cardPart: cardPart)
+                    })
+                }
             }
         }
 
