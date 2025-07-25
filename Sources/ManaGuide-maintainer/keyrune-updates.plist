@@ -6379,6 +6379,15 @@
 		<key>logo_code</key>
 		<string>spg</string>
 	</dict>
+	<key>spm</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>spm</string>
+		<key>keyrune_unicode</key>
+		<string>e9f1</string>
+		<key>logo_code</key>
+		<string>spm</string>
+	</dict>
 	<key>ss1</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -8005,6 +8014,15 @@
 		<string>e63a</string>
 		<key>logo_code</key>
 		<string>tsp</string>
+	</dict>
+	<key>tspm</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>spm</string>
+		<key>keyrune_unicode</key>
+		<string>e9f1</string>
+		<key>logo_code</key>
+		<string>spm</string>
 	</dict>
 	<key>tsr</key>
 	<dict>
