@@ -4416,6 +4416,15 @@
 		<key>logo_code</key>
 		<string>pmo</string>
 	</dict>
+	<key>ph23</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
+	</dict>
 	<key>phel</key>
 	<dict>
 		<key>keyrune_class</key>
