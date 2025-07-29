@@ -35,7 +35,6 @@ extension Maintainer {
            let languages = set["languages"] as? [[String: Any]] {
 
             let startDate = Date()
-            let yearSection = set["year_section"] as? String ?? ""
             var processes1 = [() async throws -> Void]()
             var processes2 = [() async throws -> Void]()
             
@@ -43,7 +42,6 @@ extension Maintainer {
                 if let languageCode = language["code"] as? String {
                     processes1.append({
                         try await self.createSetMaterializedView(code: code, language: languageCode)
-//                        try await self.deleteSetMaterializedView(code: code, language: languageCode)
                     })
                     processes2.append({
                         try await self.updateSetMaterializedView(code: code, language: languageCode)
@@ -56,7 +54,6 @@ extension Maintainer {
 
             let endDate = Date()
             let timeDifference = endDate.timeIntervalSince(startDate)
-            print("setMaterializedView: \(code) \(yearSection) \(languages.map { $0["code"] ?? ""}) Elapsed time: \(format(timeDifference))")
         }
     }
 
