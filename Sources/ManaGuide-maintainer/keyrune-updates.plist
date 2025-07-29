@@ -236,6 +236,15 @@
 		<key>logo_code</key>
 		<string>dsk</string>
 	</dict>
+	<key>aeoe</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>eoe</string>
+		<key>keyrune_unicode</key>
+		<string>e9ee</string>
+		<key>logo_code</key>
+		<string>eoe</string>
+	</dict>
 	<key>aer</key>
 	<dict>
 		<key>keyrune_class</key>
