@@ -4184,6 +4184,15 @@
 		<key>logo_code</key>
 		<string>pmo</string>
 	</dict>
+	<key>peoe</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>eoe</string>
+		<key>keyrune_unicode</key>
+		<string>e9ee</string>
+		<key>logo_code</key>
+		<string>eoe</string>
+	</dict>
 	<key>peld</key>
 	<dict>
 		<key>keyrune_class</key>
