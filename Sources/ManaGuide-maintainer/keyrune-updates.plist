@@ -146,6 +146,20 @@
 		<key>logo_code</key>
 		<string>25m</string>
 	</dict>
+	<key>aa1</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>parl3</string>
+		<key>keyrune_unicode</key>
+		<string>e943</string>
+	</dict>
+	<key>aa2</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>parl3</string>
+		<key>keyrune_unicode</key>
+		<string>e943</string>
+	</dict>
 	<key>aafr</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -1840,6 +1854,15 @@
 		<string>e654</string>
 		<key>logo_code</key>
 		<string>frf</string>
+	</dict>
+	<key>ftla</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>tla</string>
+		<key>keyrune_unicode</key>
+		<string>e9fb</string>
+		<key>logo_code</key>
+		<string>tla</string>
 	</dict>
 	<key>fut</key>
 	<dict>
@@ -5566,6 +5589,15 @@
 		<key>logo_code</key>
 		<string>pmo</string>
 	</dict>
+	<key>pspm</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>spm</string>
+		<key>keyrune_unicode</key>
+		<string>e9f1</string>
+		<key>logo_code</key>
+		<string>spm</string>
+	</dict>
 	<key>pss1</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -8752,6 +8784,15 @@
 		<string>e9da</string>
 		<key>logo_code</key>
 		<string>dsk</string>
+	</dict>
+	<key>yeoe</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>y25</string>
+		<key>keyrune_unicode</key>
+		<string>e9da</string>
+		<key>logo_code</key>
+		<string>eoe</string>
 	</dict>
 	<key>ylci</key>
 	<dict>
