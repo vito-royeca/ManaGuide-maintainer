@@ -3867,6 +3867,15 @@
 		<key>logo_code</key>
 		<string>bfz</string>
 	</dict>
+	<key>pbig</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>big</string>
+		<key>keyrune_unicode</key>
+		<string>e9d6</string>
+		<key>logo_code</key>
+		<string>big</string>
+	</dict>
 	<key>pblb</key>
 	<dict>
 		<key>keyrune_class</key>

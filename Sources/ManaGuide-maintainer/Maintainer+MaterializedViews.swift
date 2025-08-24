@@ -51,9 +51,9 @@ extension Maintainer {
 
             try await exec(processes: processes1)
             try await exec(processes: processes2)
-
-            let endDate = Date()
-            let timeDifference = endDate.timeIntervalSince(startDate)
+//
+//            let endDate = Date()
+//            let timeDifference = endDate.timeIntervalSince(startDate)
         }
     }
 
