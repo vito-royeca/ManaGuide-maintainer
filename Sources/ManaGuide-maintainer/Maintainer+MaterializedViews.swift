@@ -34,7 +34,6 @@ extension Maintainer {
         if let code = set["code"] as? String,
            let languages = set["languages"] as? [[String: Any]] {
 
-            let startDate = Date()
             var processes1 = [() async throws -> Void]()
             var processes2 = [() async throws -> Void]()
             
@@ -51,13 +50,10 @@ extension Maintainer {
 
             try await exec(processes: processes1)
             try await exec(processes: processes2)
-//
-//            let endDate = Date()
-//            let timeDifference = endDate.timeIntervalSince(startDate)
         }
     }
 
-    private func processSetsMaterializedView() async throws {
+    func processSetsMaterializedView() async throws {
         let startDate = Date()
         var processes = [() async throws -> Void]()
         
@@ -73,32 +69,5 @@ extension Maintainer {
         let endDate = Date()
         let timeDifference = endDate.timeIntervalSince(startDate)
         print("setsMaterializedView Elapsed time: \(format(timeDifference))")
-    }
-
-    func deleteSetMaterializedView(code: String, language: String) async throws {
-        let query = "DROP MATERIALIZED VIEW IF EXISTS matv_cmset_\(code)_\(language)"
-        try await exec(query: query)
-    }
-    
-    func createSetMaterializedView(code: String, language: String) async throws {
-        let query = "SELECT createSetMaterializedView($1,$2)"
-        let parameters = [code, language]
-        try await exec(query: query, with: parameters)
-    }
-    
-    func updateSetMaterializedView(code: String, language: String) async throws {
-        let query = "SELECT updateSetMaterializedView($1,$2)"
-        let parameters = [code, language]
-        try await exec(query: query, with: parameters)
-    }
-    
-    func createSetsMaterializedView() async throws {
-        let query = "SELECT createSetsMaterializedView()"
-        try await exec(query: query)
-    }
-
-    func updateSetsMaterializedView() async throws {
-        let query = "SELECT updateSetsMaterializedView()"
-        try await exec(query: query)
     }
 }

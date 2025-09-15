@@ -14,9 +14,9 @@ extension Maintainer {
         var page = 1
         
         repeat {
-            var remotePath = "\(migrationsRemotePath)?page=\(page)"
-            var fileName = self.migrationsFileName.replacingOccurrences(of: ".json", with: "_\(page).json")
-            var localPath = "\(cachePath)/\(filePrefix)_\(fileName)"
+            let remotePath = "\(migrationsRemotePath)?page=\(page)"
+            let fileName = self.migrationsFileName.replacingOccurrences(of: ".json", with: "_\(page).json")
+            let localPath = "\(cachePath)/\(filePrefix)_\(fileName)"
             
             try await fetchData(from: remotePath, saveTo: localPath)
             let data = try! Data(contentsOf: URL(fileURLWithPath: localPath))
@@ -62,9 +62,9 @@ extension Maintainer {
                     let path   = "\(imagesPath)/\(setCode)/\(langCode)/\(cleanCollectorNumber)"
                     processes.append({
                         try await self.createMigration(new_id: new_id)
-                        let (_,_,_) = Process.shell(
-                            path: "/bin/bash",
-                            args: ["-c", "rm -fvr \(path)"])
+//                        let (_,_,_) = Process.shell(
+//                            path: "/bin/bash",
+//                            args: ["-c", "rm -fvr \(path)"])
                     })
                 } else if let id = arrayDict["old_scryfall_id"] as? String {
                     processes.append({
