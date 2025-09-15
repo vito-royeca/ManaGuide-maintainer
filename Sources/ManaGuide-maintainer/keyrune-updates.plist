@@ -3365,6 +3365,16 @@
 		<key>logo_code</key>
 		<string>pmo</string>
 	</dict>
+	<key>om1</key>
+	<dict>
+		<key>logo_code</key>
+		<string>om1</string>
+	</dict>
+	<key>omb</key>
+	<dict>
+		<key>logo_code</key>
+		<string>omb</string>
+	</dict>
 	<key>omic</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -7551,6 +7561,11 @@
 		<string>e9c2</string>
 		<key>logo_code</key>
 		<string>lci</string>
+	</dict>
+	<key>tle</key>
+	<dict>
+		<key>logo_code</key>
+		<string>tle</string>
 	</dict>
 	<key>tlrw</key>
 	<dict>

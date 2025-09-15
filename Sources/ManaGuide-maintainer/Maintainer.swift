@@ -21,6 +21,7 @@ class Maintainer {
     let setsFileName       = "scryfall-sets.json"
     let keyruneFileName    = "keyrune.html"
     let rulesFileName      = "MagicCompRules.txt"
+    let migrationsFileName = "scryfall-migration.json"
     let cachePath          = "/tmp"
     let emdash             = "\u{2014}"
     
@@ -35,6 +36,7 @@ class Maintainer {
     let setsRemotePath     = "https://api.scryfall.com/sets"
     let keyruneRemotePath  = "https://keyrune.andrewgioia.com/cheatsheet.html"
     let rulesRemotePath    = "https://media.wizards.com/2025/downloads/MagicCompRules%2020250404.txt"
+    let migrationsRemotePath = "https://api.scryfall.com/migrations"
 
     // local file names
     var bulkDataLocalPath  = ""
@@ -44,6 +46,7 @@ class Maintainer {
     var keyruneLocalPath   = ""
     var rulesLocalPath     = ""
     var milestoneLocalPath = ""
+    var migrationsLocalPaths = [String]()
     
     // caches
     var artistsCache      = [String: [String]]()
@@ -156,7 +159,7 @@ class Maintainer {
         configuration.port = port
         configuration.database = database
         configuration.user = user
-        configuration.credential = .scramSHA256(password: password)
+        configuration.credential = .trust //.scramSHA256(password: password)
         configuration.ssl = false
         configuration.sslServiceConfiguration = SSLService.Configuration()
         
@@ -206,11 +209,14 @@ class Maintainer {
                 processes.append({
                     try await self.downloadSetLogos()
                 })
-                
-                // updates
                 processes.append({
                     try await self.fetchCardImages()
                 })
+                processes.append({
+                    try await self.fetchMigrations()
+                })
+                
+                // updates
                 processes.append({
                     try await self.processSetsData()
                 })
@@ -233,6 +239,9 @@ class Maintainer {
                     try await self.processComprehensiveRulesData()
                 })
                 processes.append({
+                    try await self.processMigrationsData()
+                })
+                processes.append({
                     try await self.processMaterializedViews()
                 })
             }
@@ -244,11 +253,14 @@ class Maintainer {
                 try await self.processServerUpdate()
             })
             processes.append({
+                try await self.processServerReindex()
+            })
+            processes.append({
                 try await self.processServerVacuum()
             })
 
             try await exec(processes: processes)
-            
+
             do {
                 if FileManager.default.fileExists(atPath: self.bulkDataLocalPath) {
                     try FileManager.default.removeItem(atPath: self.bulkDataLocalPath)
