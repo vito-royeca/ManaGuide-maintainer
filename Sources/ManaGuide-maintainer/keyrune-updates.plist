@@ -160,6 +160,20 @@
 		<key>keyrune_unicode</key>
 		<string>e943</string>
 	</dict>
+	<key>aa3</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>parl3</string>
+		<key>keyrune_unicode</key>
+		<string>e943</string>
+	</dict>
+	<key>aa4</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>parl3</string>
+		<key>keyrune_unicode</key>
+		<string>e943</string>
+	</dict>
 	<key>aafr</key>
 	<dict>
 		<key>keyrune_class</key>
