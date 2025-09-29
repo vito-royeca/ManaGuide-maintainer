@@ -8661,6 +8661,15 @@
 		<key>logo_code</key>
 		<string>dmu</string>
 	</dict>
+	<key>wfin</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>fin</string>
+		<key>keyrune_unicode</key>
+		<string>e9ed</string>
+		<key>logo_code</key>
+		<string>fin</string>
+	</dict>
 	<key>who</key>
 	<dict>
 		<key>keyrune_class</key>
