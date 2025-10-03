@@ -1403,6 +1403,11 @@
 		<key>logo_code</key>
 		<string>dda</string>
 	</dict>
+	<key>ecl</key>
+	<dict>
+		<key>logo_code</key>
+		<string>ecl</string>
+	</dict>
 	<key>e01</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -2632,6 +2637,15 @@
 		<key>logo_code</key>
 		<string>lgi</string>
 	</dict>
+	<key>lmar</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>spm</string>
+		<key>keyrune_unicode</key>
+		<string>e9f1</string>
+		<key>logo_code</key>
+		<string>spm</string>
+	</dict>
 	<key>ltc</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -2766,6 +2780,15 @@
 		<string>e972</string>
 		<key>logo_code</key>
 		<string>afr</string>
+	</dict>
+	<key>mar</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>spm</string>
+		<key>keyrune_unicode</key>
+		<string>e9f1</string>
+		<key>logo_code</key>
+		<string>spm</string>
 	</dict>
 	<key>mat</key>
 	<dict>
