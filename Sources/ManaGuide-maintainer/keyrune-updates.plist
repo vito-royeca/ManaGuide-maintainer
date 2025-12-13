@@ -1405,6 +1405,10 @@
 	</dict>
 	<key>ecl</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>ecl</string>
+		<key>keyrune_unicode</key>
+		<string>ea04</string>
 		<key>logo_code</key>
 		<string>ecl</string>
 	</dict>
@@ -2466,6 +2470,15 @@
 		<key>logo_code</key>
 		<string>jou</string>
 	</dict>
+	<key>jtla</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>tla</string>
+		<key>keyrune_unicode</key>
+		<string>e9fb</string>
+		<key>logo_code</key>
+		<string>tla</string>
+	</dict>
 	<key>jud</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3123,6 +3136,16 @@
 		<key>logo_code</key>
 		<string>mrd</string>
 	</dict>
+	<key>msc</key>
+	<dict>
+		<key>logo_code</key>
+		<string>msc</string>
+	</dict>
+	<key>msh</key>
+	<dict>
+		<key>logo_code</key>
+		<string>msh</string>
+	</dict>
 	<key>msnc</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -3404,11 +3427,19 @@
 	</dict>
 	<key>om1</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>om1</string>
+		<key>keyrune_unicode</key>
+		<string>ea0e</string>
 		<key>logo_code</key>
 		<string>om1</string>
 	</dict>
 	<key>omb</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>omb</string>
+		<key>keyrune_unicode</key>
+		<string>ea0f</string>
 		<key>logo_code</key>
 		<string>omb</string>
 	</dict>
@@ -6125,6 +6156,15 @@
 		<key>logo_code</key>
 		<string>pmo</string>
 	</dict>
+	<key>pza</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pza</string>
+		<key>keyrune_unicode</key>
+		<string>ea08</string>
+		<key>logo_code</key>
+		<string>tmt</string>
+	</dict>
 	<key>pzen</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -7601,6 +7641,10 @@
 	</dict>
 	<key>tle</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>tle</string>
+		<key>keyrune_unicode</key>
+		<string>ea0b</string>
 		<key>logo_code</key>
 		<string>tle</string>
 	</dict>
@@ -7729,6 +7773,15 @@
 		<string>e648</string>
 		<key>logo_code</key>
 		<string>mbs</string>
+	</dict>
+	<key>tmc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>tmc</string>
+		<key>keyrune_unicode</key>
+		<string>ea15</string>
+		<key>logo_code</key>
+		<string>tmc</string>
 	</dict>
 	<key>tmd1</key>
 	<dict>
@@ -7873,6 +7926,15 @@
 		<string>e61f</string>
 		<key>logo_code</key>
 		<string>tem</string>
+	</dict>
+	<key>tmt</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>tmt</string>
+		<key>keyrune_unicode</key>
+		<string>ea06</string>
+		<key>logo_code</key>
+		<string>tmt</string>
 	</dict>
 	<key>tmul</key>
 	<dict>
@@ -8197,6 +8259,42 @@
 		<string>e650</string>
 		<key>logo_code</key>
 		<string>ths</string>
+	</dict>
+	<key>ttla</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>tla</string>
+		<key>keyrune_unicode</key>
+		<string>e9fb</string>
+		<key>logo_code</key>
+		<string>tla</string>
+	</dict>
+	<key>ttle</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>tle</string>
+		<key>keyrune_unicode</key>
+		<string>ea0b</string>
+		<key>logo_code</key>
+		<string>tle</string>
+	</dict>
+	<key>ttmc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>tmc</string>
+		<key>keyrune_unicode</key>
+		<string>ea15</string>
+		<key>logo_code</key>
+		<string>tmc</string>
+	</dict>
+	<key>ttmt</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>tmt</string>
+		<key>keyrune_unicode</key>
+		<string>ea06</string>
+		<key>logo_code</key>
+		<string>tmt</string>
 	</dict>
 	<key>ttsr</key>
 	<dict>
