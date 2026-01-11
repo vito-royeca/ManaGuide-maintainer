@@ -561,6 +561,15 @@
 		<key>logo_code</key>
 		<string>tdm</string>
 	</dict>
+	<key>atle</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>tle</string>
+		<key>keyrune_unicode</key>
+		<string>ea0b</string>
+		<key>logo_code</key>
+		<string>tle</string>
+	</dict>
 	<key>ath</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -1402,6 +1411,15 @@
 		<string>e66b</string>
 		<key>logo_code</key>
 		<string>dda</string>
+	</dict>
+	<key>ecc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>ecc</string>
+		<key>keyrune_unicode</key>
+		<string>ea11</string>
+		<key>logo_code</key>
+		<string>ecc</string>
 	</dict>
 	<key>ecl</key>
 	<dict>
@@ -4409,6 +4427,15 @@
 		<key>logo_code</key>
 		<string>pmo</string>
 	</dict>
+	<key>pf26</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
+	</dict>
 	<key>pfdn</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -6045,6 +6072,15 @@
 		<key>logo_code</key>
 		<string>gat</string>
 	</dict>
+	<key>pw26</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>gat</string>
+	</dict>
 	<key>pwar</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -7296,6 +7332,24 @@
 		<string>e92d</string>
 		<key>logo_code</key>
 		<string>and</string>
+	</dict>
+	<key>tecc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>ecc</string>
+		<key>keyrune_unicode</key>
+		<string>ea11</string>
+		<key>logo_code</key>
+		<string>ecc</string>
+	</dict>
+	<key>tecl</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>ecl</string>
+		<key>keyrune_unicode</key>
+		<string>ea04</string>
+		<key>logo_code</key>
+		<string>ecl</string>
 	</dict>
 	<key>teld</key>
 	<dict>

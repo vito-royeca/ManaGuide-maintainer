@@ -62,9 +62,9 @@ extension Maintainer {
                     let path   = "\(imagesPath)/\(setCode)/\(langCode)/\(cleanCollectorNumber)"
                     processes.append({
                         try await self.createMigration(new_id: new_id)
-//                        let (_,_,_) = Process.shell(
-//                            path: "/bin/bash",
-//                            args: ["-c", "rm -fvr \(path)"])
+                        let (_,_,_) = Process.shell(
+                            path: "/bin/bash",
+                            args: ["-c", "rm -fvr \(path)"])
                     })
                 } else if let id = arrayDict["old_scryfall_id"] as? String {
                     processes.append({
