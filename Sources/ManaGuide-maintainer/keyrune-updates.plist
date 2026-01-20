@@ -534,6 +534,15 @@
 		<key>logo_code</key>
 		<string>ara</string>
 	</dict>
+	<key>aspm</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>spm</string>
+		<key>keyrune_unicode</key>
+		<string>e9f1</string>
+		<key>logo_code</key>
+		<string>spm</string>
+	</dict>
 	<key>asnc</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -560,6 +569,15 @@
 		<string>e9e6</string>
 		<key>logo_code</key>
 		<string>tdm</string>
+	</dict>
+	<key>atla</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>tla</string>
+		<key>keyrune_unicode</key>
+		<string>e9fb</string>
+		<key>logo_code</key>
+		<string>tla</string>
 	</dict>
 	<key>atle</key>
 	<dict>
@@ -5882,6 +5900,15 @@
 		<string>e693</string>
 		<key>logo_code</key>
 		<string>dtk</string>
+	</dict>
+	<key>ptla</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>tla</string>
+		<key>keyrune_unicode</key>
+		<string>e9fb</string>
+		<key>logo_code</key>
+		<string>tla</string>
 	</dict>
 	<key>ptmp</key>
 	<dict>
