@@ -300,6 +300,15 @@
 		<key>logo_code</key>
 		<string>fdn</string>
 	</dict>
+	<key>afic</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>fic</string>
+		<key>keyrune_unicode</key>
+		<string>e9f5</string>
+		<key>logo_code</key>
+		<string>fic</string>
+	</dict>
 	<key>afin</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -4330,6 +4339,15 @@
 		<key>logo_code</key>
 		<string>pmo</string>
 	</dict>
+	<key>pecl</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>ecl</string>
+		<key>keyrune_unicode</key>
+		<string>ea04</string>
+		<key>logo_code</key>
+		<string>ecl</string>
+	</dict>
 	<key>peoe</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -4905,6 +4923,15 @@
 		<string>pmo</string>
 	</dict>
 	<key>plg25</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
+	</dict>
+	<key>plg26</key>
 	<dict>
 		<key>keyrune_class</key>
 		<string>pmei</string>
