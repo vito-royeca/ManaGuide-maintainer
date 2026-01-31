@@ -4868,6 +4868,15 @@
 		<key>logo_code</key>
 		<string>pmo</string>
 	</dict>
+	<key>pl26</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>pmei</string>
+		<key>keyrune_unicode</key>
+		<string>e687</string>
+		<key>logo_code</key>
+		<string>pmo</string>
+	</dict>
 	<key>plc</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -6579,6 +6588,16 @@
 		<key>logo_code</key>
 		<string>neo</string>
 	</dict>
+	<key>soa</key>
+	<dict>
+		<key>logo_code</key>
+		<string>ssa</string>
+	</dict>
+	<key>soc</key>
+	<dict>
+		<key>logo_code</key>
+		<string>soc</string>
+	</dict>
 	<key>soi</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -6605,6 +6624,11 @@
 		<string>e647</string>
 		<key>logo_code</key>
 		<string>som</string>
+	</dict>
+	<key>sos</key>
+	<dict>
+		<key>logo_code</key>
+		<string>sos</string>
 	</dict>
 	<key>spe</key>
 	<dict>
@@ -9060,6 +9084,15 @@
 		<string>e9da</string>
 		<key>logo_code</key>
 		<string>dsk</string>
+	</dict>
+	<key>yecl</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>ecl</string>
+		<key>keyrune_unicode</key>
+		<string>ea04</string>
+		<key>logo_code</key>
+		<string>ecl</string>
 	</dict>
 	<key>yeoe</key>
 	<dict>
