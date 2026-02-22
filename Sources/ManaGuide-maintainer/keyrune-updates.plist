@@ -1932,6 +1932,15 @@
 		<key>logo_code</key>
 		<string>tla</string>
 	</dict>
+	<key>ftmc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>tmc</string>
+		<key>keyrune_unicode</key>
+		<string>ea15</string>
+		<key>logo_code</key>
+		<string>tmc</string>
+	</dict>
 	<key>fut</key>
 	<dict>
 		<key>keyrune_class</key>
