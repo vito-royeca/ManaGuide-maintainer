@@ -3308,6 +3308,15 @@
 		<key>logo_code</key>
 		<string>afc</string>
 	</dict>
+	<key>oafr</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>xdnd</string>
+		<key>keyrune_unicode</key>
+		<string>e972</string>
+		<key>logo_code</key>
+		<string>afr</string>
+	</dict>
 	<key>oana</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -6036,6 +6045,15 @@
 		<key>logo_code</key>
 		<string>unh</string>
 	</dict>
+	<key>punk</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>mb1</string>
+		<key>keyrune_unicode</key>
+		<string>e971</string>
+		<key>logo_code</key>
+		<string>pmo</string>
+	</dict>
 	<key>purl</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -8670,6 +8688,15 @@
 		<string>e692</string>
 		<key>logo_code</key>
 		<string>unh</string>
+	</dict>
+	<key>unk</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>mb1</string>
+		<key>keyrune_unicode</key>
+		<string>e971</string>
+		<key>logo_code</key>
+		<string>pmo</string>
 	</dict>
 	<key>uplist</key>
 	<dict>
