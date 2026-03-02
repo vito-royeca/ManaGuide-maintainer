@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import TSCBasic
-import TSCUtility
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
