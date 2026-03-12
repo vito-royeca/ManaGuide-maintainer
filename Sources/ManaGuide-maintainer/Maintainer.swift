@@ -157,7 +157,13 @@ class Maintainer {
         configuration.port = port
         configuration.database = database
         configuration.user = user
-        configuration.credential = .trust //.scramSHA256(password: password)
+        
+        // For CLI
+        // configuration.credential = .trust
+        
+        // For Jenkins
+        configuration.credential = .scramSHA256(password: password)
+        
         configuration.ssl = false
         configuration.sslServiceConfiguration = SSLService.Configuration()
         

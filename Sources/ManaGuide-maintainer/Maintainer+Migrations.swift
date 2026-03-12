@@ -59,12 +59,13 @@ extension Maintainer {
                     let cleanCollectorNumber = collectorNumber.replacingOccurrences(of: "★", with: "star")
                                                               .replacingOccurrences(of: "†", with: "cross")
                     let new_id = "\(setCode)_\(langCode)_\(cleanCollectorNumber)"
-                    let path   = "\(imagesPath)/\(setCode)/\(langCode)/\(cleanCollectorNumber)"
                     processes.append({
                         try await self.createMigration(new_id: new_id)
-                        let (_,_,_) = Process.shell(
-                            path: "/bin/bash",
-                            args: ["-c", "rm -fvr \(path)"])
+
+//                        let path   = "\(imagesPath)/\(setCode)/\(langCode)/\(cleanCollectorNumber)"
+//                        let (_,_,_) = Process.shell(
+//                            path: "/bin/bash",
+//                            args: ["-c", "rm -fvr \(path)"])
                     })
                 } else if let id = arrayDict["old_scryfall_id"] as? String {
                     processes.append({

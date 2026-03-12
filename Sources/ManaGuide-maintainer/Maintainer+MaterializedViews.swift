@@ -36,13 +36,17 @@ extension Maintainer {
 
             var processes1 = [() async throws -> Void]()
             var processes2 = [() async throws -> Void]()
+            var processes3 = [() async throws -> Void]()
             
             for language in languages {
                 if let languageCode = language["code"] as? String {
                     processes1.append({
-                        try await self.createSetMaterializedView(code: code, language: languageCode)
+                        try await self.deleteSetMaterializedView(code: code, language: languageCode)
                     })
                     processes2.append({
+                        try await self.createSetMaterializedView(code: code, language: languageCode)
+                    })
+                    processes3.append({
                         try await self.updateSetMaterializedView(code: code, language: languageCode)
                     })
                 }
@@ -50,6 +54,7 @@ extension Maintainer {
 
             try await exec(processes: processes1)
             try await exec(processes: processes2)
+            try await exec(processes: processes3)
         }
     }
 
