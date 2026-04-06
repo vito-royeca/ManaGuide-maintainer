@@ -62,7 +62,7 @@ extension Maintainer {
                     processes.append({
                         try await self.createMigration(new_id: new_id)
 
-//                        let path   = "\(imagesPath)/\(setCode)/\(langCode)/\(cleanCollectorNumber)"
+//                        let path   = "\(self.imagesPath)/\(setCode)/\(langCode)/\(cleanCollectorNumber)"
 //                        let (_,_,_) = Process.shell(
 //                            path: "/bin/bash",
 //                            args: ["-c", "rm -fvr \(path)"])

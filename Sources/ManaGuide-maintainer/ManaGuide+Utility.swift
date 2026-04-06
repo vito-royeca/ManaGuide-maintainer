@@ -15,7 +15,7 @@ extension Maintainer {
             let letters = ["ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
             var prefix = String(name.prefix(1)).uppercased()
             
-            if letters.contains(prefix) {
+            if prefix.rangeOfCharacter(from: CharacterSet.letters) == nil {
                 prefix = "#"
             }
             return prefix
