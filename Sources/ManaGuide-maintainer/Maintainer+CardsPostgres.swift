@@ -51,14 +51,11 @@ extension Maintainer {
         try await exec(query: query, with: parameters)
     }
     
-    func createLayout(name: String, description_: String) async throws {
-        let capName = capitalize(string: displayFor(name: name))
-        let nameSection = sectionFor(name: name) ?? "NULL"
-        
+    func createLayout(code: String, name: String, description_: String) async throws {
         let query = "SELECT createOrUpdateLayout($1,$2,$3)"
         let parameters = [
-            capName,
-            nameSection,
+            code,
+            name,
             description_
         ]
         try await exec(query: query, with: parameters)
@@ -78,12 +75,10 @@ extension Maintainer {
     
     func createFrame(name: String, description_: String) async throws {
         let capName = capitalize(string: displayFor(name: name))
-        let nameSection = sectionFor(name: name) ?? "NULL"
         
-        let query = "SELECT createOrUpdateFrame($1,$2,$3)"
+        let query = "SELECT createOrUpdateFrame($1,$2)"
         let parameters = [
             capName,
-            nameSection,
             description_
         ]
         try await exec(query: query, with: parameters)
@@ -92,11 +87,10 @@ extension Maintainer {
     func createFrameEffect(id: String, name: String, description_: String) async throws {
         let nameSection = sectionFor(name: name) ?? "NULL"
         
-        let query = "SELECT createOrUpdateFrameEffect($1,$2,$3,$4)"
+        let query = "SELECT createOrUpdateFrameEffect($1,$2,$3)"
         let parameters = [
             id,
             name,
-            nameSection,
             description_
         ]
         try await exec(query: query, with: parameters)
@@ -271,7 +265,7 @@ extension Maintainer {
         let isReprint = card["reprint"] as? Bool ?? false
         let set = card["set"] as? String ?? "NULL"
         let rarity = capitalize(string: card["rarity"] as? String ?? "NULL")
-        let layout = capitalize(string: displayFor(name: card["layout"] as? String ?? "NULL"))
+        let layout = card["layout"] as? String ?? "NULL"
         let watermark = capitalize(string: card["watermark"] as? String ?? "NULL")
         let frame = capitalize(string: card["frame"] as? String ?? "NULL")
         

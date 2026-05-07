@@ -159,10 +159,10 @@ class Maintainer {
         configuration.user = user
         
         // For CLI
-//         configuration.credential = .trust
+         configuration.credential = .trust
         
         // For Jenkins
-        configuration.credential = .scramSHA256(password: password)
+//        configuration.credential = .scramSHA256(password: password)
         
         configuration.ssl = false
         configuration.sslServiceConfiguration = SSLService.Configuration()

@@ -264,6 +264,15 @@
 		<key>logo_code</key>
 		<string>dsk</string>
 	</dict>
+	<key>aecl</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>ecl</string>
+		<key>keyrune_unicode</key>
+		<string>ea04</string>
+		<key>logo_code</key>
+		<string>a52</string>
+	</dict>
 	<key>aeoe</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -1923,6 +1932,15 @@
 		<key>logo_code</key>
 		<string>frf</string>
 	</dict>
+	<key>fra</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>fra</string>
+		<key>keyrune_unicode</key>
+		<string>ea22</string>
+		<key>logo_code</key>
+		<string>fra</string>
+	</dict>
 	<key>ftla</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -2287,6 +2305,8 @@
 	<dict>
 		<key>keyrune_class</key>
 		<string>hbg</string>
+		<key>keyrune_unicode</key>
+		<string>e9a6</string>
 		<key>logo_code</key>
 		<string>hbg</string>
 	</dict>
@@ -2307,6 +2327,24 @@
 		<string>e618</string>
 		<key>logo_code</key>
 		<string>hom</string>
+	</dict>
+	<key>hob</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>hob</string>
+		<key>keyrune_unicode</key>
+		<string>ea19</string>
+		<key>logo_code</key>
+		<string>hob</string>
+	</dict>
+	<key>hoc</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>hoc</string>
+		<key>keyrune_unicode</key>
+		<string>ea1e</string>
+		<key>logo_code</key>
+		<string>hoc</string>
 	</dict>
 	<key>hop</key>
 	<dict>
@@ -3192,11 +3230,19 @@
 	</dict>
 	<key>msc</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>msc</string>
+		<key>keyrune_unicode</key>
+		<string>ea1f</string>
 		<key>logo_code</key>
 		<string>msc</string>
 	</dict>
 	<key>msh</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>msh</string>
+		<key>keyrune_unicode</key>
+		<string>ea1a</string>
 		<key>logo_code</key>
 		<string>msh</string>
 	</dict>
@@ -7636,6 +7682,15 @@
 		<key>logo_code</key>
 		<string>thb</string>
 	</dict>
+	<key>thob</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>hob</string>
+		<key>keyrune_unicode</key>
+		<string>ea19</string>
+		<key>logo_code</key>
+		<string>hob</string>
+	</dict>
 	<key>thou</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -8329,6 +8384,11 @@
 		<key>logo_code</key>
 		<string>snc</string>
 	</dict>
+	<key>tsoc</key>
+	<dict>
+		<key>logo_code</key>
+		<string>soc</string>
+	</dict>
 	<key>tsoi</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -8346,6 +8406,11 @@
 		<string>e647</string>
 		<key>logo_code</key>
 		<string>som</string>
+	</dict>
+	<key>tsos</key>
+	<dict>
+		<key>logo_code</key>
+		<string>sos</string>
 	</dict>
 	<key>tsp</key>
 	<dict>

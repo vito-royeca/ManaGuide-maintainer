@@ -96,11 +96,12 @@ extension Maintainer {
         }
         
         if let layout = filterLayout(dict: dict) {
-            if layoutsCache.filter({ $0["name"] == layout["name"] }).isEmpty {
+            if layoutsCache.filter({ $0["code"] == layout["code"] }).isEmpty {
                 layoutsCache.append(layout)
                 
                 processes.append({
-                    try await self.createLayout(name: layout["name"] ?? "NULL",
+                    try await self.createLayout(code: layout["code"] ?? "NULL",
+                                                name: layout["name"] ?? "NULL",
                                                 description_: layout["description_"] ?? "NULL")
                 })
             }
@@ -350,10 +351,11 @@ extension Maintainer {
             return nil
         }
         
-        let name = layout
+        let code = layout
+        var name = capitalize(string: displayFor(name: code))
         var description_ = "NULL"
         
-        switch name {
+        switch code {
         case "normal":
             description_ = "A standard Magic card with one face"
         case "split":
@@ -368,10 +370,22 @@ extension Maintainer {
             description_ = "Cards with meld parts printed on the back"
         case "leveler":
             description_ = "Cards with Level Up"
+        case "class":
+            description_ = "Class-type enchantment cards"
+        case "case":
+            description_ = "Case-type enchantment cards"
         case "saga":
             description_ = "Saga-type cards"
         case "adventure":
             description_ = "Cards with an Adventure spell part"
+        case "prepare":
+            description_ = "Cards with a prepared spell part"
+        case "mutate":
+            description_ = "Cards with Mutate"
+        case "prototype":
+            description_ = "Cards with Prototype"
+        case "battle":
+            description_ = "Battle-type cards"
         case "planar":
             description_ = "Plane and Phenomenon-type cards"
         case "scheme":
@@ -390,13 +404,14 @@ extension Maintainer {
             description_ = "Host-type cards"
         case "art_series":
             description_ = "Art Series collectable double-faced cards"
-        case "double_sided":
+        case "reversible_card":
             description_ = "A Magic card with two sides that are unrelated"
         default:
             ()
         }
 
         return [
+            "code": code,
             "name": name,
             "description_": description_
         ]
@@ -449,9 +464,9 @@ extension Maintainer {
             case "miracle":
                 name = capitalize(string: id)
                 description_ = "The miracle frame effect"
-            case "nyxtouched":
-                name = "Nyx-touched"
-                description_ = "The Nyx-touched frame effect"
+            case "enchantment":
+                name = capitalize(string: id)
+                description_ = "The enchantment frame effect"
             case "draft":
                 name = capitalize(string: id)
                 description_ = "The draft-matters frame effect"
@@ -466,27 +481,27 @@ extension Maintainer {
                 description_ = "A colorshifted frame"
             case "inverted":
                 name = capitalize(string: id)
-                description_ = "The FNM-style inverted frame"
+                description_ = "Predominantly inverted text"
             case "sunmoondfc":
-                name = "Sun and Moon"
+                name = capitalize(string: id)
                 description_ = "The sun and moon transform marks"
             case "compasslanddfc":
-                name = "Compass and Land"
+                name = capitalize(string: id)
                 description_ = "The compass and land transform marks"
             case "originpwdfc":
-                name = "Origins and Planeswalkers"
+                name = capitalize(string: id)
                 description_ = "The Origins and planeswalker transform marks"
             case "mooneldrazidfc":
-                name = "Moon and Eldrazi"
+                name = capitalize(string: id)
                 description_ = "The moon and Eldrazi transform marks"
             case "waxingandwaningmoondfc":
-                name = "Waxing and Waning Crescent moon"
+                name = capitalize(string: id)
                 description_ = "The waxing and waning crescent moon transform marks"
             case "showcase":
                 name = capitalize(string: id)
                 description_ = "A custom Showcase frame"
             case "extendedart":
-                name = "Extended Art"
+                name = capitalize(string: id)
                 description_ = "An extended art frame"
             case "companion":
                 name = capitalize(string: id)
@@ -497,8 +512,26 @@ extension Maintainer {
             case "snow":
                 name = capitalize(string: id)
                 description_ = "The cards have the snowy frame effect"
-            default:
+            case "lesson":
                 name = capitalize(string: id)
+                description_ = "The cards have the Lesson frame effect"
+            case "shatteredglass":
+                name = capitalize(string: id)
+                description_ = "The cards have the Shattered Glass frame effect"
+            case "convertdfc":
+                name = capitalize(string: id)
+                description_ = "The cards have More Than Meets the Eye™ marks"
+            case "fandfc":
+                name = capitalize(string: id)
+                description_ = "The cards have fan transforming marks"
+            case "upsidedowndfc":
+                name = capitalize(string: id)
+                description_ = "The cards have the Upside Down transforming marks"
+            case "spree":
+                name = capitalize(string: id)
+                description_ = "The cards have Spree asterisks"
+            default:
+                ()
             }
         
             array.append([
