@@ -552,15 +552,6 @@
 		<key>logo_code</key>
 		<string>ara</string>
 	</dict>
-	<key>aspm</key>
-	<dict>
-		<key>keyrune_class</key>
-		<string>spm</string>
-		<key>keyrune_unicode</key>
-		<string>e9f1</string>
-		<key>logo_code</key>
-		<string>spm</string>
-	</dict>
 	<key>asnc</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -569,6 +560,24 @@
 		<string>e98b</string>
 		<key>logo_code</key>
 		<string>a10</string>
+	</dict>
+	<key>asos</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>sos</string>
+		<key>keyrune_unicode</key>
+		<string>ea18</string>
+		<key>logo_code</key>
+		<string>a54</string>
+	</dict>
+	<key>aspm</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>spm</string>
+		<key>keyrune_unicode</key>
+		<string>e9f1</string>
+		<key>logo_code</key>
+		<string>spm</string>
 	</dict>
 	<key>astx</key>
 	<dict>
@@ -5812,6 +5821,15 @@
 		<key>logo_code</key>
 		<string>som</string>
 	</dict>
+	<key>psos</key>
+	<dict>
+		<key>keyrune_class</key>
+		<string>sos</string>
+		<key>keyrune_unicode</key>
+		<string>ea18</string>
+		<key>logo_code</key>
+		<string>sos</string>
+	</dict>
 	<key>pspl</key>
 	<dict>
 		<key>keyrune_class</key>
@@ -6663,11 +6681,19 @@
 	</dict>
 	<key>soa</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>soa</string>
+		<key>keyrune_unicode</key>
+		<string>ea20</string>
 		<key>logo_code</key>
 		<string>ssa</string>
 	</dict>
 	<key>soc</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>soc</string>
+		<key>keyrune_unicode</key>
+		<string>ea1c</string>
 		<key>logo_code</key>
 		<string>soc</string>
 	</dict>
@@ -6700,6 +6726,10 @@
 	</dict>
 	<key>sos</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>sos</string>
+		<key>keyrune_unicode</key>
+		<string>ea18</string>
 		<key>logo_code</key>
 		<string>sos</string>
 	</dict>
@@ -8386,6 +8416,10 @@
 	</dict>
 	<key>tsoc</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>soc</string>
+		<key>keyrune_unicode</key>
+		<string>ea1c</string>
 		<key>logo_code</key>
 		<string>soc</string>
 	</dict>
@@ -8409,6 +8443,10 @@
 	</dict>
 	<key>tsos</key>
 	<dict>
+		<key>keyrune_class</key>
+		<string>sos</string>
+		<key>keyrune_unicode</key>
+		<string>ea18</string>
 		<key>logo_code</key>
 		<string>sos</string>
 	</dict>
